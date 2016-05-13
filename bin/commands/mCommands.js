@@ -19,7 +19,11 @@ module.exports = {
     },
 
     // warn: {
-    //
+    //     permissions: 2,
+    //     run: function(message, bot){
+    //         var users = message.mentions;
+    //     }
+    //     help: "color! HexValue - Gives user a color",
     // },
 
     color: {
@@ -60,8 +64,9 @@ module.exports = {
                 }
                 var timeSpan = Date.now() - usersInCD[authorID];
                 console.log(Date.now() - usersInCD[authorID]);
-                if(timeSpan < 3600000){
-                    bot.sendMessage(message, "On cooldown, "+((360000-timeSpan)/1000)+"s");
+                if(timeSpan < 360000000){
+                    bot.sendMessage(message, "On cooldown, "+((360000000-timeSpan)/1000)+"s");
+                    return;
                 }
             }
             usersInCD[authorID] = Date.now();
