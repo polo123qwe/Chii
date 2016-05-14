@@ -18,13 +18,138 @@ module.exports = {
         help: "ping! - returns pong!",
     },
 
-    // warn: {
-    //     permissions: 2,
-    //     run: function(message, bot){
-    //         var users = message.mentions;
-    //     }
-    //     help: "color! HexValue - Gives user a color",
-    // },
+    warn: {
+        permissions: 2,
+        run: function(message, bot){
+            var user = message.mentions[0];
+
+            //Ignore command if channel is private
+            if(message.channel.isPrivate) return;
+            if(user == null){
+                bot.sendMessage(message, "Error, type `warn! <@user> Reason`");
+                return;
+            }
+            var server = message.channel.server;
+
+            //TODO Change this to store this channel in the DB
+            var log = server.channels.get("name", "log");
+            var warn = server.roles.get("name", "Warned");
+
+            //TODO Change this to store this role in the DB
+            if(warn == null){
+                //TODO Inform the user to setChannel
+                return;
+            }
+
+            var reason = message.content.split(" ");
+
+            reason.shift();
+            reason.shift();
+            //Add user to warned role
+            bot.addMemberToRole(user, warn, function(err){
+                if(err) console.dir(err);
+
+                //TODO Change this to store this channel in the DB
+                if(log != null){
+                    if(reason.length > 0){
+                        bot.sendMessage(log, user.name + " warned by "+ message.author.name + ". Reason: " + reason);
+                        //Log
+                        console.log(user.name + " warned by "+ message.author.name + ". Reason: " + reason);
+                    } else {
+                        bot.sendMessage(log, user.name + " warned by "+ message.author.name);
+                        //Log
+                        console.log(user.name + " warned by "+ message.author.name);
+                    }
+                }
+            });
+        },
+        help: "warn! <@user> Reason - Warns a user",
+    },
+
+    mute: {
+        permissions: 2,
+        run: function(message, bot){
+            var user = message.mentions[0];
+
+            //Ignore command if channel is private
+            if(message.channel.isPrivate) return;
+            if(user == null){
+                bot.sendMessage(message, "Error, type `mute! <@user> Reason`");
+                return;
+            }
+            var server = message.channel.server;
+
+            //TODO Change this to store this channel in the DB
+            var log = server.channels.get("name", "log");
+            var warn = server.roles.get("name", "Muted");
+
+            //TODO Change this to store this role in the DB
+            if(warn == null){
+                //TODO Inform the user to setChannel
+                return;
+            }
+
+            var reason = message.content.split(" ");
+
+            reason.shift();
+            reason.shift();
+            //Add user to warned role
+            bot.addMemberToRole(user, warn, function(err){
+                if(err) console.dir(err);
+
+                //TODO Change this to store this channel in the DB
+                if(log != null){
+                    if(reason.length > 0){
+                        bot.sendMessage(log, user.name + " muted by "+ message.author.name + ". Reason: " + reason);
+                        //Log
+                        console.log(user.name + " muted by "+ message.author.name + ". Reason: " + reason);
+                    } else {
+                        bot.sendMessage(log, user.name + " muted by "+ message.author.name);
+                        //Log
+                        console.log(user.name + " muted by "+ message.author.name);
+                    }
+                }
+            });
+        },
+        help: "mute! <@user> Reason - Mutes a user",
+    },
+
+    clearroles: {
+        permissions: 0,
+        run: function(message, bot){
+            //Ignore command if channel is private
+            if(message.channel.isPrivate) return;
+
+            var server = message.channel.server;
+            var rolesToRemove = [];
+            //Check roles that are empty and add them to an array
+            for(var role of server.roles){
+                if(role.name != "@everyone"){
+                    if(server.usersWithRole(role).length < 1){
+                        rolesToRemove.push(role);
+                    }
+                }
+            }
+            var rolesToBeRemoved = rolesToRemove.length;
+            if(rolesToBeRemoved == 0){
+                bot.sendMessage(message, "There are no empty roles.");
+                return;
+            }
+            removeRoles(rolesToRemove, function(){
+                bot.sendMessage(message, rolesToBeRemoved + " roles deleted.");
+            })
+
+            //Remove all the roles in an array
+            function removeRoles(rolesToRemove, callback){
+                if(rolesToRemove.length == 0) return callback();
+                bot.deleteRole(rolesToRemove.pop(), function(err){
+                    if(err) console.log(err);
+                    return removeRoles(rolesToRemove, callback);
+                });
+            }
+        },
+        help: "clearRoles! - Removes empty roles",
+    },
 
     color: {
         permissions: 4,
@@ -63,9 +188,8 @@ module.exports = {
                     usersInCD[authorID] = Date.now();
                 }
                 var timeSpan = Date.now() - usersInCD[authorID];
-                console.log(Date.now() - usersInCD[authorID]);
-                if(timeSpan < 360000000){
-                    bot.sendMessage(message, "On cooldown, "+((360000000-timeSpan)/1000)+"s");
+                if(timeSpan < 3600000){
+                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000)+"s");
                     return;
                 }
             }
@@ -104,7 +228,6 @@ module.exports = {
                 //If no role found
                 if(roleToAddUserTo == null){
                     bot.createRole(server, {name : authorID, color : parseInt(hexValue)}, function(err, role){
-                        console.log(role.name+" at "+role.position);
                         if(err) console.dir(err);
                         addMemberToRole(bot, user, role, message.channel);
                     });
@@ -121,7 +244,7 @@ module.exports = {
 function addMemberToRole(bot, user, role, channel){
     bot.addMemberToRole(user, role, function(err){
         if(err) console.dir(err);
-        // else if(channel)
-            // bot.sendMessage(channel, "Color changed sucessfully.");
+        if(channel)
+            bot.sendMessage(channel, "User added to role sucessfully.");
     });
 }
