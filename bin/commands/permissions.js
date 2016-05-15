@@ -23,7 +23,7 @@ module.exports = {
                 to check if the bot can execute the command
             */
             for(var i = permLevel; i < PERMISSION_CONST.length; i++){
-                for(var j = 0; j < PERMISSION_CONST[i].length; j++){
+                for(var j = 0; j <= PERMISSION_CONST[i].length; j++){
                     if(!role.hasPermission(PERMISSION_CONST[i][j])) return false;
                 }
             }
@@ -43,7 +43,7 @@ module.exports = {
                 the command
             */
             for(var i = 0; i <= RANKS.indexOf(requiredRank); i++){
-                if(role.name == requiredRank) return true;
+                if(RANKS.indexOf(role.name) != -1) return true;
             }
         }
         return false;

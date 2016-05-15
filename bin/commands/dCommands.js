@@ -62,4 +62,23 @@ module.exports = {
         },
         help: "joined! <@user>(opt) - returns date when the @user joined, if no user is provided it uses the author.",
     },
+
+    mycolor: {
+        permissions: -1,
+        run: function(message, bot){
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            var userRoles = server.rolesOfUser(message.author);
+
+            for(var role of userRoles){
+                if(role.name == message.author.id){
+                    bot.sendMessage(message, "Your color is " + role.colorAsHex());
+                    return;
+                }
+            }
+            bot.sendMessage(message, "You have no color.");
+        },
+        help: "mycolor! - returns your current color.",
+    },
 }

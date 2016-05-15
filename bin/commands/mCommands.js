@@ -18,6 +18,30 @@ module.exports = {
         help: "ping! - returns pong!",
     },
 
+    lood: {
+        permissions: -1,
+        run: function(message, bot){
+            setUserToCustomRoles(message, bot, "lood");
+        },
+        help: "lood! - Assigns you to the nsfw channel.",
+    },
+
+    coder: {
+        permissions: -1,
+        run: function(message, bot){
+            setUserToCustomRoles(message, bot, "code");
+        },
+        help: "lood! - Assigns you to the nsfw channel.",
+    },
+
+    rp: {
+        permissions: -1,
+        run: function(message, bot){
+            setUserToCustomRoles(message, bot, "rp");
+        },
+        help: "lood! - Assigns you to the nsfw channel.",
+    },
+
     warn: {
         permissions: 2,
         run: function(message, bot){
@@ -76,7 +100,7 @@ module.exports = {
         run: function(message, bot){
 
             //TEMPORARY THING PLS TODO BETTER
-            if(message.channel.id != "143976784545841161") return;
+            // if(message.channel.id != "143976784545841161") return;
 
             var usersMentioned = message.mentions;
             var inputHexValue = message.content.split(" ")[1];
@@ -110,7 +134,8 @@ module.exports = {
                 }
                 var timeSpan = Date.now() - usersInCD[authorID];
                 if(timeSpan < 3600000){
-                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000/60)+"min");
+                    //FIX THIS TODO
+                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000/60)+" mins");
                     return;
                 }
             }
@@ -159,6 +184,31 @@ module.exports = {
         },
         help: "color! HexValue - Gives user a color (1hr cooldown)",
     },
+}
+
+function setUserToCustomRoles(message, bot, type){
+
+    //Do nothing if its private channel
+    if(message.channel.isPrivate) return;
+    var server = message.channel.server;
+
+    var role;
+    role = server.roles.get("name", type);
+
+    if(role == null){
+        bot.sendMessage(message, "This role does not exist");
+        return;
+    }
+
+    //Check if the user is already in the role
+    var userRoles = server.rolesOfUser(message.author);
+
+    for(var roleToCheck of userRoles){
+        if(roleToCheck.name == type) return;
+    }
+
+    addMemberToRole(bot, message.author, role, message.channel);
+
 }
 
 //Add a user to a role
