@@ -21,7 +21,7 @@ module.exports = {
     lood: {
         permissions: -1,
         run: function(message, bot){
-            setUserToCustomRoles(message, bot, "lood");
+            setUserToCustomRoles(message, bot, "Lood");
         },
         help: "lood! - Assigns you to the nsfw channel.",
     },
@@ -29,7 +29,7 @@ module.exports = {
     coder: {
         permissions: -1,
         run: function(message, bot){
-            setUserToCustomRoles(message, bot, "code");
+            setUserToCustomRoles(message, bot, "Coder");
         },
         help: "lood! - Assigns you to the nsfw channel.",
     },
@@ -37,7 +37,7 @@ module.exports = {
     rp: {
         permissions: -1,
         run: function(message, bot){
-            setUserToCustomRoles(message, bot, "rp");
+            setUserToCustomRoles(message, bot, "Rp");
         },
         help: "lood! - Assigns you to the nsfw channel.",
     },
