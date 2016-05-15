@@ -21,6 +21,24 @@ module.exports = {
     	help: "urban! word - Searches Urban Dictionary for a definition",
     },
 
+    mal: {
+        permissions: -1,
+
+        run: function(message, bot){
+            var splitted = message.content.split(" ");
+
+            if (splitted[1] == null){
+                bot.sendMessage(message, "Not enough arguments.");
+            } else {
+                var result = splitted.splice(1, splitted.length);
+                result = result.toString().split(",").join("+");
+                bot.sendMessage(message, "http://myanimelist.net/profile/"+result);
+            }
+        },
+
+        help: "mal! username - Links the MAL account of a given username",
+    },
+
     osu: {
         permissions: -1,
         run: function(message, bot){

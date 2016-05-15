@@ -21,47 +21,7 @@ module.exports = {
     warn: {
         permissions: 2,
         run: function(message, bot){
-            var user = message.mentions[0];
-
-            //Ignore command if channel is private
-            if(message.channel.isPrivate) return;
-            if(user == null){
-                bot.sendMessage(message, "Error, type `warn! <@user> Reason`");
-                return;
-            }
-            var server = message.channel.server;
-
-            //TODO Change this to store this channel in the DB
-            var log = server.channels.get("name", "log");
-            var warn = server.roles.get("name", "Warned");
-
-            //TODO Change this to store this role in the DB
-            if(warn == null){
-                //TODO Inform the user to setChannel
-                return;
-            }
-
-            var reason = message.content.split(" ");
-
-            reason.shift();
-            reason.shift();
-            //Add user to warned role
-            bot.addMemberToRole(user, warn, function(err){
-                if(err) console.dir(err);
-
-                //TODO Change this to store this channel in the DB
-                if(log != null){
-                    if(reason.length > 0){
-                        bot.sendMessage(log, user.name + " warned by "+ message.author.name + ". Reason: " + reason);
-                        //Log
-                        console.log(user.name + " warned by "+ message.author.name + ". Reason: " + reason);
-                    } else {
-                        bot.sendMessage(log, user.name + " warned by "+ message.author.name);
-                        //Log
-                        console.log(user.name + " warned by "+ message.author.name);
-                    }
-                }
-            });
+            userToMuteBan(message, bot, "warn");
         },
         help: "warn! <@user> Reason - Warns a user",
     },
@@ -69,47 +29,7 @@ module.exports = {
     mute: {
         permissions: 2,
         run: function(message, bot){
-            var user = message.mentions[0];
-
-            //Ignore command if channel is private
-            if(message.channel.isPrivate) return;
-            if(user == null){
-                bot.sendMessage(message, "Error, type `mute! <@user> Reason`");
-                return;
-            }
-            var server = message.channel.server;
-
-            //TODO Change this to store this channel in the DB
-            var log = server.channels.get("name", "log");
-            var warn = server.roles.get("name", "Muted");
-
-            //TODO Change this to store this role in the DB
-            if(warn == null){
-                //TODO Inform the user to setChannel
-                return;
-            }
-
-            var reason = message.content.split(" ");
-
-            reason.shift();
-            reason.shift();
-            //Add user to warned role
-            bot.addMemberToRole(user, warn, function(err){
-                if(err) console.dir(err);
-
-                //TODO Change this to store this channel in the DB
-                if(log != null){
-                    if(reason.length > 0){
-                        bot.sendMessage(log, user.name + " muted by "+ message.author.name + ". Reason: " + reason);
-                        //Log
-                        console.log(user.name + " muted by "+ message.author.name + ". Reason: " + reason);
-                    } else {
-                        bot.sendMessage(log, user.name + " muted by "+ message.author.name);
-                        //Log
-                        console.log(user.name + " muted by "+ message.author.name);
-                    }
-                }
-            });
+            userToMuteBan(message, bot, "mute");
         },
         help: "mute! <@user> Reason - Mutes a user",
     },
@@ -170,10 +90,11 @@ module.exports = {
 
             //Check the value is a hex-length value
             var hexValue = inputHexValue;
+            console.log(hexValue);
             if(hexValue.length == 6){
                 hexValue = "0x"+hexValue;
-            } else if(hexValue.length == 7 && hexValue[0] == "#"){
-                hexValue = "0x"+hexValue.splice(1, hexValue.length);
+            } else if(hexValue.length == 7 && hexValue.startsWith("#")){
+                hexValue = "0x"+hexValue.substring(1, hexValue.length);
             } else {
                 return errorInput();
             }
@@ -189,7 +110,7 @@ module.exports = {
                 }
                 var timeSpan = Date.now() - usersInCD[authorID];
                 if(timeSpan < 3600000){
-                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000)+"s");
+                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000/60)+"min");
                     return;
                 }
             }
@@ -246,5 +167,54 @@ function addMemberToRole(bot, user, role, channel){
         if(err) console.dir(err);
         if(channel)
             bot.sendMessage(channel, "User added to role sucessfully.");
+    });
+}
+
+function userToMuteBan(message, bot, type){
+    var user = message.mentions[0];
+
+    //Ignore command if channel is private
+    if(message.channel.isPrivate) return;
+    if(user == null){
+        bot.sendMessage(message, "Error, type `" + type + "! <@user> Reason`");
+        return;
+    }
+    var server = message.channel.server;
+
+    //TODO Change this to store this channel in the DB
+    var log = server.channels.get("name", "log");
+    var warn;
+    if(type == "mute"){
+        warn = server.roles.get("name", "Muted");
+    } else {
+        warn = server.roles.get("name", "Warned");
+    }
+
+    //TODO Change this to store this role in the DB
+    if(warn == null){
+        //TODO Inform the user to setChannel
+        return;
+    }
+
+    var reason = message.content.split(" ");
+
+    reason.shift();
+    reason.shift();
+    //Add user to warned role
+    bot.addMemberToRole(user, warn, function(err){
+        if(err) console.dir(err);
+
+        //TODO Change this to store this channel in the DB
+        if(log != null){
+            if(reason.length > 0){
+                bot.sendMessage(log, user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);
+                //Log
+                console.log(user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);
+            } else {
+                bot.sendMessage(log, user.name + " " + type + "d by "+ message.author.name);
+                //Log
+                console.log(user.name + " " + type + "d by "+ message.author.name);
+            }
+        }
     });
 }
