@@ -229,14 +229,14 @@ module.exports = {
                 if(roleToAddUserTo == null){
                     bot.createRole(server, {name : authorID, color : parseInt(hexValue)}, function(err, role){
                         if(err) console.dir(err);
-                        addMemberToRole(bot, user, role, message.channel);
+                        addMemberToRole(bot, user, role);
                     });
                     return;
                 }
-                addMemberToRole(bot, user, roleToAddUserTo, message.channel);
+                addMemberToRole(bot, user, roleToAddUserTo);
             }
         },
-        help: "color! HexValue - Gives user a color",
+        help: "color! HexValue - Gives user a color (1hr cooldown)",
     },
 }
 

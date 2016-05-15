@@ -1,12 +1,14 @@
 module.exports = {
-    process: function(message){
-        var pMessage = {};
-        pMessage.mentions = [];
-        pMessage.mentions.push(message.mentions);
-
-        if(message.channel.server){
-            var members = message.channel.server.members;
-                    
-        }
-    },
+    unixToTime: function(UNIX_timestamp){
+      var a = new Date(UNIX_timestamp);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+      var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+      return time;
+  },
 }
