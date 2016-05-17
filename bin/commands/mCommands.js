@@ -135,7 +135,7 @@ module.exports = {
                 var timeSpan = Date.now() - usersInCD[authorID];
                 if(timeSpan < 3600000){
                     //FIX THIS TODO
-                    bot.sendMessage(message, "On cooldown, "+((3600000-timeSpan)/1000/60)+" mins");
+                    bot.sendMessage(message, "On cooldown, "+(Math.round((3600000-timeSpan)/1000/60))+" mins");
                     return;
                 }
             }
@@ -207,7 +207,7 @@ function setUserToCustomRoles(message, bot, type){
         if(roleToCheck.name == type) return;
     }
 
-    addMemberToRole(bot, message.author, role, message.channel);
+    addMemberToRole(bot, message.author, role);
 
 }
 
@@ -222,7 +222,7 @@ function addMemberToRole(bot, user, role, channel){
 
 function userToMuteBan(message, bot, type){
     var user = message.mentions[0];
-
+    console.log(message.mentions);
     //Ignore command if channel is private
     if(message.channel.isPrivate) return;
     if(user == null){

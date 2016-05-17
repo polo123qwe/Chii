@@ -1,6 +1,6 @@
 var Discord = require('discord.js');
 var config = require("../config.json");
-require('console-stamp')(console, '[HH:MM:ss]');
+require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
 var MongoClient = require('mongodb').MongoClient;
 var exec = require("./process.js");
