@@ -4,7 +4,13 @@ module.exports = {
     help: {
         permissions: -1,
         run:function(message, bot){
-            bot.sendMessage(message, "No help yet :p");
+            var str = "** List of commands:\n";
+            for (var comm in module.exports){
+				if (module.exports[comm].hasOwnProperty('help')){
+                    str+= module.exports[comm].help+"\n";
+                }    
+			}
+            bot.sendMessage(message, str);
         },
         help: "help! returns help",
     },
