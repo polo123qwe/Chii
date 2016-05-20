@@ -11,4 +11,7 @@ module.exports = {
       var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
       return time;
   },
+  checkCooldown: function(command, userID){
+
+  },
 }

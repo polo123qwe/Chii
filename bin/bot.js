@@ -42,11 +42,13 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    db.collection('servers').insert({name: server.name, _id: server.id});
+    if(db)
+        db.collection('servers').insert({name: server.name, _id: server.id});
 });
 ////////////////////
 ///////LOGIN////////
 function login(){
+    console.log("Initializing...");
     try{
         bot.loginWithToken(config.token, function(err){
             if(err){
@@ -60,19 +62,19 @@ function login(){
 ////////////////////
 ////////DB//////////
 function connectDB(){
-    console.log("Initializing...");
+    console.log("Connecting to DB...");
     //Connect to the database
     MongoClient.connect(config.mongodb, function(err, database){
         if(err){
-            console.log(err);
+            console.log("Error connecting to the DB "+err.message);
         } else {
             console.log("Connection to DB sucessful");
             db = database;
         }
         //Start the bot
-        login();
+        // login();
     });
 }
 ////////////////////
-connectDB();
-// login();
+// connectDB();
+login();

@@ -31,7 +31,7 @@ module.exports = {
         run: function(message, bot){
             setUserToCustomRoles(message, bot, "Coder");
         },
-        help: "lood! - Assigns you to the nsfw channel.",
+        help: "coder! - Assigns you to the coder channel.",
     },
 
     rp: {
@@ -39,7 +39,7 @@ module.exports = {
         run: function(message, bot){
             setUserToCustomRoles(message, bot, "Rp");
         },
-        help: "lood! - Assigns you to the nsfw channel.",
+        help: "rp! - Assigns you to the roleplay channel.",
     },
 
     warn: {
@@ -222,7 +222,6 @@ function addMemberToRole(bot, user, role, channel){
 
 function userToMuteBan(message, bot, type){
     var user = message.mentions[0];
-    console.log(message.mentions);
     //Ignore command if channel is private
     if(message.channel.isPrivate) return;
     if(user == null){
