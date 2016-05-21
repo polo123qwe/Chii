@@ -271,7 +271,7 @@ function setUserToCustomRoles(message, bot, type, channel){
         if(roleToCheck.name == type) return;
     }
 
-    addMemberToRole(bot, message.author, channel);
+    addMemberToRole(bot, message.author, role);
 
 }
 
