@@ -1,3 +1,5 @@
+var utils = require("../utils.js");
+
 var usersInCD = {};
 
 module.exports = {
@@ -16,6 +18,23 @@ module.exports = {
             bot.sendMessage(message, outputMessage);
         },
         help: "ping! - returns pong!",
+    },
+
+    member: {
+        permissions: 2,
+        run: function(message, bot){
+
+            //Ignore command if channel is private
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            var role = server.roles.get("name", "Member");
+            var users = utils.getMentions(message, bot);
+            for(var user of users){
+                addMemberToRole(bot, user, role, message.channel);
+            }
+        },
+        help: "member! - Assigns you to the nsfw channel.",
     },
 
     lood: {
@@ -45,7 +64,7 @@ module.exports = {
     warn: {
         permissions: 2,
         run: function(message, bot){
-            userToMuteBan(message, bot, "warn");
+            userToMuteWarn(message, bot, "warn");
         },
         help: "warn! <@user> Reason - Warns a user",
     },
@@ -53,18 +72,56 @@ module.exports = {
     mute: {
         permissions: 2,
         run: function(message, bot){
-            userToMuteBan(message, bot, "mute");
+            userToMuteWarn(message, bot, "mute");
         },
         help: "mute! <@user> Reason - Mutes a user",
     },
+
+    kick: {
+        permissions: 2,
+        run: function(message, bot){
+            var splitted = message.content.split(" ");
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            var log = server.channels.get("name", "log");
+
+            var users = utils.getMentions(message, bot);
+            //Remove the command and the users from the message
+            var reason = splitted.slice(users.length+1, splitted.length).join(" ");
+
+            for(var user of users){
+                bot.kickMember(user, server, function(err){
+                    if(err) console.log(err);
+                    if(log != null){
+                        if(reason.length > 0){
+                            reason = reason.join(" ");
+                            bot.sendMessage(log, user.name + " kicked by " + message.author.name + ". Reason: " + reason);
+                            //Log
+                            console.log(user.name + " kicked by " + message.author.name + ". Reason: " + reason);
+                        } else {
+                            bot.sendMessage(log, user.name + " kicked by " + message.author.name);
+                            //Log
+                            console.log(user.name + " kicked by " + message.author.name);
+                        }
+                    }
+                });
+
+            }
+
+        },
+        help: "kick! <@user> Reason - Kicks a user",
+    },
+
 
     clearroles: {
         permissions: 0,
         run: function(message, bot){
             //Ignore command if channel is private
             if(message.channel.isPrivate) return;
-
             var server = message.channel.server;
+
             var rolesToRemove = [];
             //Check roles that are empty and add them to an array
             for(var role of server.roles){
@@ -186,7 +243,7 @@ module.exports = {
     },
 }
 
-function setUserToCustomRoles(message, bot, type){
+function setUserToCustomRoles(message, bot, type, channel){
 
     //Do nothing if its private channel
     if(message.channel.isPrivate) return;
@@ -207,7 +264,7 @@ function setUserToCustomRoles(message, bot, type){
         if(roleToCheck.name == type) return;
     }
 
-    addMemberToRole(bot, message.author, role);
+    addMemberToRole(bot, message.author, channel);
 
 }
 
@@ -216,12 +273,12 @@ function addMemberToRole(bot, user, role, channel){
     bot.addMemberToRole(user, role, function(err){
         if(err) console.dir(err);
         if(channel)
-            bot.sendMessage(channel, "User added to role sucessfully.");
+            bot.sendMessage(channel, user.name+" added to "+role.name+" sucessfully.");
     });
 }
 
-function userToMuteBan(message, bot, type){
-    var user = message.mentions[0];
+function userToMuteWarn(message, bot, type){
+    var user = utils.getMentions(message, bot)[0];
     //Ignore command if channel is private
     if(message.channel.isPrivate) return;
     if(user == null){
@@ -256,6 +313,7 @@ function userToMuteBan(message, bot, type){
         //TODO Change this to store this channel in the DB
         if(log != null){
             if(reason.length > 0){
+                reason = reason.join(" ");
                 bot.sendMessage(log, user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);
                 //Log
                 console.log(user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);

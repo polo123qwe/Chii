@@ -44,7 +44,7 @@ module.exports = {
         run: function(message, bot){
 
             var splitted = message.content.split(" ");
-            if(splitted[1] == null) bot.sendMessage(message, "Not enough parameters `osu! username <std, ctb, mania, taiko>`.");
+            if(splitted[1] == null) return;
 
             var username;
             var mode = splitted[2];

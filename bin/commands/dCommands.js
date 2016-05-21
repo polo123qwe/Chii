@@ -47,7 +47,7 @@ module.exports = {
         permissions: -1,
         run: function(message, bot){
             var splitted = message.content.split(" ");
-            var users = message.mentions;
+            var users = utils.getMentions(message, bot);
             if(users.length == 0) users = [message.author];
 
             if(message.channel.isPrivate) return;

@@ -5,6 +5,8 @@ require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 var MongoClient = require('mongodb').MongoClient;
 var exec = require("./process.js");
 
+var utils = require("./utils.js");
+
 var db;
 
 var Execution = new exec();
@@ -19,6 +21,7 @@ bot.on("message", function(message){
     if(config.logs == "true"){
         //TODO
     }
+
     //Try to execute the command
 	Execution.execute(message, bot);
 
@@ -72,9 +75,9 @@ function connectDB(){
             db = database;
         }
         //Start the bot
-        // login();
+        login();
     });
 }
 ////////////////////
-// connectDB();
-login();
+connectDB();
+// login();
