@@ -6,13 +6,14 @@ module.exports = {
     help: {
         permissions: -1,
         run:function(message, bot){
-            var str = "** List of commands:\n";
-            for (var comm in module.exports){
-				if (module.exports[comm].hasOwnProperty('help')){
-                    str+= module.exports[comm].help+"\n";
-                }    
-			}
-            bot.sendMessage(message, str);
+            // var str = "** List of commands:\n";
+            // for (var comm in module.exports){
+			// 	if (module.exports[comm].hasOwnProperty('help')){
+            //         str+= module.exports[comm].help+"\n";
+            //     }
+			// }
+            // bot.sendMessage(message, str);
+            bot.sendMessage(message, "No help yet :p");
         },
         help: "help! returns help",
     },
@@ -40,7 +41,7 @@ module.exports = {
                 addMemberToRole(bot, user, role, message.channel);
             }
         },
-        help: "member! - Assigns you to the nsfw channel.",
+        help: "member! - Gives user membership.",
     },
 
     lood: {

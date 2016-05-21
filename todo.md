@@ -1,8 +1,9 @@
 # TODO
 
-	* Fix osu! without param message
-	* Fix log with commas
-	* Fix nickname bug
+	/* Fix osu! without param message
+	/* Fix log with commas
+	* Add member, kick and ban
+	/* Fix nickname bug
 	* Log chats into DB
 	* Implement help
 	* Save server config into BD

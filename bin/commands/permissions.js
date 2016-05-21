@@ -43,7 +43,8 @@ module.exports = {
                 the command
             */
             for(var i = 0; i <= RANKS.indexOf(requiredRank); i++){
-                if(RANKS.indexOf(role.name) != -1) return true;
+                var level = RANKS.indexOf(role.name);
+                if(level != -1 && level >= requiredRank) return true;
             }
         }
         return false;
