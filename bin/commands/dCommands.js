@@ -81,4 +81,16 @@ module.exports = {
         },
         help: "mycolor! - returns your current color.",
     },
+
+    uptime: {
+        permissions: -1,
+        run: function(message, bot){
+
+            var time = utils.millisecondsConversion(bot.uptime);
+            var output = "Bot has been running for " + time;
+
+            bot.sendMessage(message, output);
+        },
+        help: "uptime! - returns bot uptime.",
+    },
 }

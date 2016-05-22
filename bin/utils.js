@@ -5,11 +5,13 @@ module.exports = {
         var mentions = [];
         for(var id of splitted){
             if(id[0] == "<" && id[id.length-1] == ">" && id.length){
+                console.log(id.includes("@"));
                 var user;
-                if(id.length == 21){
-                    user = bot.users.get("id", id.replace(/<|@|>/ig,""));
-                } else if (id.length == 22){
+                if(id.includes("@!")){
                     user = bot.users.get("id", id.replace(/<|@!|>/ig,""));
+                } else if (id.includes("@")){
+                    user = bot.users.get("id", id.replace(/<|@|>/ig,""));
+
                 }
                 if(user)
                     mentions.push(user);
@@ -31,7 +33,26 @@ module.exports = {
       var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
       return time;
   },
+
   checkCooldown: function(command, userID){
 
+  },
+
+  millisecondsConversion(t){
+      var cd = 24 * 60 * 60 * 1000,
+      ch = 60 * 60 * 1000,
+      d = Math.floor(t / cd),
+      h = Math.floor( (t - d * cd) / ch),
+      m = Math.round( (t - d * cd - h * ch) / 60000),
+      pad = function(n){ return n < 10 ? '0' + n : n; };
+      if( m === 60 ){
+          h++;
+          m = 0;
+      }
+      if( h === 24 ){
+          d++;
+          h = 0;
+      }
+      return (d + " days " + pad(h) + " hours and " +  pad(m) + " minutes.");
   },
 }

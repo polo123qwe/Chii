@@ -6,13 +6,13 @@ module.exports = {
     help: {
         permissions: -1,
         run:function(message, bot){
-            // var str = "** List of commands:\n";
+            var str = "** List of commands:\n";
             // for (var comm in module.exports){
 			// 	if (module.exports[comm].hasOwnProperty('help')){
-            //         str+= module.exports[comm].help+"\n";
+            //         str+= ">" + module.exports[comm].help+"\n";
             //     }
 			// }
-            // bot.sendMessage(message, str);
+            // bot.sendMessage(message.author, str);
             bot.sendMessage(message, "No help yet :p");
         },
         help: "help! returns help",

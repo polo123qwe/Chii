@@ -44,8 +44,6 @@ module.exports = {
             */
             for(var i = 0; i <= RANKS.indexOf(requiredRank); i++){
                 var level = RANKS.indexOf(role.name);
-                console.log(level)
-                console.log(permLevel)
                 if(level != -1 && level <= permLevel) return true;
             }
         }
