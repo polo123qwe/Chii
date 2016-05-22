@@ -106,6 +106,6 @@ module.exports.push({
 		run: function(message, bot){
 			bot.sendMessage(message, "Nya~! (^ω^＼)");
 		},
-		help: "nya! says Nya :D,
+		help: "nya! says Nya :D",
 	}
 })
