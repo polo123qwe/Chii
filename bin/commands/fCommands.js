@@ -2,7 +2,9 @@ var osuapi = require('osu-api');
 api_key = 'dc812256092ebf90b7031d3ea96f061a6dd64504';
 var osu_a = new osuapi.Api(api_key);
 
-module.exports = {
+if (module.exports == null){module.export = {};}
+
+module.exports.push({
     urban: {
         permissions: -1,
 
@@ -98,5 +100,12 @@ module.exports = {
 
         },
         help: "osu! username <std, ctb, mania, taiko> - returns the profile info",
-    }
-}
+    },
+	nya: {
+		permissions: -1,
+		run: function(message, bot){
+			bot.sendMessage(message, "Nya~! (^ω^＼)");
+		},
+		help: "nya! says Nya :D,
+	}
+})

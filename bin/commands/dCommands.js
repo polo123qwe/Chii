@@ -1,6 +1,8 @@
 var utils = require('../utils.js');
 
-module.exports = {
+if (module.exports == null){module.export = {};}
+
+module.exports.push({
     ava: {
         permissions: -1,
         run: function(message, bot){
@@ -93,4 +95,4 @@ module.exports = {
         },
         help: "uptime! - returns bot uptime.",
     },
-}
+})

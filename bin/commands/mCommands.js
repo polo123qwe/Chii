@@ -2,18 +2,20 @@ var utils = require("../utils.js");
 
 var usersInCD = {};
 
-module.exports = {
+if (module.exports == null){module.export = {};}
+
+module.exports.push({
     help: {
         permissions: -1,
         run:function(message, bot){
             var str = "** List of commands:\n";
-            // for (var comm in module.exports){
-			// 	if (module.exports[comm].hasOwnProperty('help')){
-            //         str+= ">" + module.exports[comm].help+"\n";
-            //     }
-			// }
-            // bot.sendMessage(message.author, str);
-            bot.sendMessage(message, "No help yet :p");
+            for (var comm in module.exports){
+				if (module.exports[comm].hasOwnProperty('help')){
+            		str+= ">" + module.exports[comm].help+"\n";
+            	}
+			}
+            bot.sendMessage(message.author, str);
+            //bot.sendMessage(message, "No help yet :p");
         },
         help: "help! returns help",
     },
@@ -248,7 +250,7 @@ module.exports = {
         },
         help: "color! HexValue - Gives user a color (1hr cooldown)",
     },
-}
+})
 
 function setUserToCustomRoles(message, bot, type, channel){
 

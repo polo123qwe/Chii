@@ -2,7 +2,9 @@ var http = require('http');
 var Bluebird = require('bluebird');
 var Forecast = require('forecast.io-bluebird');
 
-module.exports = {
+if (module.exports == null){module.export = {};}
+
+module.exports.push({
     time: {
         permissions: -1,
         run: function(message, bot){
@@ -85,7 +87,7 @@ module.exports = {
         },
         help: "weather! <city> - returns the weather of a city",
     }
-}
+})
 
 function geocode(address, callback){
 
