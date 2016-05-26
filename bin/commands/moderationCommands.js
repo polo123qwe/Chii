@@ -96,7 +96,7 @@ module.exports = {
                 }
             }, 60000);
         },
-        help: "chill! <@user> - Chill a user.",
+        help: "chill! <@user> - Mute a user for 1 minute.",
     },
 
     warn: {
@@ -355,13 +355,13 @@ function userToMuteWarn(message, bot, type){
         if(log != null){
             if(reason.length > 0){
                 reason = reason.join(" ");
-                bot.sendMessage(log, user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);
+                bot.sendMessage(log, user.name + " " + type + "ed by "+ message.author.name + ". Reason: " + reason);
                 //Log
-                console.log(user.name + " " + type + "d by "+ message.author.name + ". Reason: " + reason);
+                console.log(user.name + " " + type + "ed by "+ message.author.name + ". Reason: " + reason);
             } else {
-                bot.sendMessage(log, user.name + " " + type + "d by "+ message.author.name);
+                bot.sendMessage(log, user.name + " " + type + "ed by "+ message.author.name);
                 //Log
-                console.log(user.name + " " + type + "d by "+ message.author.name);
+                console.log(user.name + " " + type + "ed by "+ message.author.name);
             }
         }
     });

@@ -89,11 +89,24 @@ module.exports = {
             var server = message.channel.server;
 
             //Select a random user
+            for(var user of server.members){
+                var found = false
+                for(var role of server.rolesOfUser(user)){
+                    if(role.name == "Member"){
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){
+                    server.members.remove(user);
+                }
+            }
             var randomUser = server.members.random();
 
-            bot.sendMessage(message, randomUser.name + ", congratulations!");
+            bot.sendMessage(message, randomUser.name + "!");
         },
         help: "randomu! - returns a random user.",
+        cd: 30000,
     },
 
     uptime: {
