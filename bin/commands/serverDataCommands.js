@@ -90,7 +90,7 @@ module.exports = {
 
             //Select a random user
             for(var user of server.members){
-                var found = false
+                var found = false;
                 for(var role of server.rolesOfUser(user)){
                     if(role.name == "Member"){
                         found = true;
@@ -106,7 +106,7 @@ module.exports = {
             bot.sendMessage(message, randomUser.name + "!");
         },
         help: "randomu! - returns a random user.",
-        cd: 30000,
+        cd: 240000,
     },
 
     uptime: {
