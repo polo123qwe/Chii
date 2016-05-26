@@ -1,8 +1,6 @@
 var utils = require('../utils.js');
 
-if (module.exports == null){module.export = {};}
-
-module.exports.push({
+module.exports = {
     ava: {
         permissions: -1,
         run: function(message, bot){
@@ -84,6 +82,20 @@ module.exports.push({
         help: "mycolor! - returns your current color.",
     },
 
+    randu: {
+        permissions: -1,
+        run: function(message, bot){
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            //Select a random user
+            var randomUser = server.members.random();
+
+            bot.sendMessage(message, randomUser.name + ", congratulations!");
+        },
+        help: "randomu! - returns a random user.",
+    },
+
     uptime: {
         permissions: -1,
         run: function(message, bot){
@@ -95,4 +107,4 @@ module.exports.push({
         },
         help: "uptime! - returns bot uptime.",
     },
-})
+}

@@ -1,10 +1,11 @@
-var mCommands = require("./commands/mCommands.js");
-var fCommands = require("./commands/fCommands.js");
-var iCommands = require("./commands/iCommands.js");
-var dCommands = require("./commands/dCommands.js");
+var moderationCommands = require("./commands/moderationCommands.js");
+var internetDataCommands = require("./commands/internetDataCommands.js");
+var infoCommands = require("./commands/infoCommands.js");
+var serverDataCommands = require("./commands/serverDataCommands.js");
 
 var perm = require("./commands/permissions.js");
 var mdb = require("./mongodb.js");
+var utils = require("./utils.js");
 
 module.exports = Execution;
 
@@ -31,21 +32,21 @@ Execution.prototype = {
 		command = command.toLowerCase();
 
 		//Check if there is a command with that name
-		if(mCommands.hasOwnProperty(command)){
-			if(checkPerm(mCommands[command])){
-				mCommands[command].run(message, bot);
+		if(moderationCommands.hasOwnProperty(command)){
+			if(checkPerm(moderationCommands[command])){
+				moderationCommands[command].run(message, bot);
 			}
-		} else if(fCommands.hasOwnProperty(command)){
-			if(checkPerm(fCommands[command])){
-				fCommands[command].run(message, bot);
+		} else if(internetDataCommands.hasOwnProperty(command)){
+			if(checkPerm(internetDataCommands[command])){
+				internetDataCommands[command].run(message, bot);
 			}
-		} else if(iCommands.hasOwnProperty(command)){
-			if(checkPerm(iCommands[command])){
-				iCommands[command].run(message, bot);
+		} else if(infoCommands.hasOwnProperty(command)){
+			if(checkPerm(infoCommands[command])){
+				infoCommands[command].run(message, bot);
 			}
-		} else if(dCommands.hasOwnProperty(command)){
-			if(checkPerm(dCommands[command])){
-				dCommands[command].run(message, bot);
+		} else if(serverDataCommands.hasOwnProperty(command)){
+			if(checkPerm(serverDataCommands[command])){
+				serverDataCommands[command].run(message, bot);
 			}
 		}
 
@@ -55,17 +56,25 @@ Execution.prototype = {
 			else{
 				//TODO Check BD
 
-				//If the bot is allowed to execute it
-				if(perm.isBotAllowed(cmd, bot, message.channel.server)){
-					//If the user is
-					if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
-						return true;
-					}else{
-						bot.sendMessage(message, "Access denied.");
+				//Check if the command has cooldown
+				var cooldown = utils.checkCooldown(cmd, message.author.id);
+				//If there is no cooldown
+				if(cooldown == -1){
+					//If the bot is allowed to execute it
+					if(perm.isBotAllowed(cmd, bot, message.channel.server)){
+						//If the user is
+						if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
+							return true;
+						} else{
+							bot.sendMessage(message, "Access denied.");
+							return false;
+						}
+					} else{
+						bot.sendMessage(message, "Bot is not allowed to do that.");
 						return false;
 					}
-				}else{
-					bot.sendMessage(message, "Bot is not allowed to do that.");
+				} else{
+					bot.sendMessage(message, "You are on cooldown. (" + cooldown + "s)");
 					return false;
 				}
 			}

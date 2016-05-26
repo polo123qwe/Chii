@@ -1,21 +1,20 @@
 var utils = require("../utils.js");
+var helpCommand = require("./help.js");
+// var usersInCD = {};
 
-var usersInCD = {};
-
-if (module.exports == null){module.export = {};}
-
-module.exports.push({
+module.exports = {
     help: {
         permissions: -1,
-        run:function(message, bot){
-            var str = "** List of commands:\n";
-            for (var comm in module.exports){
-				if (module.exports[comm].hasOwnProperty('help')){
-            		str+= ">" + module.exports[comm].help+"\n";
-            	}
-			}
-            bot.sendMessage(message.author, str);
-            //bot.sendMessage(message, "No help yet :p");
+        run: function(message, bot){
+            // for (var comm in module.exports){
+			// 	if (module.exports[comm].hasOwnProperty('help')){
+            // 		str+= ">" + module.exports[comm].help+"\n";
+            // 	}
+			// }
+            // var str = helpCommand();
+            // bot.sendMessage(message.author, str);
+
+            bot.sendMessage(message, "No help yet :p");
         },
         help: "help! returns help",
     },
@@ -61,6 +60,14 @@ module.exports.push({
         },
         help: "coder! - Assigns you to the coder channel.",
     },
+    //
+    // food: {
+    //     permissions: -1,
+    //     run: function(message, bot){
+    //         setUserToCustomRoles(message, bot, "Food");
+    //     },
+    //     help: "food! - Assigns you to the food channel.",
+    // },
 
     rp: {
         permissions: -1,
@@ -70,12 +77,34 @@ module.exports.push({
         help: "rp! - Assigns you to the roleplay channel.",
     },
 
+    chill: {
+        permissions: 2,
+        run: function(message, bot){
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            var users = utils.getMentions(message, bot);
+
+            userToMuteWarn(message, bot, "chill");
+
+            var chillRole = server.roles.get("name", "Chilling");
+
+            setTimeout(function(){
+                for(var user of users){
+                    bot.removeMemberFromRole(user, chillRole);
+                }
+            }, 60000);
+        },
+        help: "chill! <@user> - Chill a user.",
+    },
+
     warn: {
         permissions: 2,
         run: function(message, bot){
             userToMuteWarn(message, bot, "warn");
         },
-        help: "warn! <@user> Reason - Warns a user",
+        help: "warn! <@user> Reason - Warns a user.",
     },
 
     mute: {
@@ -83,7 +112,7 @@ module.exports.push({
         run: function(message, bot){
             userToMuteWarn(message, bot, "mute");
         },
-        help: "mute! <@user> Reason - Mutes a user",
+        help: "mute! <@user> Reason - Mutes a user.",
     },
 
     kick: {
@@ -180,7 +209,6 @@ module.exports.push({
 
             //Check the value is a hex-length value
             var hexValue = inputHexValue;
-            console.log(hexValue);
             if(hexValue.length == 6){
                 hexValue = "0x"+hexValue;
             } else if(hexValue.length == 7 && hexValue.startsWith("#")){
@@ -194,18 +222,19 @@ module.exports.push({
             var server = message.channel.server;
 
             //Check last time the author used the command
-            if(usersInCD.hasOwnProperty(authorID)){
-                if(usersInCD[authorID] == null){
-                    usersInCD[authorID] = Date.now();
-                }
-                var timeSpan = Date.now() - usersInCD[authorID];
-                if(timeSpan < 3600000){
-                    //FIX THIS TODO
-                    bot.sendMessage(message, "On cooldown, "+(Math.round((3600000-timeSpan)/1000/60))+" mins");
-                    return;
-                }
-            }
-            usersInCD[authorID] = Date.now();
+            // if(usersInCD.hasOwnProperty(authorID)){
+            //     if(usersInCD[authorID] == null){
+            //         usersInCD[authorID] = Date.now();
+            //     }
+            //     var timeSpan = Date.now() - usersInCD[authorID];
+            //     if(timeSpan < 3600000){
+            //         //FIX THIS TODO
+            //         bot.sendMessage(message, "On cooldown, "+(Math.round((3600000-timeSpan)/1000/60))+" mins");
+            //         return;
+            //     }
+            // }
+            // usersInCD[authorID] = Date.now();
+
             //Search any role containing Hex in the roles of the user
             //Get first user mentioned
             var userRoles = server.rolesOfUser(message.author);
@@ -249,8 +278,9 @@ module.exports.push({
             }
         },
         help: "color! HexValue - Gives user a color (1hr cooldown)",
+        cd: 3600000,
     },
-})
+}
 
 function setUserToCustomRoles(message, bot, type, channel){
 
@@ -301,8 +331,10 @@ function userToMuteWarn(message, bot, type){
     var warn;
     if(type == "mute"){
         warn = server.roles.get("name", "Muted");
-    } else {
+    } else if (type == "warn"){
         warn = server.roles.get("name", "Warned");
+    } else {
+        warn = server.roles.get("name", "Chilling");
     }
 
     //TODO Change this to store this role in the DB

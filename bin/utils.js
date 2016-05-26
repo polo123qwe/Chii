@@ -1,3 +1,5 @@
+var cooldowns = {}
+
 module.exports = {
     //Return
     getMentions: function(message, bot){
@@ -5,13 +7,11 @@ module.exports = {
         var mentions = [];
         for(var id of splitted){
             if(id[0] == "<" && id[id.length-1] == ">" && id.length){
-                console.log(id.includes("@"));
                 var user;
                 if(id.includes("@!")){
                     user = bot.users.get("id", id.replace(/<|@!|>/ig,""));
                 } else if (id.includes("@")){
                     user = bot.users.get("id", id.replace(/<|@|>/ig,""));
-
                 }
                 if(user)
                     mentions.push(user);
@@ -36,6 +36,23 @@ module.exports = {
 
   checkCooldown: function(command, userID){
 
+      if(!command.hasOwnProperty("cd")) return -1;
+
+      if(command.cd == 0) return -1;
+      if(!cooldowns[command]){
+          cooldowns[command] = {};
+      }
+      if(!cooldowns[command][userID]){
+          cooldowns[command][userID] = Date.now();
+          return -1;
+      } else {
+          var timeSpan = Date.now() - (cooldowns[command][userID]);
+          if(command.cd <= timeSpan){
+              cooldowns[command][userID] = Date.now();
+              return -1;
+          }
+          return (command.cd - timeSpan)/1000;
+      }
   },
 
   millisecondsConversion(t){
