@@ -278,7 +278,7 @@ module.exports = {
             }
         },
         help: "color! HexValue - Gives user a color (1hr cooldown)",
-        cd: 3600000,
+        cd: 600000,
     },
 }
 

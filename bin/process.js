@@ -58,13 +58,17 @@ Execution.prototype = {
 
 				//Check if the command has cooldown
 				var cooldown = utils.checkCooldown(cmd, message.author.id);
-				//If there is no cooldown
-				if(cooldown == -1){
 					//If the bot is allowed to execute it
 					if(perm.isBotAllowed(cmd, bot, message.channel.server)){
 						//If the user is
 						if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
-							return true;
+							//If there is no cooldown
+							if(cooldown == -1){
+								return true;
+							} else{
+								bot.sendMessage(message, "You are on cooldown. (" + cooldown + "s)");
+								return false;
+							}
 						} else{
 							bot.sendMessage(message, "Access denied.");
 							return false;
@@ -73,10 +77,7 @@ Execution.prototype = {
 						bot.sendMessage(message, "Bot is not allowed to do that.");
 						return false;
 					}
-				} else{
-					bot.sendMessage(message, "You are on cooldown. (" + cooldown + "s)");
-					return false;
-				}
+
 			}
 		}//EndFunct
     },

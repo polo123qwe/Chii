@@ -10,6 +10,7 @@ module.exports = function(){
 
     for(var commands of allCommands){
         console.log(commands);
+        console.log("------------------")
         // for(var command of commands){
         //     str += command.help;
         // }
