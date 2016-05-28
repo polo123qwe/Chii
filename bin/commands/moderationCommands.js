@@ -60,14 +60,14 @@ module.exports = {
         },
         help: "coder! - Assigns you to the coder channel.",
     },
-    //
-    // food: {
-    //     permissions: -1,
-    //     run: function(message, bot){
-    //         setUserToCustomRoles(message, bot, "Food");
-    //     },
-    //     help: "food! - Assigns you to the food channel.",
-    // },
+
+    food: {
+        permissions: -1,
+        run: function(message, bot){
+            setUserToCustomRoles(message, bot, "Food");
+        },
+        help: "food! - Assigns you to the food channel.",
+    },
 
     rp: {
         permissions: -1,
