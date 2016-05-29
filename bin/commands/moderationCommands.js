@@ -22,6 +22,7 @@ module.exports = {
     ping: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
             bot.sendMessage(message, outputMessage);
         },
@@ -56,6 +57,7 @@ module.exports = {
     coder: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             setUserToCustomRoles(message, bot, "Coder");
         },
         help: "coder! - Assigns you to the coder channel.",
@@ -64,6 +66,7 @@ module.exports = {
     food: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             setUserToCustomRoles(message, bot, "Food");
         },
         help: "food! - Assigns you to the food channel.",
@@ -72,6 +75,7 @@ module.exports = {
     rp: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             setUserToCustomRoles(message, bot, "Rp");
         },
         help: "rp! - Assigns you to the roleplay channel.",
@@ -193,6 +197,7 @@ module.exports = {
     color: {
         permissions: 4,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             //TEMPORARY THING PLS TODO BETTER
             // if(message.channel.id != "143976784545841161") return;

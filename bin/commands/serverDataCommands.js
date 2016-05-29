@@ -4,6 +4,7 @@ module.exports = {
     ava: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             var splitted = message.content.split(" ");
             var user;
             if(splitted[1] == null) user = message.author;
@@ -21,6 +22,7 @@ module.exports = {
     id: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             var splitted = message.content.split(" ");
             var user;
             if(splitted[1] == null) user = message.author;
@@ -46,6 +48,7 @@ module.exports = {
     joined: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             var splitted = message.content.split(" ");
             var users = utils.getMentions(message, bot);
             if(users.length == 0) users = [message.author];
@@ -66,6 +69,7 @@ module.exports = {
     mycolor: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             if(message.channel.isPrivate) return;
             var server = message.channel.server;
 
@@ -85,6 +89,7 @@ module.exports = {
     randu: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
             if(message.channel.isPrivate) return;
             var server = message.channel.server;
 
@@ -112,6 +117,7 @@ module.exports = {
     uptime: {
         permissions: -1,
         run: function(message, bot){
+            if(message.channel == message.server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             var time = utils.millisecondsConversion(bot.uptime);
             var output = "Bot has been running for " + time;
