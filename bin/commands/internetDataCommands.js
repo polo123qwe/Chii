@@ -1,5 +1,5 @@
 var osuapi = require('osu-api');
-api_key = 'dc812256092ebf90b7031d3ea96f061a6dd64504';
+api_key = require("../../config.json").osuKey;
 var osu_a = new osuapi.Api(api_key);
 
 module.exports = {
