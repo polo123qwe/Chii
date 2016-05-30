@@ -1,6 +1,7 @@
 var http = require('http');
 var Bluebird = require('bluebird');
 var Forecast = require('forecast.io-bluebird');
+var api_key = require("../../config.json").forecastKey;
 
 module.exports = {
     time: {
@@ -119,7 +120,7 @@ function geocode(address, callback){
 
 function getForecast(latitude, longitude, callback){
 	var forecast = new Forecast({
-	    key: "c6199bfc28582078316aec25fbf4bfb3",
+	    key: api_key,
 	    timeout: 2500
 	});
 	var options = {
