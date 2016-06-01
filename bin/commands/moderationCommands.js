@@ -120,6 +120,26 @@ module.exports = {
         help: "chill! <@user> - Mute a user for 1 minute.",
     },
 
+    suicide: {
+        permissions: -1,
+        run: function(message, bot){
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            var chillRole = server.roles.get("name", "Chilling");
+
+            bot.addMemberToRole(message.author, chillRole, function(err){
+                if(err) console.log(err);
+                bot.sendMessage(message, "RIP");
+            });
+            setTimeout(function(){
+                bot.removeMemberFromRole(message.author, chillRole);
+            }, 60000);
+        },
+        help: "chill! <@user> - Mute a user for 1 minute.",
+    },
+
     warn: {
         permissions: 2,
         run: function(message, bot){
