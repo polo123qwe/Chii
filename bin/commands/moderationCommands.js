@@ -22,7 +22,7 @@ module.exports = {
     ping: {
         permissions: -1,
         run: function(message, bot){
-            
+
             var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
             bot.sendMessage(message, outputMessage);
         },
@@ -276,7 +276,8 @@ module.exports = {
 
             //Function to display an error
             function errorInput(){
-                bot.sendMessage(message, "Incorrect usage, type color! hexValue");
+                bot.sendMessage(message, "Incorrect usage, type color! `<color number in hexadecimal>`.\nFor more information on how to obtain a hexadecimal number "
+              + "for your color, you can visit http://color-hex.com and copy the number from there.");
                 return;
             }
             //Function to add a memeber to a role

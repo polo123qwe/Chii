@@ -1,5 +1,8 @@
 var cooldowns = {}
 
+var lastExecutionTime = {}
+setInterval(() => { lastExecutionTime = {} }, 3600000);
+
 module.exports = {
     //Return
     getMentions: function(message, bot){
@@ -34,14 +37,16 @@ module.exports = {
       return time;
   },
 
-  checkCooldown: function(command, userID){
+  /*checkCooldown: function(command, userID){
 
       if(!command.hasOwnProperty("cd")) return -1;
 
       if(command.cd == 0) return -1;
+
       if(!cooldowns[command]){
           cooldowns[command] = {};
       }
+
       if(!cooldowns[command][userID]){
           cooldowns[command][userID] = Date.now();
           return -1;
@@ -53,6 +58,36 @@ module.exports = {
           }
           return (command.cd - timeSpan)/1000;
       }
+  },*/
+
+  checkCooldown: function(command, userID, commandText) {
+    if (command.hasOwnProperty("cd")) {
+      if (!lastExecutionTime.hasOwnProperty(commandText)) {
+        lastExecutionTime[commandText] = {};
+        return 0;
+      }
+      if (!lastExecutionTime[commandText].hasOwnProperty(userID)) {
+        lastExecutionTime[commandText][userID] = new Date().valueOf();
+        return Math.round(command.cd / 1000);
+      } else {
+        var thisMoment = Date.now();
+
+        /* If the user is still on cooldown return the time left until the next execution */
+        if (thisMoment < lastExecutionTime[commandText][userID] + (command.cd)) {
+          var timeLeftUntilNextExecution = Math.round(((lastExecutionTime[commandText][userID] + command.cd) - thisMoment) / 1000);
+
+          return timeLeftUntilNextExecution;
+        }
+
+        /* Set the last execution time for the command and the user to now, and return 0 to confirm */
+        lastExecutionTime[commandText][userID] = thisMoment;
+        return 0;
+      }
+
+    } else {
+      /* If the command doesn't have a cooldown, we return 0 to confirm that it can be run */
+      return 0;
+    }
   },
 
   millisecondsConversion(t){

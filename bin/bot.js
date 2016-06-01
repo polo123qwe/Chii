@@ -1,30 +1,37 @@
+/* Imports */
 var Discord = require('discord.js');
 var config = require("../config.json");
-require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
 var MongoClient = require('mongodb').MongoClient;
 var exec = require("./process.js");
 
 var utils = require("./utils.js");
+require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
-var db;
-
+/* Objects */
 var Execution = new exec();
-
 var bot = new Discord.Client();
 var delay = Date.now();
 
+/* Variables */
+var db;
+
 bot.on("message", function(message){
 
+    /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    if(config.logs == "true"){
-        //TODO
-    }
+    /* TODO - To be honest, I don't know what this does */
+    if(config.logs == "true"){ /* ? */ }
+
+    /**
+     * TODO - How are we going to handle DMs to the bot? I just put a return in there to
+     * ignore them for now lol
+     */
+    if (message.channel.isPrivate) { return; }
 
     //Try to execute the command
-	Execution.execute(message, bot);
-
+    Execution.execute(message, bot);
 });
 
 //When the bot is ready to operate
@@ -48,6 +55,7 @@ bot.on("serverCreated", function(server){
     if(db)
         db.collection('servers').insert({name: server.name, _id: server.id});
 });
+
 ////////////////////
 ///////LOGIN////////
 function login(){

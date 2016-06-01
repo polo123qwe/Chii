@@ -21,62 +21,65 @@ Execution.prototype = {
 
 		// mdb.find(message.channel.server.id, "name");
 
-        var cMessage = message.content;
+    var cMessage = message.content;
 		var command = cMessage.split(" ")[0];
 
 		if(!command) return;
 
 		if(command.slice(-1) != "!") return;
 		//Remove suffix
-		command = command.substring(0, command.length-1);
-		command = command.toLowerCase();
+		command = command.substring(0, command.length - 1).toLowerCase();
 
 		//Check if there is a command with that name
 		if(moderationCommands.hasOwnProperty(command)){
-			if(checkPerm(moderationCommands[command])){
+			if(checkPerm(moderationCommands[command], command)){
 				moderationCommands[command].run(message, bot);
 			}
 		} else if(internetDataCommands.hasOwnProperty(command)){
-			if(checkPerm(internetDataCommands[command])){
+			if(checkPerm(internetDataCommands[command], command)){
 				internetDataCommands[command].run(message, bot);
 			}
 		} else if(infoCommands.hasOwnProperty(command)){
-			if(checkPerm(infoCommands[command])){
+			if(checkPerm(infoCommands[command], command)){
 				infoCommands[command].run(message, bot);
 			}
 		} else if(serverDataCommands.hasOwnProperty(command)){
-			if(checkPerm(serverDataCommands[command])){
+			if(checkPerm(serverDataCommands[command], command)){
 				serverDataCommands[command].run(message, bot);
 			}
 		}
 
 		//Function to check the permission of a given command
-		function checkPerm(cmd){
-			if(message.channel.isPrivate) return true;
-			else{
+		function checkPerm(cmd, commandText){
+			if(message.channel.isPrivate) {
+				return true;
+			} else {
 				//TODO Check BD
 
 				//Check if the command has cooldown
-				var cooldown = utils.checkCooldown(cmd, message.author.id);
-					//If the bot is allowed to execute it
-					if(perm.isBotAllowed(cmd, bot, message.channel.server)){
-						//If the user is
-						if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
-							//If there is no cooldown
-							if(cooldown == -1){
-								return true;
-							} else{
-								bot.sendMessage(message, "You are on cooldown. (" + cooldown + "s)");
-								return false;
-							}
+				/* NOTE - This doesn't check if the command has a cooldown per say, that's handled by the method at
+				hand, what this does is grab the return value from checkCooldown and store it in a variable ;) */
+				var cooldown = utils.checkCooldown(cmd, message.author.id, commandText);
+
+				//If the bot is allowed to execute it
+				if(perm.isBotAllowed(cmd, bot, message.channel.server)){
+					//If the user is
+					if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
+						//If there is no cooldown
+						if(cooldown == 0){
+							return true;
 						} else{
-							bot.sendMessage(message, "Access denied.");
+							bot.sendMessage(message, "Command `" + commandText + "` is on cooldown for you. (" + cooldown + " seconds left)");
 							return false;
 						}
 					} else{
-						bot.sendMessage(message, "Bot is not allowed to do that.");
+						bot.sendMessage(message, "You do not have permission to use this command.");
 						return false;
 					}
+				} else{
+					bot.sendMessage(message, "The bot doesn't have permission to use this command.");
+					return false;
+				}
 
 			}
 		}//EndFunct

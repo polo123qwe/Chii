@@ -51,6 +51,7 @@ module.exports = {
             bot.sendMessage(message, message.channel.id);
         },
         help: "id! <@user> - returns id of @user",
+        cd: 1000
     },
 
     joined: {
