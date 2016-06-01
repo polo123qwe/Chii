@@ -90,6 +90,11 @@ module.exports = {
     }
   },
 
+  /* This method is to be invoked when the command doesn't execute, to reset the cooldown */
+  resetCooldown: function(userID, commandText) {
+    lastExecutionTime[commandText][userID] = {};
+  },
+
   millisecondsConversion(t){
       var cd = 24 * 60 * 60 * 1000,
       ch = 60 * 60 * 1000,

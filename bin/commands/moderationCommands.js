@@ -239,6 +239,7 @@ module.exports = {
             } else if(hexValue.length == 7 && hexValue.startsWith("#")){
                 hexValue = "0x"+hexValue.substring(1, hexValue.length);
             } else {
+                utils.resetCooldown(message.author.id, "color");
                 return errorInput();
             }
 

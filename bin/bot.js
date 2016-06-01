@@ -24,12 +24,6 @@ bot.on("message", function(message){
     /* TODO - To be honest, I don't know what this does */
     if(config.logs == "true"){ /* ? */ }
 
-    /**
-     * TODO - How are we going to handle DMs to the bot? I just put a return in there to
-     * ignore them for now lol
-     */
-    if (message.channel.isPrivate) { return; }
-
     //Try to execute the command
     Execution.execute(message, bot);
 });
