@@ -39,9 +39,9 @@ module.exports = {
 
   /*checkCooldown: function(command, userID){
 
-      if(!command.hasOwnProperty("cd")) return -1;
+      if(!command.hasOwnProperty("cd")) return 0;
 
-      if(command.cd == 0) return -1;
+      if(command.cd == 0) return 0;
 
       if(!cooldowns[command]){
           cooldowns[command] = {};
@@ -49,12 +49,12 @@ module.exports = {
 
       if(!cooldowns[command][userID]){
           cooldowns[command][userID] = Date.now();
-          return -1;
+          return 0;
       } else {
           var timeSpan = Date.now() - (cooldowns[command][userID]);
           if(command.cd <= timeSpan){
               cooldowns[command][userID] = Date.now();
-              return -1;
+              return 0;
           }
           return (command.cd - timeSpan)/1000;
       }
@@ -68,7 +68,7 @@ module.exports = {
       }
       if (!lastExecutionTime[commandText].hasOwnProperty(userID)) {
         lastExecutionTime[commandText][userID] = new Date().valueOf();
-        return Math.round(command.cd / 1000);
+        return 0;
       } else {
         var thisMoment = Date.now();
 
