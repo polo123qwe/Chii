@@ -35,10 +35,11 @@ module.exports = {
             var cmd = 'touch ../run.sh';
 
             exec(cmd, function(error, stdout, stderr) {
-                if (error) bot.sendMessage (message, error);
+                if (error) bot.sendMessage(message, error);
             });
         },
         help: "refresh! - Restarts the bot",
+    },
 
     member: {
         permissions: 2,
