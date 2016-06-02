@@ -34,19 +34,7 @@ module.exports = {
     refresh: {
         permissions: 2,
         run: function (message, bot){
-
-            //Touch a file of the bot to trigger the restart on changes
-            var cmd = 'touch /home/pi/Documents/Projects/chii/run.sh';
-
-            //Check if we are on linux platform
-            var isLinux = /^linux/.test(process.platform);
-            if(isLinux){
-                exec(cmd, function(error, stdout, stderr) {
-                    if (error) bot.sendMessage(message, error);
-                });
-            } else{
-                bot.sendMessage(message, "Not available");
-            }
+            process.exit(1);
         },
         help: "refresh! - Restarts the bot",
     },
