@@ -1,6 +1,6 @@
 var utils = require("../utils.js");
 var helpCommand = require("./help.js");
-// var usersInCD = {};
+var exec = require('child_process').exec;
 
 module.exports = {
     help: {
@@ -28,6 +28,17 @@ module.exports = {
         },
         help: "ping! - returns pong!",
     },
+
+    refresh: {
+        permissions: 2,
+        run: function (message, bot){  
+            var cmd = 'touch ../run.sh';
+
+            exec(cmd, function(error, stdout, stderr) {
+                if (error) bot.sendMessage (message, error);
+            });
+        },
+        help: "refresh! - Restarts the bot",
 
     member: {
         permissions: 2,
