@@ -2,6 +2,8 @@ var utils = require("../utils.js");
 var helpCommand = require("./help.js");
 var exec = require('child_process').exec;
 
+var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
+
 module.exports = {
     help: {
         permissions: -1,
@@ -31,12 +33,16 @@ module.exports = {
 
     refresh: {
         permissions: 2,
-        run: function (message, bot){  
+        run: function (message, bot){
             var cmd = 'touch ../run.sh';
-
-            exec(cmd, function(error, stdout, stderr) {
-                if (error) bot.sendMessage(message, error);
-            });
+            var isLinux = /^linux/.test(process.platform);
+            if(isLinux){
+                exec(cmd, function(error, stdout, stderr) {
+                    if (error) bot.sendMessage(message, error);
+                });
+            } else{
+                bot.sendMessage(message, "Not available");
+            }
         },
         help: "refresh! - Restarts the bot",
     },
@@ -147,7 +153,7 @@ module.exports = {
             });
             setTimeout(function(){
                 bot.removeMemberFromRole(message.author, chillRole);
-            }, 60000);
+            }, 120000);
         },
         help: "chill! <@user> - Mute a user for 1 minute.",
     },
@@ -217,6 +223,7 @@ module.exports = {
             //Check roles that are empty and add them to an array
             for(var role of server.roles){
                 if(role.name != "@everyone"){
+                    if(whitelistedRoles.indexOf(role.name) == -1) continue;
                     if(server.usersWithRole(role).length < 1){
                         rolesToRemove.push(role);
                     }
