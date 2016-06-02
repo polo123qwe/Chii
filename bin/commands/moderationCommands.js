@@ -34,7 +34,11 @@ module.exports = {
     refresh: {
         permissions: 2,
         run: function (message, bot){
-            var cmd = 'touch ../run.sh';
+
+            //Touch a file of the bot to trigger the restart on changes
+            var cmd = 'touch /home/pi/Documents/Projects/chii/run.sh';
+
+            //Check if we are on linux platform
             var isLinux = /^linux/.test(process.platform);
             if(isLinux){
                 exec(cmd, function(error, stdout, stderr) {
@@ -281,22 +285,6 @@ module.exports = {
                 utils.resetCooldown(message.author.id, "color");
                 return errorInput();
             }
-
-
-
-            //Check last time the author used the command
-            // if(usersInCD.hasOwnProperty(authorID)){
-            //     if(usersInCD[authorID] == null){
-            //         usersInCD[authorID] = Date.now();
-            //     }
-            //     var timeSpan = Date.now() - usersInCD[authorID];
-            //     if(timeSpan < 3600000){
-            //         //FIX THIS TODO
-            //         bot.sendMessage(message, "On cooldown, "+(Math.round((3600000-timeSpan)/1000/60))+" mins");
-            //         return;
-            //     }
-            // }
-            // usersInCD[authorID] = Date.now();
 
             //Search any role containing Hex in the roles of the user
             //Get first user mentioned
