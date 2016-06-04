@@ -1,13 +1,19 @@
 {
   "name": "bot",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Discord Bot based on Discord.js",
   "main": "bin/bot.js",
   "repository": "https://github.com/polo123qwe/Chii",
   "dependencies": {
-    "console-stamp": "^0.2.0",
-    "discord.js": "^6.1.0",
-    "nodemon": "^1.9.1"
+	"bluebird": "3.x.x",
+	"console-stamp": "0.2.x",
+	"discord.js": "6.x.x",
+	"forecast.io-bluebird": "0.0.x",
+	"forever": "0.x.x",
+	"mongodb": "2.x.x",
+	"nodemon": "1.x.x",
+	"osu-api": "0.x.x",
+	"request": "2.x.x"
   },
   "devDependencies": {},
   "scripts": {
