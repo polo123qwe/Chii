@@ -13,7 +13,10 @@
 	"mongodb": "2.x.x",
 	"nodemon": "1.x.x",
 	"osu-api": "0.x.x",
-	"request": "2.x.x"
+	"request": "2.x.x",
+	"xml2js": "0.4.x",
+	"entities": "1.1.x",
+	"chalk": "1.1.x"
   },
   "devDependencies": {},
   "scripts": {
