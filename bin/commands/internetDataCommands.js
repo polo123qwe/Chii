@@ -161,5 +161,64 @@ module.exports = {
         bot.stopTyping(msg.channel);
       },
       help: "`anime! <anime name>` - Gets the details of an anime from MAL."
+    },
+
+    /* Manga - gets info on a manga from MAL */
+    manga: {
+      permissions: -1,
+      run: function(msg, bot) {
+        var msgSplit = msg.content.split(" ");
+        var suffix = msg.content.substring(msgSplit[0].length + 1, msg.content.length);
+
+        if(msgSplit[1] == null) {
+          bot.sendMessage(msg, "**Error**: No manga title found.", function(err, bm) {bot.deleteMessage(bm, {"wait": 8000});});
+          return;
+        }
+
+        if (!malUser || !malPass || malUser == "" || malPass == "") {
+          bot.sendMessage(msg, "**Error**: MAL username and password are not set up correctly.", function(err, bm) {bot.deleteMessage(bm, {"wait": 8000});});
+          return;
+        }
+
+        if (/[\uD000-\uF8FF]/g.test(suffix)) {
+          bot.sendMessage(msg, "**Error**: Your search contains illegal characters.", function(err, bm) {bot.deleteMessage(bm, {"wait": 8000});});
+          return;
+        }
+
+        bot.startTyping(msg.channel);
+
+        var mangaURL = `http://myanimelist.net/api/anime/search.xml?q=${suffix}`;
+
+        request(mangaURL, {"auth": {"user": malUser, "pass": malPass, "sendImmediately": false}}, function(error, response, body) {
+          if (error) console.log(error);
+          if (response.statusCode == 200) {
+            xml2js.parseString(body, (err, result) => {
+              var title = result.manga.entry[0].title;
+              var english = result.manga.entry[0].english;
+              var chapters = result.manga.entry[0].chapters;
+              var volumes = result.manga.entry[0].volumes;
+              var score = result.manga.entry[0].score;
+              var type = result.manga.entry[0].type;
+              var status = result.manga.entry[0].status;
+              var syno = result.manga.entry[0].synopsis.toString();
+              var id = result.manga.entry[0].id;
+
+              syno = ent.decodeHTML(syno.replace(/<br \/>/g, " ").replace(/\[(.{1,10})\]/g, "").replace(/\r?\n|\r/g, " ").replace(/\[(i|\/i)\]/g, "*").replace(/\[(b|\/b)\]/g, "**"));
+
+              if (!msg.channel.isPrivate && syno.length > 340) {
+								syno = syno.substring(0, 340) + '...';
+              }
+
+              if(english == "") {
+                english = "-";
+              }
+
+              bot.sendMessage(msg, "**" + title + " / " + english + "**\n**Type:** " + type + " **| Chapters:** " + chapters + " **| Volumes:** " + volumes + " **| Status:** " + status + " **| Mean Score:** " + score + "\n" + syno + "\n**<http://www.myanimelist.net/manga/" + id + ">**");
+            });
+          }
+        });
+        bot.stopTyping(msg.channel);
+      },
+      help: "`manga! <manga name>` - Gets the details of a manga from MAL."
     }
 }
