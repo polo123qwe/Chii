@@ -2,10 +2,11 @@
 var Discord = require('discord.js');
 var config = require("../config.json");
 
-var MongoClient = require('mongodb').MongoClient;
 var exec = require("./process.js");
 
 var utils = require("./utils.js");
+var sql = require('./sqliteClass.js');
+var sqlite3 = require('sqlite3').verbose();
 require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
 /* Objects */
@@ -14,6 +15,7 @@ var bot = new Discord.Client();
 var delay = Date.now();
 
 /* Variables */
+var sqldb;
 var db;
 
 bot.on("message", function(message){
@@ -21,8 +23,16 @@ bot.on("message", function(message){
     /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    /* TODO - To be honest, I don't know what this does */
-    if(config.logs == "true"){ /* ? */ }
+    if(config.logs == "true"){
+        // sqldb.insertUser(message.author.id);
+        // sqldb.insertMessage(message);
+        if(message.channel.isPrivate) {
+            sqldb.insertLogs(message.id, message.author.id, message.content, message.timestamp);
+        } else{
+            sqldb.insertLogs(message.id, message.author.id, message.content, message.timestamp, message.channel.server.id, message.channel.id, message.channel.name);
+        }
+    }
+    sqldb.getDump(2, message.channel.id);
 
     //Try to execute the command
     Execution.execute(message, bot);
@@ -46,8 +56,9 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    if(db)
-        db.collection('servers').insert({name: server.name, _id: server.id});
+    if(config.logs == "true"){
+        sqldb.insertServer(server.id, server.name);
+    }
 });
 
 ////////////////////
@@ -64,22 +75,24 @@ function login(){
     	console.log("No token");
     }
 }
+
 ////////////////////
 ////////DB//////////
 function connectDB(){
     console.log("Connecting to DB...");
     //Connect to the database
-    MongoClient.connect(config.mongodb, function(err, database){
+    db = new sqlite3.Database("sqldb.db", function(err, database){
         if(err){
             console.log("Error connecting to the DB "+err.message);
         } else {
-            console.log("Connection to DB sucessful");
-            db = database;
+            // console.log("Connection to DB sucessful");
+            sqldb = new sql(db);
         }
         //Start the bot
         login();
     });
 }
+
 ////////////////////
 connectDB();
 // login();

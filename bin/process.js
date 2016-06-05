@@ -4,7 +4,6 @@ var infoCommands = require("./commands/infoCommands.js");
 var serverDataCommands = require("./commands/serverDataCommands.js");
 
 var perm = require("./commands/permissions.js");
-var mdb = require("./mongodb.js");
 var utils = require("./utils.js");
 
 module.exports = Execution;

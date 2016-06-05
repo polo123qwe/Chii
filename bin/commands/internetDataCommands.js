@@ -112,8 +112,6 @@ module.exports = {
         var msgSplit = msg.content.split(" ");
         var suffix = msg.content.substring(msgSplit[0].length + 1, msg.content.length);
 
-        bot.sendMessage(msg, suffix);
-
         if(msgSplit[1] == null) {
           bot.sendMessage(msg, "**Error**: No anime title found.", function(err, bm) {bot.deleteMessage(bm, {"wait": 8000});});
           return;
