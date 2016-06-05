@@ -23,7 +23,7 @@ bot.on("message", function(message){
     /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    if(config.logs == "true"){
+    if(config.logs == "true" && sqldb){
         // sqldb.insertUser(message.author.id);
         // sqldb.insertMessage(message);
         if(message.channel.isPrivate) {
@@ -32,7 +32,6 @@ bot.on("message", function(message){
             sqldb.insertLogs(message.id, message.author.id, message.content, message.timestamp, message.channel.server.id, message.channel.id, message.channel.name);
         }
     }
-    sqldb.getDump(2, message.channel.id);
 
     //Try to execute the command
     Execution.execute(message, bot);
@@ -56,7 +55,7 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    if(config.logs == "true"){
+    if(config.logs == "true" && sqldb){
         sqldb.insertServer(server.id, server.name);
     }
 });
