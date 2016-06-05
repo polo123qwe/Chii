@@ -23,7 +23,7 @@ bot.on("message", function(message){
     /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    if(config.logs == "true"){
+    if(config.logs == "true" && sqldb){
         // sqldb.insertUser(message.author.id);
         // sqldb.insertMessage(message);
         if(message.channel.isPrivate) {
@@ -56,7 +56,7 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    if(config.logs == "true"){
+    if(config.logs == "true" && sqldb){
         sqldb.insertServer(server.id, server.name);
     }
 });
