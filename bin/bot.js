@@ -17,7 +17,7 @@ var bot = new Discord.Client();
 var delay = Date.now();
 
 /* Variables */
-var dbPath = path.resolve(__dirname, '../sqldb.db');
+var dbPath = path.resolve(__dirname, 'sqlite/sqldb.db');
 
 var sqldb;
 var db;
