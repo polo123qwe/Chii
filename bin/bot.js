@@ -9,12 +9,16 @@ var sql = require('./sqliteClass.js');
 var sqlite3 = require('sqlite3').verbose();
 require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
+var path = require('path');
+
 /* Objects */
 var Execution = new exec();
 var bot = new Discord.Client();
 var delay = Date.now();
 
 /* Variables */
+var dbPath = path.resolve(__dirname, '../sqldb.db');
+
 var sqldb;
 var db;
 
@@ -23,7 +27,7 @@ bot.on("message", function(message){
     /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    if(config.logs == "true" && sqldb){
+    if(config.logs == "true"){
         // sqldb.insertUser(message.author.id);
         // sqldb.insertMessage(message);
         if(message.channel.isPrivate) {
@@ -55,7 +59,7 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    if(config.logs == "true" && sqldb){
+    if(config.logs == "true" && sql){
         sqldb.insertServer(server.id, server.name);
     }
 });
@@ -80,7 +84,7 @@ function login(){
 function connectDB(){
     console.log("Connecting to DB...");
     //Connect to the database
-    db = new sqlite3.Database("sqldb.db", function(err, database){
+    db = new sqlite3.Database(dbPath, function(err, database){
         if(err){
             console.log("Error connecting to the DB "+err.message);
         } else {
