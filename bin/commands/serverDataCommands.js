@@ -141,4 +141,29 @@ module.exports = {
         },
         help: "uptime! - returns bot uptime.",
     },
+
+    getlog: {
+        permissions: 2,
+        run: function(message, bot, sqldb){
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            //If the database exists
+            if(!sqldb) return;
+
+            //Set the limit
+            var limit = message.content.split(" ")[1];
+            var user = utils.getMentions(message, bot)[0];
+
+            if(!limit) return;
+            if(user){
+                sqldb.getFilteredChannelLog(message.channel.id, limit, user.id, message.author, bot);
+            } else{
+                sqldb.getChannelLog(message.channel.id, limit, message.author, bot);
+            }
+
+        },
+        help: "getlog! <amount> <@user(opt)> - returns the amount of msgs sent and filtered by user (optional).",
+    },
 }

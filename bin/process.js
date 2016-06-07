@@ -8,17 +8,14 @@ var utils = require("./utils.js");
 
 module.exports = Execution;
 
-function Execution(message, bot){
+function Execution(){
 }
 
 Execution.prototype = {
 	constructor: Execution,
-    execute: function(message, bot){
+    execute: function(message, bot, sqldb){
 
-		//Send the message to logging to log it
-		//TODO
 
-		// mdb.find(message.channel.server.id, "name");
 
     var cMessage = message.content;
 		var command = cMessage.split(" ")[0];
@@ -44,7 +41,7 @@ Execution.prototype = {
 			}
 		} else if(serverDataCommands.hasOwnProperty(command)){
 			if(checkPerm(serverDataCommands[command], command)){
-				serverDataCommands[command].run(message, bot);
+				serverDataCommands[command].run(message, bot, sqldb);
 			}
 		}
 

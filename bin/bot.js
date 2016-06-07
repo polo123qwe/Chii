@@ -24,21 +24,21 @@ var db;
 
 bot.on("message", function(message){
 
-    /* Ignore the bot's own messages */
-    if(message.author == bot.user) return;
-
     if(config.logs == "true"){
         // sqldb.insertUser(message.author.id);
         // sqldb.insertMessage(message);
         if(message.channel.isPrivate) {
-            sqldb.insertLogs(message.id, message.author.id, message.content, message.timestamp);
+            sqldb.insertLogs(message.id, message.author.id, message.cleanContent, message.timestamp);
         } else{
-            sqldb.insertLogs(message.id, message.author.id, message.content, message.timestamp, message.channel.server.id, message.channel.id, message.channel.name);
+            sqldb.insertLogs(message.id, message.author.id, message.cleanContent, message.timestamp, message.channel.server.id, message.channel.id, message.channel.name);
         }
     }
 
+    /* Ignore the bot's own messages */
+    if(message.author == bot.user) return;
+
     //Try to execute the command
-    Execution.execute(message, bot);
+    Execution.execute(message, bot, sqldb);
 });
 
 //When the bot is ready to operate

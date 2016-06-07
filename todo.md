@@ -4,7 +4,7 @@
 * ~~Fix log with commas~~
 * Add member, kick and ban
 * ~~Fix nickname bug~~
-* Log chats into DB
+* ~~Log chats into DB~~
 * Implement help
 * Save server config into BD
 * ~~Implement cooldown~~

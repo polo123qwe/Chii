@@ -38,4 +38,6 @@ Chii is a Discord bot. Yup.
 * `mycolor!` - Displays your current role color.
 * `randu!` - Returns a random user from the server.
 * `uptime!` - Shows the bot's uptime.
+* `getlog! [amount] [@user(opt)]` - returns the amount of msgs sent and filtered by user (optional).
 * `ping!` - Returns a pong message with the latency to the server.
+
