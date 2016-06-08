@@ -85,7 +85,38 @@ module.exports = {
             });
         },
         help: "weather! <city> - returns the weather of a city",
-    }
+    },
+
+    serverinfo: {
+      permissions: -1,
+      run: function(message, bot) {
+        if (!message.channel.isPrivate) {
+          var msgArray = [];
+
+          /* For the record, @\u200b is a blank 0 pixel spacer */
+          msgArray.push("**" + message.channel.server.name.replace(/@/g, '@\u200b') + "** (" + message.channel.server.id + ")");
+          msgArray.push("`Server Owner:` " + message.channel.server.owner.username.replace(/@/g, '@\u200b') + " (" + message.channel.server.owner.id + ")");
+          msgArray.push("`Server Region:` " + message.channel.server.region);
+          msgArray.push("`Server Members: `" + message.channel.server.members.length);
+          msgArray.push("This server was created on  " + new Date((message.channel.server.id / 4194304) + 1420070400000).toUTCString());
+
+          /* This displays the roles, but if the list is too long, just display the number of roles >.< */
+          var roleList = message.channel.server.roles.map(role => role.name);
+          roles = roles.join(" | ").replace(/@/g, '@\u200b');
+          if (roles.length < 1000) { msgArray.push("`Server Roles: `" + roles); }
+          else {msgArray.push("`Server Roles: `" + roles.split(" | ").length); }
+
+          msgArray.push("`Server Icon URL: `" + msg.channel.server.iconURL);
+
+          bot.sendMessage(message, msgArray);
+        } else {
+          bot.sendMessage(message, ":warning: This command cannot be used in a private message.");
+          return;
+        }
+      }
+    },
+    help: "`serverinfo!` - Returns server information.",
+    cd: 100000
 }
 
 function geocode(address, callback){
