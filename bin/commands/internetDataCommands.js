@@ -23,7 +23,7 @@ module.exports = {
     		}
     	},
 
-    	help: "urban! word - Searches Urban Dictionary for a definition",
+    	help: "`urban! <word>` - Searches Urban Dictionary for a definition",
     },
 
     mal: {
@@ -41,7 +41,7 @@ module.exports = {
             }
         },
 
-        help: "mal! username - Links the MAL account of a given username",
+        help: "`mal! <username>` - Links the MAL account of a given username",
     },
 
     osu: {
@@ -102,7 +102,7 @@ module.exports = {
             }
 
         },
-        help: "osu! username <std, ctb, mania, taiko> - returns the profile info",
+        help: "`osu! <username> [std, ctb, mania, taiko]` - returns the profile info",
     },
 
     /* Anime - Gets anime from MAL */

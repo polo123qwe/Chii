@@ -20,7 +20,7 @@ module.exports = {
                 bot.sendMessage(message, user.avatarURL);
             }
         },
-        help: "ava! <@user> - returns avatar of @user",
+        help: "`ava! <@user>` - returns avatar of @user",
     },
 
     id: {
@@ -42,7 +42,7 @@ module.exports = {
                 bot.sendMessage(message, user.id);
             }
         },
-        help: "id! <@user> - returns id of @user",
+        help: "`id! <@user>` - returns id of @user",
     },
 
     channelid: {
@@ -50,7 +50,7 @@ module.exports = {
         run: function(message, bot){
             bot.sendMessage(message, message.channel.id);
         },
-        help: "id! <@user> - returns id of @user",
+        help: "`channelid!` - returns id of the current channel",
         cd: 1000
     },
 
@@ -73,7 +73,7 @@ module.exports = {
                 bot.sendMessage(message, user.name + ' joined ' + join);
             }
         },
-        help: "joined! <@user>(opt) - returns date when the @user joined, if no user is provided it uses the author.",
+        help: "`joined! [@user]` - returns date when the @user joined, if no user is provided it uses the author.",
     },
 
     mycolor: {
@@ -94,7 +94,7 @@ module.exports = {
             }
             bot.sendMessage(message, "You have no color.");
         },
-        help: "mycolor! - returns your current color.",
+        help: "`mycolor!` - returns your current color.",
     },
 
     randu: {
@@ -122,7 +122,7 @@ module.exports = {
 
             bot.sendMessage(message, randomUser.name + "!");
         },
-        help: "randomu! - returns a random user.",
+        help: "`randu!` - returns a random user.",
         cd: 240000,
     },
 
@@ -139,7 +139,7 @@ module.exports = {
 
             bot.sendMessage(message, output);
         },
-        help: "uptime! - returns bot uptime.",
+        help: "`uptime!` - returns bot uptime.",
     },
 
     getlog: {
@@ -164,6 +164,6 @@ module.exports = {
             }
 
         },
-        help: "getlog! <amount> <@user(opt)> - returns the amount of msgs sent and filtered by user (optional).",
+        help: "`getlog! <amount> [@user]` - returns the amount of msgs sent and filtered by user (optional).",
     },
 }

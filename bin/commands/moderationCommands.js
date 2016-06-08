@@ -5,22 +5,6 @@ var exec = require('child_process').exec;
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
 
 module.exports = {
-    help: {
-        permissions: -1,
-        run: function(message, bot){
-            // for (var comm in module.exports){
-			// 	if (module.exports[comm].hasOwnProperty('help')){
-            // 		str+= ">" + module.exports[comm].help+"\n";
-            // 	}
-			// }
-            // var str = helpCommand();
-            // bot.sendMessage(message.author, str);
-
-            bot.sendMessage(message, "No help yet :p");
-        },
-        help: "help! returns help",
-    },
-
     ping: {
         permissions: -1,
         run: function(message, bot){
@@ -28,7 +12,7 @@ module.exports = {
             var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
             bot.sendMessage(message, outputMessage);
         },
-        help: "ping! - returns pong!",
+        help: "`ping!` - returns pong!",
     },
 
     refresh: {
@@ -36,7 +20,7 @@ module.exports = {
         run: function (message, bot){
             process.exit(1);
         },
-        help: "refresh! - Restarts the bot",
+        help: "`refresh!` - Restarts the bot",
     },
 
     member: {
@@ -53,7 +37,7 @@ module.exports = {
                 addMemberToRole(bot, user, role, message.channel);
             }
         },
-        help: "member! - Gives user membership.",
+        help: "`member!` - Gives user membership.",
     },
 
     lood: {
@@ -66,7 +50,7 @@ module.exports = {
 
             setUserToCustomRoles(message, bot, "Lood");
         },
-        help: "lood! - Assigns you to the nsfw channel.",
+        help: "`lood!` - Assigns you to the nsfw channel.",
     },
 
     coder: {
@@ -79,7 +63,7 @@ module.exports = {
 
             setUserToCustomRoles(message, bot, "Coder");
         },
-        help: "coder! - Assigns you to the coder channel.",
+        help: "`coder!` - Assigns you to the coder channel.",
     },
 
     food: {
@@ -92,7 +76,7 @@ module.exports = {
 
             setUserToCustomRoles(message, bot, "Food");
         },
-        help: "food! - Assigns you to the food channel.",
+        help: "`food!` - Assigns you to the food channel.",
     },
 
     rp: {
@@ -105,7 +89,7 @@ module.exports = {
 
             setUserToCustomRoles(message, bot, "Rp");
         },
-        help: "rp! - Assigns you to the roleplay channel.",
+        help: "`rp!` - Assigns you to the roleplay channel.",
     },
 
     chill: {
@@ -127,7 +111,7 @@ module.exports = {
                 }
             }, 60000);
         },
-        help: "chill! <@user> - Mute a user for 1 minute.",
+        help: "`chill! <@user>` - Mute a user for 1 minute.",
     },
 
     suicide: {
@@ -147,7 +131,7 @@ module.exports = {
                 bot.removeMemberFromRole(message.author, chillRole);
             }, 120000);
         },
-        help: "chill! <@user> - Mute a user for 1 minute.",
+        help: "`suicide!` - Mute yourself for 1 minute.",
     },
 
     warn: {
@@ -155,7 +139,7 @@ module.exports = {
         run: function(message, bot){
             userToMuteWarn(message, bot, "warn");
         },
-        help: "warn! <@user> Reason - Warns a user.",
+        help: "`warn! <@user> [reason]` - Warns a user.",
     },
 
     mute: {
@@ -163,7 +147,7 @@ module.exports = {
         run: function(message, bot){
             userToMuteWarn(message, bot, "mute");
         },
-        help: "mute! <@user> Reason - Mutes a user.",
+        help: "`mute! <@user> [reason]` - Mutes a user.",
     },
 
     kick: {
@@ -200,7 +184,7 @@ module.exports = {
             }
 
         },
-        help: "kick! <@user> Reason - Kicks a user",
+        help: "`kick! <@user> [reason]` - Kicks a user",
     },
 
 
@@ -239,7 +223,7 @@ module.exports = {
                 });
             }
         },
-        help: "clearRoles! - Removes empty roles",
+        help: "`clearRoles!` - Removes empty roles",
     },
 
     color: {
@@ -317,7 +301,7 @@ module.exports = {
                 addMemberToRole(bot, user, roleToAddUserTo);
             }
         },
-        help: "color! HexValue - Gives user a color (1hr cooldown)",
+        help: "`color! <color in hexadecimal>` - Assigns you a color for your name. For more information on how to obtain a hexadecimal number for your color, you can visit **http://color-hex.com** and copy the number from there.",
         cd: 600000,
     },
 }

@@ -53,7 +53,7 @@ module.exports = {
 
     		bot.sendMessage(message, "**UTC"+offset+"** Standard Time: `"+D+"/"+M+"/"+Y+" "+h+":"+m+":"+s+"`");
         },
-        help: "time! <gmt/utc+offset> - returns specified utc time",
+        help: "`time! <gmt/utc+offset>` - returns specified utc time",
     },
 
     weather: {
@@ -84,7 +84,7 @@ module.exports = {
                 }
             });
         },
-        help: "weather! <city> - returns the weather of a city",
+        help: "`weather! <city>` - returns the weather of a city",
     },
 
     serverinfo: {
@@ -102,9 +102,9 @@ module.exports = {
 
           /* This displays the roles, but if the list is too long, just display the number of roles >.< */
           var roleList = message.channel.server.roles.map(role => role.name);
-          roles = roles.join(" | ").replace(/@/g, '@\u200b');
-          if (roles.length < 1000) { msgArray.push("`Server Roles: `" + roles); }
-          else {msgArray.push("`Server Roles: `" + roles.split(" | ").length); }
+          roleList = roleList.join(" | ").replace(/@/g, '@\u200b');
+          if (roleList.length < 1000) { msgArray.push("`Server Roles: `" + roleList); }
+          else {msgArray.push("`Server Roles: `" + roleList.split(" | ").length); }
 
           msgArray.push("`Server Icon URL: `" + msg.channel.server.iconURL);
 
