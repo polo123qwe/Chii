@@ -91,6 +91,8 @@ module.exports = {
       permissions: -1,
       run: function(message, bot) {
         if (!message.channel.isPrivate) {
+
+          if(message.channel.isPrivate) return;
           var msgArray = [];
 
           /* For the record, @\u200b is a blank 0 pixel spacer */
@@ -106,7 +108,7 @@ module.exports = {
           if (roleList.length < 1000) { msgArray.push("`Server Roles: `" + roleList); }
           else {msgArray.push("`Server Roles: `" + roleList.split(" | ").length); }
 
-          msgArray.push("`Server Icon URL: `" + msg.channel.server.iconURL);
+          msgArray.push("`Server Icon URL: `" + message.channel.server.iconURL);
 
           bot.sendMessage(message, msgArray);
         } else {
