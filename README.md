@@ -14,10 +14,8 @@ Chii is a Discord bot. Yup.
 * `manga! <name>` - Searches MAL and displays the information of the manga you typed.
 
 #### Self-assignable roles
-* `lood!` - Gives you access to the NSFW text channel.
-* `food!` - Gives you access to the food text channel.
-* `coder!` - Gives you access to coding-related text channels.
-* `rp!` - Gives you access to the roleplaying text channel.
+* `joinrole! <role1> [role2]...` - Joins the specified self-assignable roles. Separated with spaces.
+* `leaverole! <role1> [role2]...` - Leaves the specified self-assignable roles. Separated with spaces.
 * `suicide!` - Mute yourself for 1 minute.
 * `color! <#A-F0-9>` - Gives you a colored name. The color should be in hexadecimal.
 
@@ -29,6 +27,7 @@ Chii is a Discord bot. Yup.
 * `mute! <@user> [reason]` - Mutes the user, preventing them from chatting in any channel.
 * `kick! <@user> [reason]` - Kicks the user and logs the kick, reason and person that kicked.
 * `clearroles!` - Removes the 'empty' roles.
+* `getlog! <1-100>` - Gets the channel's logs. Max 100 messages.
 
 #### Server data commands
 * `ava! [@user]` - Shows the avatar of the user. If no user was mentioned, it shows your own avatar.
@@ -40,4 +39,4 @@ Chii is a Discord bot. Yup.
 * `uptime!` - Shows the bot's uptime.
 * `getlog! [amount] [@user(opt)]` - returns the amount of msgs sent and filtered by user (optional).
 * `ping!` - Returns a pong message with the latency to the server.
-
+* `serverinfo!` - Returns general server information.
