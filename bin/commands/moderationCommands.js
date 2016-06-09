@@ -62,10 +62,10 @@ module.exports = {
 
         for (var i = 0; i < rolesToJoin.length; i++) {
           if (arrContains(selfAssignableRoles, rolesToJoin[i])) {
-            setUserToCustomRoles(msg, bot, rolesToJoin[i]);
-            bot.sendMessage(msg, ":ok: User " + msg.author.username + " added to role `" + rolesToJoin[i] + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            setUserToCustomRoles(msg, bot, capitalize(rolesToJoin[i]));
+            bot.sendMessage(msg, ":ok: User " + msg.author.username + " added to role `" + capitalize(rolesToJoin[i]) + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
           } else {
-            bot.sendMessage(msg, ":warning: Role `" + rolesToJoin[i] + "` does not exist or you are unable to join it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            bot.sendMessage(msg, ":warning: Role `" + capitalize(rolesToJoin[i]) + "` does not exist or you are unable to join it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
             return;
           }
         }
@@ -96,11 +96,11 @@ module.exports = {
 
         for (var i = 0; i < rolesToLeave.length; i++) {
           if (arrContains(selfAssignableRoles, rolesToLeave[i])) {
-            curRole = msg.channel.server.roles.get("name", rolesToLeave[i]);
+            curRole = msg.channel.server.roles.get("name", capitalize(rolesToLeave[i]));
             bot.removeMemberFromRole(msg.author, curRole);
             bot.sendMessage(msg, ":ok: User " + msg.author.username + " removed from role `" + rolesToLeave[i] + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
           } else {
-            bot.sendMessage(msg, ":warning: Role `" + rolesToLeave[i] + "` does not exist or you are unable to leave it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            bot.sendMessage(msg, ":warning: Role `" + capitalize(rolesToLeave[i]) + "` does not exist or you are unable to leave it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
             return;
           }
         }
@@ -407,6 +407,10 @@ function userToMuteWarn(message, bot, type){
             }
         }
     });
+}
+
+function capitalize(string) {
+  return string[0].toUpperCase() + string.slice(1);
 }
 
 /* Array contains - Helper */
