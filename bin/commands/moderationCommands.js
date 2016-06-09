@@ -3,6 +3,7 @@ var helpCommand = require("./help.js");
 var exec = require('child_process').exec;
 
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
+var selfAssignableRoles = ["lood", "food", "rp", "coder"];
 
 module.exports = {
     ping: {
@@ -40,56 +41,73 @@ module.exports = {
         help: "`member!` - Gives user membership.",
     },
 
-    lood: {
-        permissions: -1,
-        run: function(message, bot){
+    /* Unified all the self-assigned roles so that we can save some space and time, plus add an option to
+     * leave roles */
+    joinrole: {
+      permissions: -1,
+      run: function(msg, bot) {
 
-            if(message.channel.isPrivate) return;
-            var server = message.channel.server;
-            if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
+        if (msg.channel.isPrivate) return;                            /* Ignore DMs */
+        if (msg.channel == msg.channel.server.defaultChannel) return; /* Ignore messages from default channel to prevent spam */
 
-            setUserToCustomRoles(message, bot, "Lood");
-        },
-        help: "`lood!` - Assigns you to the nsfw channel.",
+        var cmd = msg.content.split(" ")[0];
+        var suffix = msg.content.substring(cmd.length + 1, msg.content.length).toLowerCase();
+        var rolesToJoin = suffix.split(" ");
+
+        /* Error handling - Display the help if user is a dum-dum */
+        if (!suffix) {
+          bot.sendMessage(msg, ":warning: Incorrect usage.\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+          return;
+        }
+
+        for (var i = 0; i < rolesToJoin.length; i++) {
+          if (arrContains(selfAssignableRoles, rolesToJoin[i])) {
+            setUserToCustomRoles(msg, bot, rolesToJoin[i]);
+            bot.sendMessage(msg, ":ok: User " + msg.author.username + " added to role `" + rolesToJoin[i] + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+          } else {
+            bot.sendMessage(msg, ":warning: Role `" + rolesToJoin[i] + "` does not exist or you are unable to join it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            return;
+          }
+        }
+
+      },
+      help: "`joinrole! <role1> [role2] [role3]...` - Joins specified self-assignable roles. Separate roles with spaces.",
+      cd: 100000
     },
 
-    coder: {
-        permissions: -1,
-        run: function(message, bot){
+    /* Leaverole - Leaves specified role */
+    leaverole: {
+      permissions: -1,
+      run: function(msg, bot) {
 
-            if(message.channel.isPrivate) return;
-            var server = message.channel.server;
-            if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
+        if (msg.channel.isPrivate) return;                            /* Ignore DMs */
+        if (msg.channel == msg.channel.server.defaultChannel) return; /* Ignore messages from default channel to prevent spam */
 
-            setUserToCustomRoles(message, bot, "Coder");
-        },
-        help: "`coder!` - Assigns you to the coder channel.",
-    },
+        var cmd = msg.content.split(" ")[0];
+        var suffix = msg.content.substring(cmd.length + 1, msg.content.length).toLowerCase();
+        var rolesToLeave = suffix.split(" ");
+        var curRole;
 
-    food: {
-        permissions: -1,
-        run: function(message, bot){
+        /* Error handling - Display the help if user is a dum-dum */
+        if (!suffix) {
+          bot.sendMessage(msg, ":warning: Incorrect usage.\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+          return;
+        }
 
-            if(message.channel.isPrivate) return;
-            var server = message.channel.server;
-            if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
+        for (var i = 0; i < rolesToLeave.length; i++) {
+          if (arrContains(selfAssignableRoles, rolesToLeave[i])) {
+            curRole = msg.channel.server.roles.get("name", rolesToLeave[i]);
+            bot.removeMemberFromRole(msg.author, curRole);
+            bot.sendMessage(msg, ":ok: User " + msg.author.username + " removed from role `" + rolesToLeave[i] + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+          } else {
+            bot.sendMessage(msg, ":warning: Role `" + rolesToLeave[i] + "` does not exist or you are unable to leave it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            return;
+          }
+        }
 
-            setUserToCustomRoles(message, bot, "Food");
-        },
-        help: "`food!` - Assigns you to the food channel.",
-    },
-
-    rp: {
-        permissions: -1,
-        run: function(message, bot){
-
-            if(message.channel.isPrivate) return;
-            var server = message.channel.server;
-            if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
-
-            setUserToCustomRoles(message, bot, "Rp");
-        },
-        help: "`rp!` - Assigns you to the roleplay channel.",
+      },
+      help: "`leaverole! <role1> [role2] [role3]...` - Leaves specified self-assignable roles. Separate roles with spaces.",
+      cd: 100000
     },
 
     chill: {
@@ -389,4 +407,15 @@ function userToMuteWarn(message, bot, type){
             }
         }
     });
+}
+
+/* Array contains - Helper */
+function arrContains(array, key) {
+  for (var k = 0; k < array.length; k++) {
+    if (key === array[k]) {
+      return true;
+    }
+  }
+
+  return false;
 }

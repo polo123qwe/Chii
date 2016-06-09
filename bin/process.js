@@ -15,8 +15,6 @@ Execution.prototype = {
 	constructor: Execution,
     execute: function(message, bot, sqldb){
 
-
-
     var cMessage = message.content;
 		var command = cMessage.split(" ")[0];
 
