@@ -22,6 +22,7 @@ SQLite.prototype = {
     //TODO Do commands to fetch the data
     getChannelLog: function(channel_id, amount, author, bot){
         var result = [];
+        if (amount > 5000) amount = 5000;
         database.all("SELECT * FROM Logs WHERE channel_id = ? ORDER BY timestamp DESC LIMIT ?", [channel_id, amount], function(err, rows){
             if(!err){
                 //Generate the string
@@ -48,6 +49,7 @@ SQLite.prototype = {
 
     getFilteredChannelLog: function(channel_id, amount, user_id, author, bot){
         var result = [];
+        if (amount > 5000) amount = 5000;
         database.all("SELECT * FROM Logs WHERE channel_id = ? AND user_id = ? ORDER BY timestamp DESC LIMIT ?", [channel_id, user_id, amount], function(err, rows){
             if(!err){
                 //Generate the string

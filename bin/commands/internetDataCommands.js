@@ -187,7 +187,7 @@ module.exports = {
 
         bot.startTyping(msg.channel);
 
-        var mangaURL = `http://myanimelist.net/api/anime/search.xml?q=${suffix}`;
+        var mangaURL = `http://myanimelist.net/api/manga/search.xml?q=${suffix}`;
 
         request(mangaURL, {"auth": {"user": malUser, "pass": malPass, "sendImmediately": false}}, function(error, response, body) {
           if (error) console.log(error);
