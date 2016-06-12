@@ -130,7 +130,7 @@ module.exports = {
             var splittedMessage = message.cleanContent.split(" ");
             splittedMessage.shift();
             if(!splittedMessage) return;
-            var solution = eval(splittedMessage.join(" "));
+            var solution = process(splittedMessage.join(" "));
             if(solution){
                 bot.sendMessage(message, solution);
             }
@@ -138,6 +138,15 @@ module.exports = {
         help: "`solve! maths` - Outputs solution.",
     }
 
+}
+
+function process(info){
+    var res;
+    try {
+        res = eval(code);
+    } catch (e) {}
+
+    return res;
 }
 
 function geocode(address, callback) {
