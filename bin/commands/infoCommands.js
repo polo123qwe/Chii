@@ -130,7 +130,10 @@ module.exports = {
             var splittedMessage = message.cleanContent.split(" ");
             splittedMessage.shift();
             if(!splittedMessage) return;
-            bot.sendMessage(message, eval(splittedMessage.join(" ")));
+            var solution = eval(splittedMessage.join(" "));
+            if(solution){
+                bot.sendMessage(message, solution);
+            }
         },
         help: "`solve! maths` - Outputs solution.",
     }
