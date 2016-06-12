@@ -143,7 +143,7 @@ module.exports = {
 function process(info){
     var res;
     try {
-        res = eval(code);
+        res = eval(info);
     } catch (e) {}
 
     return res;
