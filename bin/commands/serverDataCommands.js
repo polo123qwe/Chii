@@ -162,6 +162,9 @@ module.exports = {
             } else{
                 sqldb.getChannelLog(message.channel.id, limit, message.author, bot);
             }
+            bot.deleteMessage(message, function(err){
+                if(err) console.log(err);
+            });
 
         },
         help: "`getlog! <amount> [@user]` - returns the amount of msgs sent and filtered by user (optional).",
