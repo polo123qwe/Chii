@@ -124,19 +124,19 @@ module.exports = {
         cd: 100000,
     },
 
-    solve: {
-        permissions: -1,
-        run: function(message, bot) {
-            var splittedMessage = message.cleanContent.split(" ");
-            splittedMessage.shift();
-            if(!splittedMessage) return;
-            var solution = process(splittedMessage.join(" "));
-            if(solution){
-                bot.sendMessage(message, solution);
-            }
-        },
-        help: "`solve! maths` - Outputs solution.",
-    }
+    // solve: {
+    //     permissions: -1,
+    //     run: function(message, bot) {
+    //         var splittedMessage = message.cleanContent.split(" ");
+    //         splittedMessage.shift();
+    //         if(!splittedMessage) return;
+    //         var solution = process(splittedMessage.join(" "));
+    //         if(solution){
+    //             bot.sendMessage(message, solution);
+    //         }
+    //     },
+    //     help: "`solve! maths` - Outputs solution.",
+    // }
 
 }
 
