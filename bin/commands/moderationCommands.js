@@ -266,11 +266,11 @@ module.exports = {
             }
 
             //Check the value is a hex-length value
+            /* NOTE - Added a further check to see if the Hex Value inputted is correct */
             var hexValue = inputHexValue;
-            if(hexValue.length == 6){
-                hexValue = "0x"+hexValue;
-            } else if(hexValue.length == 7 && hexValue.startsWith("#")){
-                hexValue = "0x"+hexValue.substring(1, hexValue.length);
+
+            if (/#?[A-F0-9]{6}/i.test(hexValue)) {
+                hexValue = "0x" + hexValue.replace(/#?/, "").toUpperCase();
             } else {
                 utils.resetCooldown(message.author.id, "color");
                 return errorInput();
@@ -286,7 +286,7 @@ module.exports = {
                     found = true;
                     bot.updateRole(role, {color : parseInt(hexValue)}, function(err, role){
                         if(err) console.dir(err);
-                        // bot.sendMessage(channel, "Color changed sucessfully.");
+                        bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");
                     });
                 }
             }
@@ -322,6 +322,76 @@ module.exports = {
         help: "`color! <color in hexadecimal>` - Assigns you a color for your name. For more information on how to obtain a hexadecimal number for your color, you can visit **http://color-hex.com** and copy the number from there.",
         cd: 600000,
     },
+
+    /* prune - a simple message cleaner */
+    /* TODO FIX */
+    prune: {
+      permissions: 2,
+      run: function(msg, bot) {
+        var command = msg.content.split(" ")[0];
+        var suffix = msg.content.substring(command.length + 1, msg.content.length);
+        var sSplit = suffix.split(" ");
+
+        if (suffix) {
+          if (!msg.channel.isPrivate) {
+            bot.getChannelLogs(msg.channel, 100, {"before": msg}, (error, messageList) => {
+              if (error) {
+                console.log(error);
+                return;
+              }
+
+              var nMessages = parseInt(sSplit[0]);
+              var pruneTextQ = false;
+              var pruneUser = false;
+              var textQuery = "";
+              var userToPrune;
+              var messagesToPrune = [];
+
+              if (sSplit.length > 1 && /^(user)/i.test(sSplit[1])) {
+                pruneTextQ = true;
+                textQuery = suffix.substring(sSplit[0].length, suffix.length);
+              } else if (sSplit.length > 2 && sSplit[1].toLowerCase() === "user") {
+                if (msg.mentions.length < 1) {
+                  bot.sendMessage(msg, "You did not mention any user to prune. Help:\n\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 8000})});
+                  return;
+                } else if (msg.mentions.length > 1) {
+                  bot.sendMessage(msg, "Plese, do not mention more than 1 user at a time. Help:\n\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 8000})});
+                  return;
+                } else {
+                  userToPrune = msg.mentions[0].id;
+                  pruneUser = true;
+                }
+              }
+
+              for (var i = 0; i < 100; i++) {
+                if (nMessages == 0) continue;
+
+                if (pruneTextQ && messageList[i].content.includes(textQuery)) {
+                  messagesToPrune.push(messageList[i]);
+                  nMessages--;
+                } else if (pruneUser && messageList[i].author.id == userToPrune) {
+                  messagesToPrune.push(messageList[i]);
+                  nMessages--;
+                } else {
+                  messagesToPrune.push(messageList[i]);
+                  nMessages--;
+                }
+              }
+
+              bot.deleteMessages(messagesToPrune);
+
+            });
+          } else {
+            bot.sendMessage(msg, "Sorry, this comand cannot be used in DMs.", (err, bm) => {bot.deleteMessage(bm, {"wait": 8000})});
+            return;
+          }
+        } else {
+          bot.sendMessage(msg, "Incorrect usage. Help:\n\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 8000})});
+          return;
+        }
+      },
+      help: "`prune! <1-100> [specific text | user <@user>]` - prunes messages. Allows different kinds of prunes.",
+    }
 }
 
 function setUserToCustomRoles(message, bot, type, channel){
