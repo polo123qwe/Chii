@@ -347,9 +347,10 @@ module.exports = {
               var userToPrune;
               var messagesToPrune = [];
 
-              if (sSplit.length > 1 && /^(user)/i.test(sSplit[1])) {
+              if (sSplit.length > 1 && sSplit[1] != "user") {
                 pruneTextQ = true;
-                textQuery = suffix.substring(sSplit[0].length, suffix.length);
+                textQuery = suffix.substring(sSplit[0].length + 1, suffix.length);
+                bot.sendMessage(msg, textQuery);
               } else if (sSplit.length > 2 && sSplit[1].toLowerCase() === "user") {
                 if (msg.mentions.length < 1) {
                   bot.sendMessage(msg, "You did not mention any user to prune. Help:\n\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 8000})});
@@ -367,18 +368,16 @@ module.exports = {
                 if (nMessages == 0) continue;
 
                 if (pruneTextQ && messageList[i].content.includes(textQuery)) {
-                  messagesToPrune.push(messageList[i]);
+                  bot.deleteMessage(messageList[i]);
                   nMessages--;
                 } else if (pruneUser && messageList[i].author.id == userToPrune) {
-                  messagesToPrune.push(messageList[i]);
+                  bot.deleteMessage(messageList[i]);
                   nMessages--;
-                } else {
-                  messagesToPrune.push(messageList[i]);
+                } else if (!pruneUser && !pruneTextQ) {
+                  bot.deleteMessage(messageList[i]);
                   nMessages--;
                 }
               }
-
-              bot.deleteMessages(messagesToPrune);
 
             });
           } else {
