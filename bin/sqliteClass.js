@@ -74,7 +74,7 @@ SQLite.prototype = {
         });
     },
 
-    getStatsChannels(amount, server, bot){
+    getStatsChannels(amount, server, author, bot){
         var result = [];
         var time = Date.now() - amount*3600*1000;
         var channels = server.channels;
