@@ -48,7 +48,7 @@ module.exports = {
             }
             if (!lastExecutionTime[commandText].hasOwnProperty(userID)) {
                 lastExecutionTime[commandText][userID] = new Date().valueOf();
-                return command.cd / 1000;
+                return 0;
             } else {
                 var thisMoment = Date.now();
 
@@ -61,7 +61,7 @@ module.exports = {
 
                 /* Set the last execution time for the command and the user to now, and return 0 to confirm */
                 lastExecutionTime[commandText][userID] = thisMoment;
-                return 0;
+                return command.cd/1000;
             }
 
         } else {

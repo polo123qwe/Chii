@@ -180,7 +180,9 @@ module.exports = {
             //If the database exists
             if(!sqldb) return;
 
-            sqldb.getStatsChannels(8, server, message.author, bot);
+            var time = message.content.split(" ")[1];
+
+            sqldb.getStatsChannels(time, server, message.author, bot);
         },
         help: "`stats!` - returns the % of msgs sent per channel.",
     },

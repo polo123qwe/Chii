@@ -76,6 +76,7 @@ SQLite.prototype = {
 
     getStatsChannels(amount, server, author, bot){
         var result = [];
+        if(!amount) amount = 24;
         var time = Date.now() - amount*3600*1000;
         var channels = server.channels;
         result.push("Usage of channels:");
@@ -86,6 +87,7 @@ SQLite.prototype = {
                 for(var row of rows){
                     total += row.num;
                 }
+                result.push(total + " messages in the last" + amount + "hrs");
                 for(var row of rows){
                     var chan = channels.get("id", row.channel_id);
                     var channel_name = "#MISSINGCHANNEL#";
