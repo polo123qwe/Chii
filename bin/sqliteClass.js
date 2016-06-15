@@ -90,7 +90,7 @@ SQLite.prototype = {
                     var chan = channels.get("id", row.channel_id);
                     var channel_name = "#MISSINGCHANNEL#";
                     if(chan) channel_name = chan.name;
-                    result(Math.floor(row.num/total) + "% in " + channel_name);
+                    result.push(Math.floor(row.num/total) + "% in " + channel_name);
                 }
                 bot.sendMessage(author, result.join("\n"));
             }
