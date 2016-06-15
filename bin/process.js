@@ -68,7 +68,7 @@ Execution.prototype = {
 			if(checkPerm(moderationCommands[command], command)){
 				moderationCommands[command].run(message, bot);
 				/* Clean - It cleans the message that triggered the command */
-				if (moderationCommands[command].hasOwnProperty(clean)) {
+				if (moderationCommands[command].hasOwnProperty("clean")) {
 					bot.deleteMessage(message, {"wait": moderationCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
 				}
 			}
@@ -76,7 +76,7 @@ Execution.prototype = {
 			if(checkPerm(internetDataCommands[command], command)){
 				internetDataCommands[command].run(message, bot);
 				/* Clean - It cleans the message that triggered the command */
-				if (internetDataCommands[command].hasOwnProperty(clean)) {
+				if (internetDataCommands[command].hasOwnProperty("clean")) {
 					bot.deleteMessage(message, {"wait": internetDataCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
 				}
 			}
@@ -84,7 +84,7 @@ Execution.prototype = {
 			if(checkPerm(infoCommands[command], command)){
 				infoCommands[command].run(message, bot);
 				/* Clean - It cleans the message that triggered the command */
-				if (infoCommands[command].hasOwnProperty(clean)) {
+				if (infoCommands[command].hasOwnProperty("clean")) {
 					bot.deleteMessage(message, {"wait": infoCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
 				}
 			}
@@ -92,7 +92,7 @@ Execution.prototype = {
 			if(checkPerm(serverDataCommands[command], command)){
 				serverDataCommands[command].run(message, bot, sqldb);
 				/* Clean - It cleans the message that triggered the command */
-				if (serverDataCommands[command].hasOwnProperty(clean)) {
+				if (serverDataCommands[command].hasOwnProperty("clean")) {
 					bot.deleteMessage(message, {"wait": serverDataCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
 				}
 			}
