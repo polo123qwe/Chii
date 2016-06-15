@@ -15,7 +15,6 @@ var path = require('path');
 var Execution = new exec();
 var bot = new Discord.Client();
 var delay = Date.now();
-
 /* Variables */
 var dbPath = path.resolve(__dirname, '../sqlite/sqldb.db');
 
@@ -24,7 +23,7 @@ var db;
 
 bot.on("message", function(message){
 
-    if(config.logs == "true"){
+    if(config.logs == "true" && sql && sqldb){
         // sqldb.insertUser(message.author.id);
         // sqldb.insertMessage(message);
         if(message.channel.isPrivate) {
@@ -59,7 +58,7 @@ bot.on("serverMemberRemoved", function(server, user){
 
 bot.on("serverCreated", function(server){
     //Insert server into DB
-    if(config.logs == "true" && sql){
+    if(config.logs == "true" && sql && sqldb){
         sqldb.insertServer(server.id, server.name);
     }
 });

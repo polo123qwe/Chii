@@ -76,7 +76,7 @@ SQLite.prototype = {
 
     getStatsChannels(amount, server, bot){
         var result = [];
-        var time = Date.now().getTime() - amount*3600*1000;
+        var time = Date.now() - amount*3600*1000;
         var channels = server.channels;
         result.push("Usage of channels:");
         database.all("SELECT count(*) as num, channel_id FROM Logs WHERE server_id = ? AND timestamp > ? GROUP BY channel_id ORDER BY timestamp DESC", [server.id, time], function(err, rows){
