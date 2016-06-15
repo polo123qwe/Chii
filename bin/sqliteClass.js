@@ -79,7 +79,7 @@ SQLite.prototype = {
         if(!amount) amount = 24;
         var time = Date.now() - amount*3600*1000;
         var channels = server.channels;
-        result.push("Usage of channels:");
+        result.push("```Usage of channels:");
         database.all("SELECT count(*) as num, channel_id FROM Logs WHERE server_id = ? AND timestamp > ? GROUP BY channel_id ORDER BY timestamp DESC", [server.id, time], function(err, rows){
             if(!err){
                 if(!rows.length) return;
@@ -92,9 +92,9 @@ SQLite.prototype = {
                     var chan = channels.get("id", row.channel_id);
                     var channel_name = "#MISSINGCHANNEL#";
                     if(chan) channel_name = chan.name;
-                    result.push(Math.floor((row.num/total)*100) + "% in " + channel_name);
+                    result.push(((row.num/total)*100).toFixed(2) + "% in " + channel_name);
                 }
-                bot.sendMessage(author, result.join("\n"));
+                bot.sendMessage(author, result.join("\n") + "```");
             }
         });
     },
