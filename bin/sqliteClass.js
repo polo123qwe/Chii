@@ -71,7 +71,30 @@ SQLite.prototype = {
                     bot.sendMessage(author, output);
                 });
             }
-        })
+        });
+    },
+
+    getStatsChannels(amount, server, bot){
+        var result = [];
+        var time = Date.now().getTime() - amount*3600*1000;
+        var channels = server.channels;
+        result.push("Usage of channels:");
+        database.all("SELECT count(*) as num, channel_id FROM Logs WHERE server_id = ? AND timestamp > ? GROUP BY channel_id ORDER BY timestamp DESC", [server.id, time], function(err, rows){
+            if(!err){
+                if(!rows.length) return;
+                var total = 0;
+                for(var row of rows){
+                    total += row.num;
+                }
+                for(var row of rows){
+                    var chan = channels.get("id", row.channel_id);
+                    var channel_name = "#MISSINGCHANNEL#";
+                    if(chan) channel_name = chan.name;
+                    result(Math.floor(row.num/total) + "% in " + channel_name);
+                }
+                bot.sendMessage(author, result.join("\n"));
+            }
+        });
     },
 
 }

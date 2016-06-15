@@ -169,4 +169,19 @@ module.exports = {
         },
         help: "`getlog! <amount> [@user]` - returns the amount of msgs sent and filtered by user (optional).",
     },
+
+    stats: {
+        permissions: 2,
+        run: function(message, bot, sqldb){
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            //If the database exists
+            if(!sqldb) return;
+
+            getStatsChannels(8, server, bot);
+        },
+        help: "`stats!` - returns the % of msgs sent per channel.",
+    },
 }
