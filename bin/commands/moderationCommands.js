@@ -3,7 +3,7 @@ var helpCommand = require("./help.js");
 var exec = require('child_process').exec;
 
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
-var selfAssignableRoles = ["lood", "food", "rp", "coder"];
+var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno"];
 
 module.exports = {
     ping: {
