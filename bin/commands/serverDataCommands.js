@@ -15,10 +15,8 @@ module.exports = {
             else{
                 users = utils.getMentions(message, bot);
             }
-            if(users != null){
-                for(var user of user){
-                    bot.sendMessage(message, user.avatarURL);
-                }
+            for(var user of users){
+                bot.sendMessage(message, user.avatarURL);
             }
         },
         help: "`ava! <@user>` - returns avatar of @user",
@@ -38,10 +36,8 @@ module.exports = {
             else{
                 users = utils.getMentions(message, bot);
             }
-            if(users != null){
-                for(var user of user){
-                    bot.sendMessage(message, user.avatarURL);
-                }
+            for(var user of users){
+                bot.sendMessage(message, user.avatarURL);
             }
         },
         help: "`id! <@user>` - returns id of @user",
