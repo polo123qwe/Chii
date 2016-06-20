@@ -10,14 +10,15 @@ module.exports = {
             if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             var splitted = message.content.split(" ");
-            var user;
-            if(splitted[1] == null) user = message.author;
+            var users;
+            if(splitted[1] == null) users.push(message.author);
             else{
-                var userID = splitted[1].replace(/<|@|>/ig,"");
-                user = bot.users.get("id", userID);
+                users = utils.getMentions(message, bot);
             }
-            if(user != null){
-                bot.sendMessage(message, user.avatarURL);
+            if(users != null){
+                for(var user of user){
+                    bot.sendMessage(message, user.avatarURL);
+                }
             }
         },
         help: "`ava! <@user>` - returns avatar of @user",
@@ -32,14 +33,15 @@ module.exports = {
             if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             var splitted = message.content.split(" ");
-            var user;
-            if(splitted[1] == null) user = message.author;
+            var users;
+            if(splitted[1] == null) users.push(message.author);
             else{
-                var userID = splitted[1].replace(/<|@|>/ig,"");
-                user = bot.users.get("id", userID);
+                users = utils.getMentions(message, bot);
             }
-            if(user != null){
-                bot.sendMessage(message, user.id);
+            if(users != null){
+                for(var user of user){
+                    bot.sendMessage(message, user.avatarURL);
+                }
             }
         },
         help: "`id! <@user>` - returns id of @user",
@@ -64,7 +66,7 @@ module.exports = {
 
             var splitted = message.content.split(" ");
             var users = utils.getMentions(message, bot);
-            if(users.length == 0) users = [message.author];
+            if(users.length == 0) users.push(message.author);
 
             for(var user of users){
                 var join = server.detailsOfUser(user).joinedAt;
@@ -108,10 +110,13 @@ module.exports = {
             //Select a random user
             for(var user of server.members){
                 var found = false;
-                for(var role of server.rolesOfUser(user)){
-                    if(role.name == "Member"){
-                        found = true;
-                        break;
+                var roles = server.rolesOfUser(user);
+                if(roles){
+                    for(var role of roles){
+                        if(role.name == "Member"){
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if(!found){

@@ -92,19 +92,18 @@ module.exports = {
         permissions: -1,
         run: function(message, bot) {
             if (!message.channel.isPrivate) {
-
-                if (message.channel.isPrivate) return;
+                var server = message.channel.server;
                 var msgArray = [];
 
                 /* For the record, @\u200b is a blank 0 pixel spacer */
-                msgArray.push("**" + message.channel.server.name.replace(/@/g, '@\u200b') + "** (" + message.channel.server.id + ")");
-                msgArray.push("`Server Owner:` " + message.channel.server.owner.username.replace(/@/g, '@\u200b') + " (" + message.channel.server.owner.id + ")");
-                msgArray.push("`Server Region:` " + message.channel.server.region);
-                msgArray.push("`Server Members: `" + message.channel.server.members.length);
-                msgArray.push("This server was created on  " + new Date((message.channel.server.id / 4194304) + 1420070400000).toUTCString());
+                msgArray.push("**" + server.name.replace(/@/g, '@\u200b') + "** (" + server.id + ")");
+                msgArray.push("`Server Owner:` " + server.owner.username.replace(/@/g, '@\u200b') + " (" + server.owner.id + ")");
+                msgArray.push("`Server Region:` " + server.region);
+                msgArray.push("`Server Members: `" + server.memberCount);
+                msgArray.push("This server was created on  " + new Date((server.id / 4194304) + 1420070400000).toUTCString());
 
                 /* This displays the roles, but if the list is too long, just display the number of roles >.< */
-                var roleList = message.channel.server.roles.map(role => role.name);
+                var roleList = server.roles.map(role => role.name);
                 roleList = roleList.join(" | ").replace(/@/g, '@\u200b');
                 if (roleList.length < 1000) {
                     msgArray.push("`Server Roles: `" + roleList);
@@ -112,7 +111,7 @@ module.exports = {
                     msgArray.push("`Server Roles: `" + roleList.split(" | ").length);
                 }
 
-                msgArray.push("`Server Icon URL: `" + message.channel.server.iconURL);
+                msgArray.push("`Server Icon URL: `" + server.iconURL);
 
                 bot.sendMessage(message, msgArray);
             } else {
@@ -124,29 +123,30 @@ module.exports = {
         cd: 100000,
     },
 
-    // solve: {
-    //     permissions: -1,
-    //     run: function(message, bot) {
-    //         var splittedMessage = message.cleanContent.split(" ");
-    //         splittedMessage.shift();
-    //         if(!splittedMessage) return;
-    //         var solution = process(splittedMessage.join(" "));
-    //         if(solution){
-    //             bot.sendMessage(message, solution);
-    //         }
-    //     },
-    //     help: "`solve! maths` - Outputs solution.",
-    // }
+    setbd: {
+        
+    },
 
-}
+    eval: {
+        permissions: -1,
+        run: function(message, bot) {
+            if(!(message.author.id == "131905565466034176")) return;
 
-function process(info){
-    var res;
-    try {
-        res = eval(info);
-    } catch (e) {}
+            var splittedMessage = message.cleanContent.split(" ");
+            splittedMessage.shift();
+            if(!splittedMessage) return;
+            var solution;
+            try {
+                solution = eval(splittedMessage.join(" "));
+            } catch (e) {}
+            if(solution){
+                bot.sendMessage(message, solution);
+            }
+        },
+        help: "`solve! maths` - Outputs solution.",
+        clear: 0
+    }
 
-    return res;
 }
 
 function geocode(address, callback) {

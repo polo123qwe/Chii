@@ -43,12 +43,14 @@ bot.on("message", function(message){
 //When the bot is ready to operate
 bot.on("ready", function(){
 	console.log('Online! ('+(Date.now()-delay)+'ms)');
+
+
 });
 
 //JOIN-LEFT EVENTS//
 bot.on("serverNewMember", function(server, user){
     console.log(user.username + " joined.")
-	bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules.");
+	bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules." + " <#137105484040634368>");
 });
 
 bot.on("serverMemberRemoved", function(server, user){

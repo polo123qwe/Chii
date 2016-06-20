@@ -3,7 +3,7 @@ var helpCommand = require("./help.js");
 var exec = require('child_process').exec;
 
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
-var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno"];
+var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno", "real"];
 
 module.exports = {
     ping: {
@@ -168,6 +168,46 @@ module.exports = {
         help: "`mute! <@user> [reason]` - Mutes a user.",
     },
 
+    gchill: {
+        permissions: 2,
+        run: function(message, bot){
+
+            if(message.channel.isPrivate) return;
+            var server = message.channel.server;
+
+            //Check if the chill role exists
+            var chillRole = server.roles.get("name", "Chilling");
+            if(!chillRole) return;
+
+            //Get the last 50 messages
+            bot.getChannelLogs(message.channel, 50, {"before": message}, function(err, msgs){
+                if(err) return;
+
+                //Store all the users who typed
+                var users = [];
+                for(var msg of msgs){
+                    if(users.indexOf(msg.author) == -1){
+                        users.push(msg.author);
+                    }
+                }
+
+                //For all the users
+                for(var user of users){
+                    bot.addMemberToRole(user, chillRole, function(err){
+                        if(err) return;
+
+                        //Removes the chill role from the user after 10 seconds
+                        setTimeout(function(){
+                            bot.removeMemberFromRole(user, chillRole);
+                        }, 10000);
+                    });
+                }
+
+            });
+        },
+        help: "`gchill! - chills everyone who has typed the last 50 messages",
+    },
+
     kick: {
         permissions: 2,
         run: function(message, bot){
@@ -204,7 +244,6 @@ module.exports = {
         },
         help: "`kick! <@user> [reason]` - Kicks a user",
     },
-
 
     clearroles: {
         permissions: 0,

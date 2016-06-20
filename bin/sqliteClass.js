@@ -87,7 +87,7 @@ SQLite.prototype = {
                 for(var row of rows){
                     total += row.num;
                 }
-                result.push(total + " messages in the last" + amount + "hrs");
+                result.push(total + " messages in the last" + amount + " hrs");
                 for(var row of rows){
                     var chan = channels.get("id", row.channel_id);
                     var channel_name = "#MISSINGCHANNEL#";
@@ -98,5 +98,17 @@ SQLite.prototype = {
             }
         });
     },
+
+    // retServConfig(server_id, callback){ //TODO Finish this
+    //     database.all("SELECT * FROM", [server_id], function(err, rows){
+    //         if(!err){
+    //             if(!rows.length) return;
+    //             for(var row of rows){
+    //                 total += row.num;
+    //             }
+    //
+    //         }
+    //     });
+    // },
 
 }
