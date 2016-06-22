@@ -10,7 +10,7 @@ module.exports = {
             if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             var splitted = message.content.split(" ");
-            var users;
+            var users = [];
             if(splitted[1] == null) users.push(message.author);
             else{
                 users = utils.getMentions(message, bot);
@@ -31,7 +31,7 @@ module.exports = {
             if(message.channel == server.defaultChannel) { return; } //Ignore messages from #general to prevent spam
 
             var splitted = message.content.split(" ");
-            var users;
+            var users = [];
             if(splitted[1] == null) users.push(message.author);
             else{
                 users = utils.getMentions(message, bot);
@@ -62,7 +62,7 @@ module.exports = {
 
             var splitted = message.content.split(" ");
             var users = utils.getMentions(message, bot);
-            if(users.length == 0) users.push(message.author);
+            if(users.length == 0) users = [message.author];
 
             for(var user of users){
                 var join = server.detailsOfUser(user).joinedAt;
