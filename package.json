@@ -7,7 +7,7 @@
   "dependencies": {
 	"bluebird": "3.x.x",
 	"console-stamp": "0.2.x",
-	"discord.js": "6.x.x",
+	"discord.js": "8.x.x",
 	"forecast.io-bluebird": "0.0.x",
 	"forever": "0.x.x",
 	"nodemon": "1.x.x",

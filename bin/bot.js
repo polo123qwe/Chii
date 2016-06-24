@@ -13,7 +13,10 @@ var path = require('path');
 
 /* Objects */
 var Execution = new exec();
-var bot = new Discord.Client();
+var options = {
+    autoReconnect: true
+}
+var bot = new Discord.Client(options);
 var delay = Date.now();
 /* Variables */
 var dbPath = path.resolve(__dirname, '../sqlite/sqldb.db');
@@ -58,6 +61,11 @@ bot.on("serverMemberRemoved", function(server, user){
     bot.sendMessage(server.defaultChannel, "**" + user.username + "** is now gone.");
 });
 
+bot.on("userBanned", function(server, user){
+    console.log(user.username + " has been banned.")
+    bot.sendMessage(server.defaultChannel, "**" + user.username + "** has been banned.");
+});
+
 bot.on("serverCreated", function(server){
     //Insert server into DB
     if(config.logs == "true" && sql && sqldb){
@@ -65,6 +73,13 @@ bot.on("serverCreated", function(server){
     }
 });
 
+bot.on("serverMemberUpdated", function(server, userOld, userNew){
+    //TODO log nickname changes
+});
+
+bot.on("error", function(err){
+    console.log(err);
+});
 ////////////////////
 ///////LOGIN////////
 function login(){
