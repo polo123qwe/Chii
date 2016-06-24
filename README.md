@@ -27,7 +27,7 @@ Chii is a Discord bot. Yup.
 * `mute! <@user> [reason]` - Mutes the user, preventing them from chatting in any channel.
 * `kick! <@user> [reason]` - Kicks the user and logs the kick, reason and person that kicked.
 * `clearroles!` - Removes the 'empty' roles.
-* `getlog! <1-100>` - Gets the channel's logs. Max 100 messages.
+* `getlog! <1-5000>` - Gets the channel's logs. Max 5000 messages.
 
 #### Server data commands
 * `ava! [@user]` - Shows the avatar of the user. If no user was mentioned, it shows your own avatar.
