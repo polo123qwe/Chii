@@ -41,32 +41,26 @@ module.exports = {
     },
 
     checkCooldown: function(command, userID, commandText) {
-        if (command.hasOwnProperty("cd")) {
-            if (!lastExecutionTime.hasOwnProperty(commandText)) {
-                lastExecutionTime[commandText] = {};
-                return 0;
-            }
-            if (!lastExecutionTime[commandText].hasOwnProperty(userID)) {
-                lastExecutionTime[commandText][userID] = new Date().valueOf();
-                return 0;
-            } else {
-                var thisMoment = Date.now();
-
-                /* If the user is still on cooldown return the time left until the next execution */
-                if (thisMoment < lastExecutionTime[commandText][userID] + (command.cd)) {
-                    var timeLeftUntilNextExecution = Math.round(((lastExecutionTime[commandText][userID] + command.cd) - thisMoment) / 1000);
-
-                    return timeLeftUntilNextExecution;
-                }
-
-                /* Set the last execution time for the command and the user to now, and return 0 to confirm */
-                lastExecutionTime[commandText][userID] = thisMoment;
-                return command.cd/1000;
-            }
-
-        } else {
-            /* If the command doesn't have a cooldown, we return 0 to confirm that it can be run */
+        if (!command.hasOwnProperty("cd")) return 0;
+        if (!lastExecutionTime.hasOwnProperty(commandText)) {
+            lastExecutionTime[commandText] = {};
+        }
+        if (!lastExecutionTime[commandText].hasOwnProperty(userID)) {
+            lastExecutionTime[commandText][userID] = new Date().valueOf();
             return 0;
+        } else {
+            var thisMoment = Date.now();
+
+            /* If the user is still on cooldown return the time left until the next execution */
+            if (thisMoment < lastExecutionTime[commandText][userID] + (command.cd)) {
+                var timeLeftUntilNextExecution = Math.round(((lastExecutionTime[commandText][userID] + command.cd) - thisMoment) / 1000);
+
+                return timeLeftUntilNextExecution;
+            }
+
+            /* Set the last execution time for the command and the user to now, and return 0 to confirm */
+            lastExecutionTime[commandText][userID] = thisMoment;
+            return command.cd/1000;
         }
     },
 
