@@ -75,6 +75,10 @@ module.exports = {
         lastExecutionTime[commandText][userID] = {};
     },
 
+    hardResetCooldown: function(){
+        lastExecutionTime = {};
+    },
+
     millisecondsConversion(t) {
         var cd = 24 * 60 * 60 * 1000,
             ch = 60 * 60 * 1000,

@@ -19,9 +19,10 @@ module.exports = {
     refresh: {
         permissions: 2,
         run: function (message, bot){
-            process.exit(1);
+            //process.exit(1);
+            utils.hardResetCooldown();
         },
-        help: "`refresh!` - Restarts the bot",
+        help: "`refresh!` - Restarts cooldowns",
     },
 
     member: {

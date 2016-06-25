@@ -78,7 +78,7 @@ bot.on("serverMemberUpdated", function(server, userOld, userNew){
 });
 
 bot.on("error", function(err){
-    console.log(err);
+    console.err(err);
 });
 ////////////////////
 ///////LOGIN////////
