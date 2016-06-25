@@ -53,7 +53,15 @@ bot.on("ready", function(){
 //JOIN-LEFT EVENTS//
 bot.on("serverNewMember", function(server, user){
     console.log(user.username + " joined.")
-	bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules." + " <#137105484040634368>");
+    var rules = server.channels.get("name", "readme");
+    if(!rules) rules = server.channels.get("name", "rules");
+    if(!rules) {
+        bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules.");
+    } else {
+        bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules." + "<#" + rules.id + ">");
+    }
+
+
 });
 
 bot.on("serverMemberRemoved", function(server, user){
