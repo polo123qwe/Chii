@@ -2,13 +2,15 @@ var moderationCommands = require("./commands/moderationCommands.js");
 var internetDataCommands = require("./commands/internetDataCommands.js");
 var infoCommands = require("./commands/infoCommands.js");
 var serverDataCommands = require("./commands/serverDataCommands.js");
+var funCommands = require("./commands/funCommands.js");
 
 var perm = require("./commands/permissions.js");
 var utils = require("./utils.js");
 
 module.exports = Execution;
 
-function Execution(){
+function Execution(sqldb){
+	funCommands.getStatus(sqldb);
 }
 
 Execution.prototype = {
@@ -26,41 +28,7 @@ Execution.prototype = {
 
 		/* Help */
 		if (command.startsWith("help")) {
-
-			var suffix = message.content.substring(command.length + 2, message.content.length).toLowerCase();
-
-			/* If there's no suffix, just send a DM with the mo'fucking GitHub */
-			if (!suffix) {
-				bot.sendMessage(message.author, "***Chii Bot*** - Help\n" +
-			"To get the full list of commands, please visit: **https://github.com/polo123qwe/Chii**\n" +
-			"If you want help on a specific command, please use `help! [command]` in a text channel to view it.\n" +
-			"`Note:` The `help!` command won't work in DMs.");
-			return;
-			}
-
-			if (!message.channel.isPrivate) {
-				if (moderationCommands.hasOwnProperty(suffix)) {
-					bot.sendMessage(message, moderationCommands[suffix].help);
-					return;
-				} else if (internetDataCommands.hasOwnProperty(suffix)) {
-					bot.sendMessage(message, internetDataCommands[suffix].help);
-					return;
-				} else if (infoCommands.hasOwnProperty(suffix)) {
-					bot.sendMessage(message, infoCommands[suffix].help);
-					return;
-				} else if (serverDataCommands.hasOwnProperty(suffix)) {
-					bot.sendMessage(message, serverDataCommands[suffix].help);
-					return;
-				} else {
-					bot.sendMessage(message, ":warning: The command `" + suffix + "` was not found, or it doesn't have a help property.");
-					return;
-				}
-			} else {
-				bot.sendMessage(message, ":warning: The `help! [command]` does not work in DMs. Sorry :(");
-				return;
-			}
-
-
+			help(message, bot);
 		}
 
 		//Check if there is a command with that name
@@ -94,6 +62,20 @@ Execution.prototype = {
 				/* Clean - It cleans the message that triggered the command */
 				if (serverDataCommands[command].hasOwnProperty("clean")) {
 					bot.deleteMessage(message, {"wait": serverDataCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
+				}
+			}
+		} else if(funCommands.hasOwnProperty(command)){
+			if(checkPerm(funCommands[command], command)){
+				if (funCommands[command].hasOwnProperty("check")) {
+					if(funCommands.check[message.server.id]){
+						funCommands[command].run(message, bot, sqldb);
+					}
+				} else {
+					funCommands[command].run(message, bot, sqldb);
+				}
+				/* Clean - It cleans the message that triggered the command */
+				if (funCommands[command].hasOwnProperty("clean")) {
+					bot.deleteMessage(message, {"wait": funCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
 				}
 			}
 		}
@@ -133,4 +115,42 @@ Execution.prototype = {
 			}
 		}//EndFunct
     },
+}
+
+function help(message, bot){
+	var suffix = message.content.substring(command.length + 2, message.content.length).toLowerCase();
+
+	/* If there's no suffix, just send a DM with the mo'fucking GitHub */
+	if (!suffix) {
+		bot.sendMessage(message.author, "***Chii Bot*** - Help\n" +
+		"To get the full list of commands, please visit: **https://github.com/polo123qwe/Chii**\n" +
+		"If you want help on a specific command, please use `help! [command]` in a text channel to view it.\n" +
+		"`Note:` The `help!` command won't work in DMs.");
+		return;
+	}
+
+	if (!message.channel.isPrivate) {
+		if (moderationCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, moderationCommands[suffix].help);
+			return;
+		} else if (internetDataCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, internetDataCommands[suffix].help);
+			return;
+		} else if (infoCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, infoCommands[suffix].help);
+			return;
+		} else if (serverDataCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, serverDataCommands[suffix].help);
+			return;
+		} else if (funCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, funCommands[suffix].help);
+			return;
+		} else {
+			bot.sendMessage(message, ":warning: The command `" + suffix + "` was not found, or it doesn't have a help property.");
+			return;
+		}
+	} else {
+		bot.sendMessage(message, ":warning: The `help! [command]` does not work in DMs. Sorry :(");
+		return;
+	}
 }

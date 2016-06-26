@@ -12,7 +12,7 @@ require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 var path = require('path');
 
 /* Objects */
-var Execution = new exec();
+var execution;
 var options = {
     autoReconnect: true
 }
@@ -40,13 +40,15 @@ bot.on("message", function(message){
     if(message.author == bot.user) return;
 
     //Try to execute the command
-    Execution.execute(message, bot, sqldb);
+    if(execution){
+        execution.execute(message, bot, sqldb);
+    }
 });
 
 //When the bot is ready to operate
 bot.on("ready", function(){
 	console.log('Online! ('+(Date.now()-delay)+'ms)');
-
+    execution = new exec(sqldb);
 
 });
 
@@ -60,7 +62,6 @@ bot.on("serverNewMember", function(server, user){
     } else {
         bot.sendMessage(server.defaultChannel, "Welcome to "+server.name+", "+user.mention()+"! Don't forget to read the rules." + "<#" + rules.id + ">");
     }
-
 
 });
 
@@ -88,6 +89,7 @@ bot.on("serverMemberUpdated", function(server, userOld, userNew){
 bot.on("error", function(err){
     console.err(err);
 });
+
 ////////////////////
 ///////LOGIN////////
 function login(){

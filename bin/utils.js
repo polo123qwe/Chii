@@ -101,5 +101,9 @@ module.exports = {
                 if (typeof callback === "function")
                     return callback("http://hastebin.com/"+response.body.key);
             });
+    },
+
+    getRandom: function(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
     }
 }

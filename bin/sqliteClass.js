@@ -74,7 +74,7 @@ SQLite.prototype = {
         });
     },
 
-    getStatsChannels(amount, server, author, bot){
+    getStatsChannels: function(amount, server, author, bot){
         var result = [];
         if(!amount) amount = 24;
         var time = Date.now() - amount*3600*1000;
@@ -99,16 +99,14 @@ SQLite.prototype = {
         });
     },
 
-    // retServConfig(server_id, callback){ //TODO Finish this
-    //     database.all("SELECT * FROM", [server_id], function(err, rows){
-    //         if(!err){
-    //             if(!rows.length) return;
-    //             for(var row of rows){
-    //                 total += row.num;
-    //             }
-    //
-    //         }
-    //     });
-    // },
+    retServConfig: function(callback){ //TODO Finish this
+        database.all("SELECT server_id, fun FROM Servers", function(err, rows){
+            if(!err){
+                return callback(null, rows);
+            } else{
+                return callback(err);
+            }
+        });
+    },
 
 }

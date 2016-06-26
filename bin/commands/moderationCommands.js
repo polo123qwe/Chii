@@ -6,16 +6,6 @@ var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "
 var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno", "real"];
 
 module.exports = {
-    ping: {
-        permissions: -1,
-        run: function(message, bot){
-
-            var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
-            bot.sendMessage(message, outputMessage);
-        },
-        help: "`ping!` - returns pong!",
-    },
-
     refresh: {
         permissions: 2,
         run: function (message, bot){
@@ -142,9 +132,10 @@ module.exports = {
 
             var chillRole = server.roles.get("name", "Chilling");
 
+            var time = utils.getRandom(60000, 600000);
             bot.addMemberToRole(message.author, chillRole, function(err){
                 if(err) console.log(err);
-                bot.sendMessage(message, "RIP");
+                bot.sendMessage(message.author, "You've been muted for: " + utils.millisecondsConversion(time));
             });
             setTimeout(function(){
                 bot.removeMemberFromRole(message.author, chillRole);

@@ -4,6 +4,16 @@ var Forecast = require('forecast.io-bluebird');
 var api_key = require("../../config.json").forecastKey;
 
 module.exports = {
+    ping: {
+        permissions: -1,
+        run: function(message, bot){
+
+            var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
+            bot.sendMessage(message, outputMessage);
+        },
+        help: "`ping!` - returns pong!",
+    },
+
     time: {
         permissions: -1,
         run: function(message, bot) {
@@ -111,6 +121,8 @@ module.exports = {
                     msgArray.push("`Server Roles: `" + roleList.split(" | ").length);
                 }
 
+                msgArray.push("`Server Icon URL: `" + message.author.createdAt);
+
                 msgArray.push("`Server Icon URL: `" + server.iconURL);
 
                 bot.sendMessage(message, msgArray);
@@ -124,7 +136,7 @@ module.exports = {
     },
 
     setbd: {
-        
+
     },
 
     eval: {
