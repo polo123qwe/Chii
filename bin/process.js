@@ -28,7 +28,7 @@ Execution.prototype = {
 
 		/* Help */
 		if (command.startsWith("help")) {
-			help(message, bot);
+			help(message, bot, command);
 		}
 
 		//Check if there is a command with that name
@@ -117,7 +117,7 @@ Execution.prototype = {
     },
 }
 
-function help(message, bot){
+function help(message, bot, command){
 	var suffix = message.content.substring(command.length + 2, message.content.length).toLowerCase();
 
 	/* If there's no suffix, just send a DM with the mo'fucking GitHub */

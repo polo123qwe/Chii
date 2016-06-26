@@ -43,6 +43,7 @@ module.exports = {
         },
         help: "`ask! <question>` - ask a question to cleverbot",
         check: true,
+        cd: 60000,
     },
 
     togglefun: {

@@ -49,7 +49,6 @@ bot.on("message", function(message){
 bot.on("ready", function(){
 	console.log('Online! ('+(Date.now()-delay)+'ms)');
     execution = new exec(sqldb);
-
 });
 
 //JOIN-LEFT EVENTS//
@@ -79,6 +78,10 @@ bot.on("serverCreated", function(server){
     //Insert server into DB
     if(config.logs == "true" && sql && sqldb){
         sqldb.insertServer(server.id, server.name);
+        // for(var channel of server.channels){
+        //     console.log("Adding " + channel.name);
+        //     sqldb.insertChannel(channel.id, channel.name, server.id, channel.type);
+        // }
     }
 });
 

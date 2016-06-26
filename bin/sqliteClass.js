@@ -15,6 +15,10 @@ SQLite.prototype = {
         database.run("INSERT INTO Servers VALUES (?, ?)", [serverID, name], function(err){});
     },
 
+    // insertChannel: function(channel_id, channel_name, server_id, channel_type){
+    //     database.run("INSERT INTO Channels VALUES (?, ?, ?, ?, ?)", [channel_id, channel_name, server_id, channel_type, false], function(err){});
+    // },
+
     insertLogs: function(message_id, user_id, content, timestamp, server_id, channel_id, channel_name){
         database.run("INSERT INTO Logs VALUES (?, ?, ?, ?, ?, ?, ?)", [message_id, user_id, content, timestamp, server_id, channel_id, channel_name], function(err){});
     },
@@ -99,7 +103,7 @@ SQLite.prototype = {
         });
     },
 
-    retServConfig: function(callback){ //TODO Finish this
+    retServConfig: function(callback){
         database.all("SELECT server_id, fun FROM Servers", function(err, rows){
             if(!err){
                 return callback(null, rows);
