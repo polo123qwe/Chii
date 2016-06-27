@@ -14,10 +14,12 @@ module.exports = {
             var splittedMessage = message.content.split(" ");
             splittedMessage.shift();
             var options = splittedMessage.join(" ").split(", ");
-
-            bot.sendMessage(message, options[utils.getRandom(0, options.length)]);
+            if(options.length < 2) return;
+            
+            bot.sendMessage(message, "Chosen one is: " + options[utils.getRandom(0, options.length)]);
         },
         help: "`decide! <option> <option>` - decided between multiple choices!",
+        cd: 60000,
     },
 
     ask: {
