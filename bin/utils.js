@@ -2,9 +2,9 @@ var unirest = require('unirest');
 var request = require('request');
 
 var lastExecutionTime = {}
-setInterval(() => {
-    lastExecutionTime = {}
-}, 3600000);
+//setInterval(() => {
+//    lastExecutionTime = {}
+//}, 3600000);
 
 module.exports = {
     //Return

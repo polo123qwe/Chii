@@ -37,7 +37,7 @@ module.exports = {
                 users = utils.getMentions(message, bot);
             }
             for(var user of users){
-                bot.sendMessage(message, user.avatarURL);
+                bot.sendMessage(message, user.id);
             }
         },
         help: "`id! <@user>` - returns id of @user",
