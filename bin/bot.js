@@ -3,6 +3,7 @@ var Discord = require('discord.js');
 var config = require("../config.json");
 
 var exec = require("./process.js");
+var runCmd;
 
 var utils = require("./utils.js");
 var sql = require('./sqliteClass.js');
@@ -39,16 +40,22 @@ bot.on("message", function(message){
     /* Ignore the bot's own messages */
     if(message.author == bot.user) return;
 
-    //Try to execute the command
-    if(execution){
-        execution.execute(message, bot, sqldb);
+    /**
+     * Main command handler
+     */
+    var commandText = message.content.split(" ")[0];
+    commandText = commandText.substring(0, commandText.length - 1);
+    var suffix = message.content.substring(commandText.length + 2, message.content.length);
+
+    if (message.content.split(" ")[0].slice(-1) == config.suffix) {
+      runCmd.exec(message, bot, commandText, sqldb);
     }
 });
 
 //When the bot is ready to operate
 bot.on("ready", function(){
 	console.log('Online! ('+(Date.now()-delay)+'ms)');
-    execution = new exec(sqldb);
+    runCmd = new exec(sqldb);
 });
 
 //JOIN-LEFT EVENTS//

@@ -1,101 +1,111 @@
-var moderationCommands = require("./commands/moderationCommands.js");
-var internetDataCommands = require("./commands/internetDataCommands.js");
-var infoCommands = require("./commands/infoCommands.js");
-var serverDataCommands = require("./commands/serverDataCommands.js");
-var funCommands = require("./commands/funCommands.js");
+/**
+ * PROCESS
+ */
+var moderationCommands 		= require("./commands/moderationCommands.js");
+var internetDataCommands 	= require("./commands/internetDataCommands.js");
+var infoCommands					= require("./commands/infoCommands.js");
+var serverDataCommands		= require("./commands/serverDataCommands.js");
+var funCommands 					= require("./commands/funCommands.js");
 
-var suffix = require("../config.json").suffix;
-var perm = require("./commands/permissions.js");
-var utils = require("./utils.js");
+/* Assign commands to a single Object, so we can more easily manage them */
+AllCommands = {}
+Object.assign(AllCommands, moderationCommands, internetDataCommands, infoCommands, serverDataCommands);
 
-Commands = {}
-Object.assign(Commands, moderationCommands, internetDataCommands, infoCommands, serverDataCommands, funCommands);
+/* Import some useful stuffs */
+var suffix					= require("../config.json").suffix;
+var permissionUtils = require("./commands/permissions.js");
+var utils						= require("./utils.js");
 
-module.exports = Execution;
+/* Cooldown system - Reset each hour */
+var lastTimeRan = {};
+setInterval(function() {
+  lastTimeRan = {};
+}, 3600000);
 
-function Execution(sqldb){
+/* Export */
+module.exports = runCommand;
+
+/* Database status check */
+function runCommand(sqldb) {
 	funCommands.getStatus(sqldb);
 }
 
-Execution.prototype = {
-	constructor: Execution,
-    execute: function(message, bot, sqldb){
+/* Prototype of runCommand */
+runCommand.prototype = {
+	constructor: runCommand,
+	exec: function(msg, bot, commandText, sqldb) {
 
-    var cMessage = message.content;
-		var command = cMessage.split(" ")[0];
-
-		if(!command) return;
-
-		if(command.slice(-1) != suffix) return;
-		//Remove suffix
-		command = command.substring(0, command.length - 1).toLowerCase();
-
-		/* Help */
-		if (command.startsWith("help")) {
-			help(message, bot, command);
+		/* Send the help to an external handler */
+		if (commandText == "help") {
+			helpHandler(msg, bot, commandText);
 		}
 
-		if (Commands.hasOwnProperty(command)) {
-			if (checkPerm(Commands[command], command)) {
-				if (Commands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": (Commands[command].clean)});
-				}
-				Commands[command].run(message, bot);
-			}
-		} else if(funCommands.hasOwnProperty(command)){
-			if(checkPerm(funCommands[command], command)){
-				if (funCommands[command].hasOwnProperty("check")) {
-					if(funCommands.check[message.server.id]){
-						funCommands[command].run(message, bot, sqldb);
-					}
-				} else {
-					funCommands[command].run(message, bot, sqldb);
-				}
-				/* Clean - It cleans the message that triggered the command */
-				if (funCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": (funCommands[command].clean)});
-				}
-			}
-		}
+		/* Check the existence of the command */
+		if (AllCommands.hasOwnProperty(commandText)) {
+			/* Check if the bot has enough permissions to run it */
+			if (permissionUtils.isBotAllowed(AllCommands[commandText], bot, msg.channel.server)) {
+				/* Check if the User executing it has enough permissions to run it */
+				if (permissionUtils.isUserAllowed(msg.author, msg.channel.server, AllCommands[commandText].permissions)) {
 
-		//Function to check the permission of a given command
-		function checkPerm(cmd, commandText){
-			if(message.channel.isPrivate) {
-				return true;
-			} else {
-				//TODO Check BD
+					var commandObject = AllCommands[commandText] /* A sort of Macro to not have to write all that shit all over */
 
-				//Check if the command has cooldown
-				/* NOTE - This doesn't check if the command has a cooldown per say, that's handled by the method at
-				hand, what this does is grab the return value from checkCooldown and store it in a variable ;) */
-				var cooldown = utils.checkCooldown(cmd, message.author.id, commandText);
+					/* If, for some reason, the command is empty, we return an error. This is just to be sure, though */
+					if (commandObject == null) { console.log("ERROR: Command " + commandText + " is NULL."); return; }
+					else {
+						if (commandObject.hasOwnProperty("cd") && commandObject.cd > 0) {
+							if (!lastTimeRan.hasOwnProperty(commandText)) {
+								lastTimeRan[commandText] = {};
+							}
 
-				//If the bot is allowed to execute it
-				if(perm.isBotAllowed(cmd, bot, message.channel.server)){
-					//If the user is
-					if(perm.isUserAllowed(message.author, message.channel.server, cmd.permissions)){
-						//If there is no cooldown
-						if(cooldown == 0){
-							return true;
-						} else{
-							bot.sendMessage(message, "Command `" + commandText + "` is on cooldown for you. (" + cooldown + " seconds left)");
-							return false;
+							if (!lastTimeRan[commandText].hasOwnProperty(msg.author.id)) {
+								lastTimeRan[commandText][msg.author.id] = new Date().valueOf();
+							} else {
+								var now = Date.now();
+
+								if (now < (lastTimeRan[commandText][msg.author.id] + (commandObject.cd))) {
+				          bot.reply(msg, "that command is on cooldown for: ***" + Math.round(((lastTimeRan[commandText][msg.author.id] + commandObject.cd) - now) / 1000) + "*** seconds.", (err, bm) => {
+										bot.deleteMessage(bm, {"wait": 6000});
+									});
+				          return;
+				        }
+
+								lastTimeRan[commandText][msg.author.id] = now;
+							}
 						}
-					} else{
-						bot.sendMessage(message, "You do not have permission to use this command.");
-						return false;
-					}
-				} else{
-					bot.sendMessage(message, "The bot doesn't have permission to use this command.");
-					return false;
-				}
 
+						/* Log the use of commands in the console for safekeeping */
+						/* NOTE - @Sergi if you want you can add a DB thingy */
+						console.log(msg.channel.server.name + " > User [" + msg.author.username + "] ran command [" + commandText + "]");
+
+						/* Standard try-catch */
+						try {
+							commandObject.run(msg, bot);
+
+							/* Clean triggering command message */
+							if (commandObject.hasOwnProperty("clean")) {
+								bot.deleteMessage(msg, {"wait": commandObject.clean});
+							}
+						} catch (error) {
+							console.log(error);
+						}
+
+					}
+
+				} else { /* If the user doesn't have enough permissions */
+					bot.sendMessage(msg, ":warning: You do not have enough permissions to run this command.", (err, bm) => { bot.deleteMessage(bm, {"wait": 10000}) });
+				}
+			} else { /* If the bot doesn't have enough permissions */
+				bot.sendMessage(msg, ":warning: The bot doesn't have enough permissions to run this command.", (err, bm) => { bot.deleteMessage(bm, {"wait": 10000}) })
 			}
-		}//EndFunct
-    },
+		} else { /* If no command was found with that name */
+			return;
+		}
+
+	}
 }
 
-function help(message, bot, command){
+/* Help Handler */
+function helpHandler(message, bot, command){
 	var suffix = message.content.substring(command.length + 2, message.content.length).toLowerCase();
 
 	/* If there's no suffix, just send a DM with the mo'fucking GitHub */
