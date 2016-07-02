@@ -4,6 +4,7 @@ var infoCommands = require("./commands/infoCommands.js");
 var serverDataCommands = require("./commands/serverDataCommands.js");
 var funCommands = require("./commands/funCommands.js");
 
+var suffix = require("../config.json").suffix;
 var perm = require("./commands/permissions.js");
 var utils = require("./utils.js");
 
@@ -25,7 +26,7 @@ Execution.prototype = {
 
 		if(!command) return;
 
-		if(command.slice(-1) != "<") return;
+		if(command.slice(-1) != suffix) return;
 		//Remove suffix
 		command = command.substring(0, command.length - 1).toLowerCase();
 
