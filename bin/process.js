@@ -7,6 +7,9 @@ var funCommands = require("./commands/funCommands.js");
 var perm = require("./commands/permissions.js");
 var utils = require("./utils.js");
 
+Commands = {}
+Object.assign(Commands, moderationCommands, internetDataCommands, infoCommands, serverDataCommands, funCommands);
+
 module.exports = Execution;
 
 function Execution(sqldb){
@@ -22,7 +25,7 @@ Execution.prototype = {
 
 		if(!command) return;
 
-		if(command.slice(-1) != "!") return;
+		if(command.slice(-1) != "<") return;
 		//Remove suffix
 		command = command.substring(0, command.length - 1).toLowerCase();
 
@@ -31,38 +34,12 @@ Execution.prototype = {
 			help(message, bot, command);
 		}
 
-		//Check if there is a command with that name
-		if(moderationCommands.hasOwnProperty(command)){
-			if(checkPerm(moderationCommands[command], command)){
-				moderationCommands[command].run(message, bot);
-				/* Clean - It cleans the message that triggered the command */
-				if (moderationCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": moderationCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
+		if (Commands.hasOwnProperty(command)) {
+			if (checkPerm(Commands[command], command)) {
+				if (Commands[command].hasOwnProperty("clean")) {
+					bot.deleteMessage(message, {"wait": (Commands[command].clean)});
 				}
-			}
-		} else if(internetDataCommands.hasOwnProperty(command)){
-			if(checkPerm(internetDataCommands[command], command)){
-				internetDataCommands[command].run(message, bot);
-				/* Clean - It cleans the message that triggered the command */
-				if (internetDataCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": internetDataCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
-				}
-			}
-		} else if(infoCommands.hasOwnProperty(command)){
-			if(checkPerm(infoCommands[command], command)){
-				infoCommands[command].run(message, bot);
-				/* Clean - It cleans the message that triggered the command */
-				if (infoCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": infoCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
-				}
-			}
-		} else if(serverDataCommands.hasOwnProperty(command)){
-			if(checkPerm(serverDataCommands[command], command)){
-				serverDataCommands[command].run(message, bot, sqldb);
-				/* Clean - It cleans the message that triggered the command */
-				if (serverDataCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": serverDataCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
-				}
+				Commands[command].run(message, bot);
 			}
 		} else if(funCommands.hasOwnProperty(command)){
 			if(checkPerm(funCommands[command], command)){
@@ -75,7 +52,7 @@ Execution.prototype = {
 				}
 				/* Clean - It cleans the message that triggered the command */
 				if (funCommands[command].hasOwnProperty("clean")) {
-					bot.deleteMessage(message, {"wait": funCommands[command].clean * 1000}); // NOTE - Please specify the clean time in SECONDS!!!
+					bot.deleteMessage(message, {"wait": (funCommands[command].clean)});
 				}
 			}
 		}
@@ -130,20 +107,8 @@ function help(message, bot, command){
 	}
 
 	if (!message.channel.isPrivate) {
-		if (moderationCommands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, moderationCommands[suffix].help);
-			return;
-		} else if (internetDataCommands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, internetDataCommands[suffix].help);
-			return;
-		} else if (infoCommands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, infoCommands[suffix].help);
-			return;
-		} else if (serverDataCommands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, serverDataCommands[suffix].help);
-			return;
-		} else if (funCommands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, funCommands[suffix].help);
+		if (Commands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, Commands[suffix].help);
 			return;
 		} else {
 			bot.sendMessage(message, ":warning: The command `" + suffix + "` was not found, or it doesn't have a help property.");

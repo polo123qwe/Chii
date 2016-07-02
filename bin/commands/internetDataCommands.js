@@ -24,6 +24,7 @@ module.exports = {
     	},
 
     	help: "`urban! <word>` - Searches Urban Dictionary for a definition",
+      clean: 6000
     },
 
     mal: {
@@ -156,11 +157,14 @@ module.exports = {
 
               bot.sendMessage(msg, "**" + title + " / " + english + "**\n**Type:** " + type + " **| Episodes:** " + ep + " **| Status:** " + status + " **| Mean Score:** " + score + "\n" + syno + "\n**<http://www.myanimelist.net/anime/" + id + ">**");
             });
+          } else {
+            bot.sendMessage(msg, "The anime `" + suffix + "` was not found.", (err, bm) => {bot.deleteMessage(bm, {"wait": 10000})});
           }
         });
         bot.stopTyping(msg.channel);
       },
-      help: "`anime! <anime name>` - Gets the details of an anime from MAL."
+      help: "`anime! <anime name>` - Gets the details of an anime from MAL.",
+      clean: 10000
     },
 
     /* Manga - gets info on a manga from MAL */
@@ -215,10 +219,13 @@ module.exports = {
 
               bot.sendMessage(msg, "**" + title + " / " + english + "**\n**Type:** " + type + " **| Chapters:** " + chapters + " **| Volumes:** " + volumes + " **| Status:** " + status + " **| Mean Score:** " + score + "\n" + syno + "\n**<http://www.myanimelist.net/manga/" + id + ">**");
             });
+          } else {
+            bot.sendMessage(msg, "The manga `" + suffix + "` was not found.", (err, bm) => {bot.deleteMessage(bm, {"wait": 10000})});
           }
         });
         bot.stopTyping(msg.channel);
       },
-      help: "`manga! <manga name>` - Gets the details of a manga from MAL."
+      help: "`manga! <manga name>` - Gets the details of a manga from MAL.",
+      clean: 10000
     }
 }

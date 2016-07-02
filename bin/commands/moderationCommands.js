@@ -142,6 +142,7 @@ module.exports = {
             }, 120000);
         },
         help: "`suicide!` - Mute yourself for 1 minute.",
+        clean: 2000
     },
 
     warn: {
@@ -352,6 +353,7 @@ module.exports = {
         },
         help: "`color! <color in hexadecimal>` - Assigns you a color for your name. For more information on how to obtain a hexadecimal number for your color, you can visit **http://color-hex.com** and copy the number from there.",
         cd: 600000,
+        clean: 5000
     },
 
     /* prune - a simple message cleaner */

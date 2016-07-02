@@ -2,13 +2,14 @@ var http = require('http');
 var Bluebird = require('bluebird');
 var Forecast = require('forecast.io-bluebird');
 var api_key = require("../../config.json").forecastKey;
+var utils = require("../utils.js");
 
 module.exports = {
     ping: {
         permissions: -1,
         run: function(message, bot){
 
-            var outputMessage = "Pong! ("+(Date.now()-message.timestamp)+"ms)";
+            var outputMessage = "Pong! ("+(Date.now()-message.timestamp-300)+"ms)";
             bot.sendMessage(message, outputMessage);
         },
         help: "`ping!` - returns pong!",
@@ -65,6 +66,7 @@ module.exports = {
             bot.sendMessage(message, "**UTC" + offset + "** Standard Time: `" + D + "/" + M + "/" + Y + " " + h + ":" + m + ":" + s + "`");
         },
         help: "`time! <gmt/utc+offset>` - returns specified utc time",
+        clean: 1000,
     },
 
     weather: {
@@ -96,6 +98,7 @@ module.exports = {
             });
         },
         help: "`weather! <city>` - returns the weather of a city",
+        clean: 1000,
     },
 
     serverinfo: {
@@ -133,6 +136,7 @@ module.exports = {
         },
         help: "`serverinfo!` - Returns server information.",
         cd: 100000,
+        clean: 1000,
     },
 
     setbd: {
@@ -155,8 +159,9 @@ module.exports = {
                 bot.sendMessage(message, solution);
             }
         },
-        help: "`solve! maths` - Outputs solution.",
-        clear: 0
+        help: "`eval! <JS Code>` - Evaluates arbitrary JavaScript code.",
+        clear: 0,
+        clean: 5000,
     }
 
 }

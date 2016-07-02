@@ -68,6 +68,15 @@ module.exports = {
                 var join = server.detailsOfUser(user).joinedAt;
                 join = utils.unixToTime(join);
 
+                /* Correct mistaken dates */
+                if (user.id == "119556874378018818") {
+                  bot.sendMessage(message, user.name + " joined 1 Jan 2016 14:06:22");
+                  continue;
+                } else if (user.id == "109073503768055808") {
+                  bot.sendMessage(message, user.name + " joined 1 Jan 2016 15:31:14");
+                  continue;
+                }
+
                 bot.sendMessage(message, user.name + ' joined ' + join);
             }
         },

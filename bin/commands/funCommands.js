@@ -18,7 +18,7 @@ module.exports = {
 
             bot.sendMessage(message, "Chosen one is: " + options[utils.getRandom(0, options.length)]);
         },
-        help: "`decide! <option> <option>` - decided between multiple choices!",
+        help: "`decide! <option 1, option 2,...>` - decide between multiple choices! **Separate choices with a comma and a space**",
         cd: 30000,
     },
 
@@ -48,7 +48,7 @@ module.exports = {
         cd: 60000,
     },
 
-    togglefun: {
+    tfun: {
         permissions: 2,
         run: function(message, bot){
             if(message.channel.isPrivate) return;
@@ -62,7 +62,7 @@ module.exports = {
             }
 
         },
-        help: "`decide! <option> <option>` - decided between multiple choices!",
+        help: "`tfun!` - toggles the fun commands mode.",
     },
 
     getStatus: function(sqldb){
