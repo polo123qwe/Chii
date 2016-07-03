@@ -1,6 +1,7 @@
 var utils = require("../utils.js");
 var helpCommand = require("./help.js");
 var exec = require('child_process').exec;
+var resetCooldown = require("../process.js");
 
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
 var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno", "real"];
@@ -10,7 +11,7 @@ module.exports = {
         permissions: 2,
         run: function (message, bot){
             //process.exit(1);
-            utils.hardResetCooldown();
+            resetCooldown.hardResetCooldown();
         },
         help: "`refresh!` - Restarts cooldowns",
     },
@@ -48,6 +49,7 @@ module.exports = {
         /* Error handling - Display the help if user is a dum-dum */
         if (!suffix) {
           bot.sendMessage(msg, ":warning: Incorrect usage.\n" + this.help, (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+          resetCooldown.resetCooldown(msg.author.id, "joinrole");
           return;
         }
 
@@ -57,6 +59,7 @@ module.exports = {
             bot.sendMessage(msg, ":ok: User " + msg.author.username + " added to role `" + capitalize(rolesToJoin[i]) + "`.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
           } else {
             bot.sendMessage(msg, ":warning: Role `" + capitalize(rolesToJoin[i]) + "` does not exist or you are unable to join it.", (err, bm) => {bot.deleteMessage(bm, {"wait": 5000})});
+            resetCooldown.resetCooldown(msg.author.id, "joinrole");
             return;
           }
         }
@@ -304,7 +307,7 @@ module.exports = {
             if (/#?[A-F0-9]{6}/i.test(hexValue)) {
                 hexValue = "0x" + hexValue.replace(/#?/, "").toUpperCase();
             } else {
-                utils.resetCooldown(message.author.id, "color");
+                resetCooldown.resetCooldown(message.author.id, "color");
                 return errorInput();
             }
 
@@ -316,10 +319,10 @@ module.exports = {
             for(var role of userRoles){
                 if(role.name == authorID){
                     found = true;
-                    bot.updateRole(role, {color : parseInt(hexValue)}, function(err, role){
+                    /*bot.updateRole(role, {color : parseInt(hexValue)}, function(err, role){
                         if(err) console.dir(err);
                         bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");
-                    });
+                    });*/bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");
                 }
             }
             if(!found) updateColor(message.author, hexValue);

@@ -188,11 +188,11 @@ module.exports = {
             var server = message.channel.server;
 
             //If the database exists
-            if(!sqldb) return;
+            if(!sqldb) {console.log("THERE'S NOTHING IN THE DB YOU DUMMY >.<"); return;}
 
             var time = message.content.split(" ")[1];
-
             sqldb.getStatsChannels(time, server, message.author, bot);
+            
         },
         help: "`stats!` - returns the % of msgs sent per channel.",
     },

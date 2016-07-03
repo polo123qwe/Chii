@@ -99,6 +99,8 @@ SQLite.prototype = {
                     result.push(((row.num/total)*100).toFixed(2) + "% in " + channel_name);
                 }
                 bot.sendMessage(author, result.join("\n") + "```");
+            } else {
+              console.log(err);
             }
         });
     },

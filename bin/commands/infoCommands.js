@@ -144,20 +144,38 @@ module.exports = {
     },
 
     eval: {
-        permissions: -1,
-        run: function(message, bot) {
-            if(!(message.author.id == "131905565466034176")) return;
+        permissions: 0,
+        run: function(message, bot, sqldb) {
 
+            if (!(message.author.id == "131905565466034176" || message.author.id == "119556874378018818")) {
+              return;
+            }
+
+            var cmdTxt = message.content.split(" ")[0];
+            var suffix = message.content.substring(cmdTxt.length + 1, message.content.length);
+
+            if (!suffix) { return; }
+
+            var solution;
+            try {
+              solution = eval("try{"+suffix+"} catch (error) {console.log(error);}");
+            } catch (e) {
+              console.log(e);
+            }
+
+            bot.sendMessage(message, "```" + solution + "```");
+/*
             var splittedMessage = message.cleanContent.split(" ");
             splittedMessage.shift();
             if(!splittedMessage) return;
             var solution;
             try {
-                solution = eval(splittedMessage.join(" "));
-            } catch (e) {}
+                bot.sendMessage(message, splittedMessage.join(" "))
+                solution = eval("try{"+splittedMessage.join(" ")+"} catch (error) { console.log(error); }");
+            } catch (e) { console.log(e); }
             if(solution){
-                bot.sendMessage(message, solution);
-            }
+              bot.sendMessage(message, solution);
+            } */
         },
         help: "`eval! <JS Code>` - Evaluates arbitrary JavaScript code.",
         clear: 0,

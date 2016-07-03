@@ -9,7 +9,7 @@ var funCommands 					= require("./commands/funCommands.js");
 
 /* Assign commands to a single Object, so we can more easily manage them */
 AllCommands = {}
-Object.assign(AllCommands, moderationCommands, internetDataCommands, infoCommands, serverDataCommands);
+Object.assign(AllCommands, moderationCommands, internetDataCommands, infoCommands, serverDataCommands, funCommands);
 
 /* Import some useful stuffs */
 var suffix					= require("../config.json").suffix;
@@ -79,7 +79,7 @@ runCommand.prototype = {
 
 						/* Standard try-catch */
 						try {
-							commandObject.run(msg, bot);
+							commandObject.run(msg, bot, sqldb);
 
 							/* Clean triggering command message */
 							if (commandObject.hasOwnProperty("clean")) {
@@ -118,8 +118,8 @@ function helpHandler(message, bot, command){
 	}
 
 	if (!message.channel.isPrivate) {
-		if (Commands.hasOwnProperty(suffix)) {
-			bot.sendMessage(message, Commands[suffix].help);
+		if (AllCommands.hasOwnProperty(suffix)) {
+			bot.sendMessage(message, AllCommands[suffix].help);
 			return;
 		} else {
 			bot.sendMessage(message, ":warning: The command `" + suffix + "` was not found, or it doesn't have a help property.");
@@ -129,4 +129,13 @@ function helpHandler(message, bot, command){
 		bot.sendMessage(message, ":warning: The `help! [command]` does not work in DMs. Sorry :(");
 		return;
 	}
+}
+
+/* This method is to be invoked when the command doesn't execute, to reset the cooldown */
+exports.resetCooldown = function(userID, commandText) {
+    lastTimeRan[commandText][userID] = {};
+}
+
+exports.hardResetCooldown = function(){
+    lastTimeRan = {};
 }
