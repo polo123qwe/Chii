@@ -319,10 +319,10 @@ module.exports = {
             for(var role of userRoles){
                 if(role.name == authorID){
                     found = true;
-                    /*bot.updateRole(role, {color : parseInt(hexValue)}, function(err, role){
+                    bot.updateRole(role, {color : parseInt(hexValue)}, function(err, role){
                         if(err) console.dir(err);
                         bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");
-                    });*/bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");
+                    });/*bot.sendMessage(message, "Color changed successfully to `" + hexValue.replace(/#?/, "") + "`.");*/
                 }
             }
             if(!found) updateColor(message.author, hexValue);
