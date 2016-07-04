@@ -9,10 +9,14 @@ module.exports = {
         permissions: -1,
         run: function(message, bot){
 
-            var outputMessage = "Pong! ("+(Date.now()-message.timestamp-300)+"ms)";
-            bot.sendMessage(message, outputMessage);
+            var actual = Date.now();
+            bot.sendMessage(message, "Pong!", function(err, msg){
+              var newMessage = "Pong! (" + (Date.now() - actual) + "ms)";
+              bot.updateMessage(msg, newMessage);
+            });
         },
         help: "`ping!` - returns pong!",
+        clean: 1000,
     },
 
     time: {
