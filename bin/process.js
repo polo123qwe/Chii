@@ -40,7 +40,8 @@ runCommand.prototype = {
 			helpHandler(msg, bot, commandText);
 		}
 
-		/* Check the existence of the command */
+    commandText = commandText.toLowerCase();
+    /* Check the existence of the command */
 		if (AllCommands.hasOwnProperty(commandText)) {
 			/* Check if the bot has enough permissions to run it */
 			if (permissionUtils.isBotAllowed(AllCommands[commandText], bot, msg.channel.server)) {
