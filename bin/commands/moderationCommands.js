@@ -6,6 +6,8 @@ var resetCooldown = require("../process.js");
 var whitelistedRoles = ["Chilled", "Muted", "Chancellor", "Councillor", "Bot", "Member"];
 var selfAssignableRoles = ["lood", "food", "rp", "coder", "cherno", "real"];
 
+var censor = {}
+
 module.exports = {
     refresh: {
         permissions: 2,
@@ -66,7 +68,7 @@ module.exports = {
 
       },
       help: "`joinrole! <role1> [role2] [role3]...` - Joins specified self-assignable roles. Separate roles with spaces.",
-      cd: 100000
+      cd: 15000
     },
 
     /* Leaverole - Leaves specified role */
@@ -252,7 +254,7 @@ module.exports = {
             //Check roles that are empty and add them to an array
             for(var role of server.roles){
                 if(role.name != "@everyone"){
-                    if(whitelistedRoles.indexOf(role.name) == -1) continue;
+                    if(whitelistedRoles.indexOf(role.name) != -1) continue;
                     if(server.usersWithRole(role).length < 1){
                         rolesToRemove.push(role);
                     }

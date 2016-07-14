@@ -5,7 +5,7 @@
 * Add member, kick and ban
 * ~~Fix nickname bug~~
 * ~~Log chats into DB~~
-* Implement help
+* ~~Implement help~~
 * Save server config into BD
 * ~~Implement cooldown~~
 * Timed announcements

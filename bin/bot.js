@@ -12,6 +12,10 @@ require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
 var path = require('path');
 
+/* Constants */
+var LEFT = 1;
+var JOINED = 0;
+
 /* Objects */
 var execution;
 var options = {
@@ -61,6 +65,10 @@ bot.on("ready", function(){
 //JOIN-LEFT EVENTS//
 bot.on("serverNewMember", function(server, user){
     console.log(user.username + " joined.")
+
+    //ADD EVENT TO DB
+    storeInDB(user.id, user.name, server.id, JOINED);
+
     var rules = server.channels.get("name", "readme");
     if(!rules) rules = server.channels.get("name", "rules");
     if(!rules) {
@@ -73,11 +81,16 @@ bot.on("serverNewMember", function(server, user){
 
 bot.on("serverMemberRemoved", function(server, user){
     console.log(user.username + " left.")
+
+    //ADD EVENT TO DB
+    storeInDB(user.id, user.name, server.id, LEFT);
+
     bot.sendMessage(server.defaultChannel, "**" + user.username + "** is now gone.");
 });
 
 bot.on("userBanned", function(server, user){
-    console.log(user.username + " has been banned.")
+    console.log(user.username + " has been banned.");
+
     bot.sendMessage(server.defaultChannel, "**" + user.username + "** has been banned.");
 });
 
@@ -85,10 +98,6 @@ bot.on("serverCreated", function(server){
     //Insert server into DB
     if(config.logs == "true" && sql && sqldb){
         sqldb.insertServer(server.id, server.name);
-        // for(var channel of server.channels){
-        //     console.log("Adding " + channel.name);
-        //     sqldb.insertChannel(channel.id, channel.name, server.id, channel.type);
-        // }
     }
 });
 
@@ -99,6 +108,14 @@ bot.on("serverMemberUpdated", function(server, userOld, userNew){
 bot.on("error", function(err){
     console.err(err);
 });
+
+//Save in the DB
+function storeInDB(userID, serverID, name, type){
+  if(config.logs == "true" && sqldb){
+    sqldb.insertJoinLeft(userID, serverID, name, Date.now(), type);
+  }
+}
+//
 
 ////////////////////
 ///////LOGIN////////

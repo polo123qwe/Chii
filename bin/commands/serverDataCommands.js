@@ -66,7 +66,7 @@ module.exports = {
 
             for(var user of users){
                 var join = server.detailsOfUser(user).joinedAt;
-                join = utils.unixToTime(join);
+                var joinTime = utils.unixToTime(join);
 
                 /* Correct mistaken dates */
                 if (user.id == "119556874378018818") {
@@ -76,8 +76,9 @@ module.exports = {
                   bot.sendMessage(message, user.name + " joined 1 Jan 2016 15:31:14");
                   continue;
                 }
+                var period = utils.millisecondsConversion(Date.now() - join);
+                bot.sendMessage(message, '**' + user.name + '** joined ' + joinTime + "\n" + period);
 
-                bot.sendMessage(message, user.name + ' joined ' + join);
             }
         },
         help: "`joined! [@user]` - returns date when the @user joined, if no user is provided it uses the author.",
@@ -180,6 +181,17 @@ module.exports = {
         help: "`getlog! <amount> [@user]` - returns the amount of msgs sent and filtered by user (optional).",
     },
 
+
+    lastActivity: {
+      permissions: 2,
+      run: function(message, bot, sqldb){
+
+          //TODO
+          
+      },
+      help: "`lastActivity!` - //TODO.",
+    },
+
     stats: {
         permissions: 2,
         run: function(message, bot, sqldb){
@@ -192,7 +204,7 @@ module.exports = {
 
             var time = message.content.split(" ")[1];
             sqldb.getStatsChannels(time, server, message.author, bot);
-            
+
         },
         help: "`stats!` - returns the % of msgs sent per channel.",
     },

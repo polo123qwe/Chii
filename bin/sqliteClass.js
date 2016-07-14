@@ -12,12 +12,20 @@ SQLite.prototype = {
     constructor: SQLite,
 
     insertServer: function(serverID, name){
-        database.run("INSERT INTO Servers VALUES (?, ?)", [serverID, name], function(err){});
+        database.run("INSERT OR IGNORE INTO Servers VALUES (?, ?, 0)", [serverID, name], function(err){
+          if(err) console.log(err);
+        });
     },
 
     // insertChannel: function(channel_id, channel_name, server_id, channel_type){
     //     database.run("INSERT INTO Channels VALUES (?, ?, ?, ?, ?)", [channel_id, channel_name, server_id, channel_type, false], function(err){});
     // },
+
+    insertJoinLeft: function(userID, name, serverID, timestamp, joined){
+        database.run("INSERT OR IGNORE INTO JoinLeft VALUES (?, ?, ?, ?, ?)", [userID, name, serverID, timestamp, joined], function(err){
+          if(err) console.log(err);
+        });
+    },
 
     insertLogs: function(message_id, user_id, content, timestamp, server_id, channel_id, channel_name){
         database.run("INSERT INTO Logs VALUES (?, ?, ?, ?, ?, ?, ?)", [message_id, user_id, content, timestamp, server_id, channel_id, channel_name], function(err){});

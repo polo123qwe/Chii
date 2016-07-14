@@ -66,7 +66,7 @@ module.exports = {
 
 
 
-    
+
 
     millisecondsConversion(t) {
         var cd = 24 * 60 * 60 * 1000,
@@ -94,7 +94,7 @@ module.exports = {
             .send(data)
             .end(function(response) {
                 if (typeof callback === "function")
-                    return callback("http://hastebin.com/"+response.body.key);
+                    return callback("http://hastebin.com/"+response.body.key+".txt");
             });
     },
 
