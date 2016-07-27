@@ -1,0 +1,30 @@
+{
+  "name": "ChiiBot",
+  "version": "0.0.1",
+  "description": "ChiiBot is a Discord bot intended for use at Anime Discord.",
+  "main": "ChiiBot.js",
+  "author": "polo123qwe",
+  "maintainers": [
+	  {
+		  "name": "AmeryKr"
+	  }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polo123qwe/Chii/tree/chii-dev"
+  },
+  "engines": {
+    "node": ">=5.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "discordie": "^0.7.4",
+    "request": "*",
+    "xml2js": "*",
+    "chalk": "*",
+    "entities": "*",
+    "pg": "^6.0.3",
+    "nodemon": "^1.9.2",
+    "require-directory": "*"
+  }
+}
