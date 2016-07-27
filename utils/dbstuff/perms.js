@@ -15,14 +15,14 @@ var poolConfig = {
 }
 
 /* Connect to the pool */
-var pool = new pg.Client(poolConfig);
+var pool = new pg.Pool(poolConfig);
 
-pool.connect(function (err, client, done) {
+/*pool.connect(function (err, client, done) {
 	if (err) {
 		clog.logError("DATABASE", err);
 		return;
 	}
-});
+}); */
 
 exports.checkPerms = function (msgObject, authorID, roles) {
 	return new Promise (function (resolve, reject) {
@@ -81,45 +81,16 @@ exports.adjustRoleLevel = function (msgObject, roleID, level) {
 				return;
 			}
 
-			dbClient.query('SELECT * FROM permissions WHERE server_id = $1::text', [msgObject.guild.id], function (er, result) {
-				if (er) { console.log("QUERY 1 SELECT"); return reject(er); }
-
-				if (result.rowCount <= 0) {
-					initializePermissions(msgObject.guild);
-					return reject('No database entry was found. Initializing server data...');
-				} else {
-					for (var i = 0; i < result.rows.length; i++) {
-						if (result.rows[i].role_id.indexOf(roleID) > -1) {
-							dbClient.query('UPDATE permissions WHERE server_id = $1::text AND role_id = $2::text SET perm_level = $3::integer', [msgObject.guild.id, roleID, level], function (erro) {
-								if (erro) { console.log("QUERY 2 UPDATE"); return reject(erro); }
-								return resolve(level);
-							});
-						}
-					}
-
-					dbClient.query('INSERT INTO permissions (server_id, role_id, perm_level) VALUES ($1::text, $2::text, $3::integer)', [msgObject.guild.id, roleID, level], function (erro) {
-						if (erro) { console.log("QUERY 3 INSERT"); return reject(erro); }
+			dbClient.query('INSERT INTO permissions (server_id, role_id, perm_level) VALUES ($1, $2, $3)', [msgObject.guild.id, roleID, level], function (erro) {
+				if (erro) {
+					console.log(erro);
+					dbClient.query('UPDATE permissions SET perm_level = $1 WHERE role_id = $2', [level, roleID], function (errorr) {
+						if (errorr) { console.log(errorr); return reject(errorr); }
 						return resolve(level);
 					});
 				}
 
-			});
-		});
-	});
-}
-
-function initializePermissions (guild) {
-	return new Promise (function (resolve, reject) {
-		pool.connect(function (err, dbClient, done) {
-			if (err) {
-				clog.logError("DATABASE", err);
-				return;
-			}
-
-			dbClient.query('INSERT INTO permissions (server_id, role_id) VALUES ($1::text, $2::text)', [guild.id, "42"], function (er) {
-				if (er) { console.log(er); return reject(er); }
-				console.log("Server Initialized.");
-				return resolve('Ok');
+				return resolve(level);
 			});
 		});
 	});

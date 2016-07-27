@@ -1,8 +1,8 @@
 'use strict'
 /**
- *	Discord Maid
+ *	ChiiBot
  */
-process.title	= 'Discord Maid'
+process.title	= 'ChiiBot'
 
 var Discordie		= require('discordie');
 var config			= require('./config.json');
