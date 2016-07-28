@@ -6,11 +6,10 @@ process.title	= 'ChiiBot'
 
 var Discordie		= require('discordie');
 var config			= require('./config.json');
-var utilsLoader		= require('./utils/utilsLoader.js');
+var utilsLoader	= require('./utils/utilsLoader.js');
 var commandLoader	= require('./data/commandLoader.js');
+var db = require('./utils/db.js');
 var clog			= utilsLoader.clog;
-var dbCustom		= utilsLoader.dbstuff.custom;
-var dbPerms			= utilsLoader.dbstuff.perms;
 var commands		= commandLoader.commandController.Commands;
 
 var Events = Discordie.Events;
@@ -27,15 +26,18 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 /* Event: Message */
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 	/* Suf = message trigger suffix */
-	var Suf = config.bot.suffix;
+	var suf = config.bot.suffix;
 
+	db.logging.storeMessageDB(e.message).catch(function(err){
+		console.log(err);
+	});
 	/* Ignore messages without the suffix */
-	if (!(e.message.content.split(" ")[0].slice(-1) == Suf)) {
+	if (!(e.message.content.split(" ")[0].slice(-1) == suf)) {
       return;
     }
 
-	var cmd = e.message.content.split(" ")[0].substring(0, e.message.content.split(" ")[0].length - Suf.length);
-	var suffix = e.message.content.substr(cmd.length + Suf.length + 1);
+	var cmd = e.message.content.split(" ")[0].substring(0, e.message.content.split(" ")[0].length - suf.length);
+	var suffix = e.message.content.substr(cmd.length + suf.length + 1);
 
 	/* Prevent the bot from responding to itself (infite loops suck) */
 	if (e.message.author.client || e.message.author.id === client.User.id) { return }
@@ -66,7 +68,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 			}
 		} else if (!e.message.isPrivate) { /* This is only for non-DMs */
 			if (utilsLoader.cooldowns.checkCD(client, cmd, e.message.guild.id, e.message) == true) {
-				dbPerms.checkPerms(e.message, e.message.author.id, e.message.member.roles).then(function (lvl) {
+				db.checkPerms(e.message, e.message.author.id, e.message.member.roles).then(function (lvl) {
 					if (lvl >= commands[cmd].levelReq) {
 						try {
 							commands[cmd].exec(client, e.message, suffix);
@@ -109,6 +111,10 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 			}
 		}
 	}
+});
+
+client.Dispatcher.on(Events.GUILD_MEMBER_ADD, e => {
+	db.storeUserDB(e.member);
 });
 
 /* Client Login */

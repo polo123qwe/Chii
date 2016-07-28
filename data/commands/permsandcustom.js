@@ -1,9 +1,7 @@
 var CommandArray = [];
 var clog = require('../../utils/clog.js');
 var config = require('../../config.json');
-var utilsLoader = require('../../utils/utilsLoader');
-var Perms = utilsLoader.dbstuff.perms;
-var Custom = utilsLoader.dbstuff.custom;
+var db = require('../../utils/db.js');
 
 CommandArray.setlevel = {
 	name		: 'setlevel',
@@ -26,7 +24,7 @@ CommandArray.setlevel = {
 
 			if (!roleObject) { msg.channel.sendMessage(':warning: Role name is invalid!'); return; }
 
-			Perms.adjustRoleLevel(msg, roleObject.id, suffixArray[0]).then(function () {
+			db.adjustRoleLevel(msg, roleObject.id, suffixArray[0]).then(function () {
 				msg.channel.sendMessage(':white_check_mark: Role `' + roleObject.name + '` was successfully set to level **' + suffixArray[0] + '**');
 			}).catch(function (err) {
 				msg.channel.sendMessage(':warning: Something went wrong! (check console)');

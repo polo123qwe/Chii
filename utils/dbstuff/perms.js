@@ -1,30 +1,16 @@
-/**
- * Database for server permissions
- */
-var config = require('../../config.json');
-var clog = require('../clog.js');
-var pg = require('pg');
+var pool;
 
-/* Set up the pool configuration for the DB */
-var poolConfig = {
-	host		: config.database.db,
-	user		: config.database.user,
-	password	: config.database.pass,
-	database	: config.database.name,
-	port		: 5432
+var config = require('../../config.json');
+
+function perms(p){
+	//We pass the pool as a parameter
+
+	pool = p;
 }
 
-/* Connect to the pool */
-var pool = new pg.Pool(poolConfig);
+module.exports = perms;
 
-/*pool.connect(function (err, client, done) {
-	if (err) {
-		clog.logError("DATABASE", err);
-		return;
-	}
-}); */
-
-exports.checkPerms = function (msgObject, authorID, roles) {
+perms.prototype.checkPerms = function (msgObject, authorID, roles) {
 	return new Promise (function (resolve, reject) {
 		if (config.permissions.owner.indexOf(msgObject.author.id) > -1) {
 			return resolve(Infinity); /* TO INFINITY AND BEYOND */
@@ -39,6 +25,7 @@ exports.checkPerms = function (msgObject, authorID, roles) {
 
 			if (err) {
 				clog.logError("DATABASE", err);
+				done();
 				return;
 			}
 
@@ -58,19 +45,21 @@ exports.checkPerms = function (msgObject, authorID, roles) {
 							}
 						}
 						/* If there isn't a role indexed, we simply assume that the permission level is 0 */
+						done();
 						return resolve(0);
 					} else {
 						/* If the user has no roles, then they're part of @everyone, hence their permission level is 0 */
+						done();
 						return resolve(0);
 					}
 				}
 			});
-
+			done();
 		});
 	});
 }
 
-exports.adjustRoleLevel = function (msgObject, roleID, level) {
+perms.prototype.adjustRoleLevel = function (msgObject, roleID, level) {
 	return new Promise (function (resolve, reject) {
 		/* Run some checkups on the level before doing the connection */
 		if (level < -1 || level > 3 || level == 0) return reject('Level cannot be greater than 3 or lesser than -1, nor 0.');
@@ -78,18 +67,22 @@ exports.adjustRoleLevel = function (msgObject, roleID, level) {
 		pool.connect(function (err, dbClient, done) {
 			if (err) {
 				clog.logError("DATABASE", err);
+				done();
 				return;
 			}
 
 			dbClient.query('INSERT INTO permissions (server_id, role_id, perm_level) VALUES ($1, $2, $3)', [msgObject.guild.id, roleID, level], function (erro) {
 				if (erro) {
-					console.log(erro);
 					dbClient.query('UPDATE permissions SET perm_level = $1 WHERE role_id = $2', [level, roleID], function (errorr) {
-						if (errorr) { console.log(errorr); return reject(errorr); }
+						if (errorr) {
+							console.log(errorr);
+							done();
+							return reject(errorr); }
+						done();
 						return resolve(level);
 					});
 				}
-
+				done();
 				return resolve(level);
 			});
 		});

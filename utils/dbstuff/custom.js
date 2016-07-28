@@ -3,10 +3,19 @@
  * Database for server customization
  */
 
-exports.checkCustomPrefix = function (msg) {
+var pool;
+
+function custom(p){
+//We pass the pool as a parameter
+  pool = p;
 }
 
-exports.adjustCustomPrefix = function (msg, newPrefix) {
+module.exports = custom;
+
+custom.prototype.checkCustomPrefix = function (msg) {
+}
+
+custom.prototype.adjustCustomPrefix = function (msg, newPrefix) {
 }
 
 
