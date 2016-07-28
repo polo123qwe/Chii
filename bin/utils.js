@@ -74,9 +74,7 @@ module.exports = {
             d = Math.floor(t / cd),
             h = Math.floor((t - d * cd) / ch),
             m = Math.round((t - d * cd - h * ch) / 60000),
-            pad = function(n) {
-                return n < 10 ? '0' + n : n;
-            };
+
         if (m === 60) {
             h++;
             m = 0;
@@ -85,7 +83,7 @@ module.exports = {
             d++;
             h = 0;
         }
-        return (d + " days " + pad(h) + " hours and " + pad(m) + " minutes.");
+        return ("```xl\n" + d + " Days, " + h + " Hours, " + m + " Minutes.\n```");
     },
 
     generateHasteBin: function(data, callback) {
