@@ -69,15 +69,17 @@ module.exports = {
                 var joinTime = utils.unixToTime(join);
 
                 /* Correct mistaken dates */
+                /* No Cheating Amery, kek!
                 if (user.id == "119556874378018818") {
                   bot.sendMessage(message, user.name + " joined 1 Jan 2016 14:06:22");
                   continue;
                 } else if (user.id == "109073503768055808") {
                   bot.sendMessage(message, user.name + " joined 1 Jan 2016 15:31:14");
                   continue;
-                }
+                }*/
+
                 var period = utils.millisecondsConversion(Date.now() - join);
-                bot.sendMessage(message, '**' + user.name + '** joined ' + joinTime + "\n" + period);
+                bot.sendMessage(message, '**' + user.name + '#' + user.discriminator '** joined ' + joinTime + "\n" + period);
 
             }
         },
