@@ -32,14 +32,12 @@ logging.prototype.storeUserDB = function (user) {
 
 logging.prototype.storeMessageDB = function (msgObject) {
 	return new Promise (function (resolve, reject) {
-		console.log(pool)
 		pool.connect(function (err, dbClient, done) {
 			if (err) {
 				clog.logError("DATABASE", err);
 				done();
 				return;
 			}
-
 			dbClient.query('INSERT INTO logs (message_id, server_id, channel_id, user_id, content, timestamp) VALUES ($1, $2, $3, $4, $5, $6)',
                     [msgObject.id, msgObject.guild.id, msgObject.channel.id, msgObject.author.id, msgObject.content, msgObject.timestamp], function (err) {
 				if (err) {
@@ -48,6 +46,36 @@ logging.prototype.storeMessageDB = function (msgObject) {
 				}
 				done();
 				return resolve();
+			});
+		});
+	});
+}
+
+logging.prototype.storeChannelDB = function (channel, status) {
+	return new Promise (function (resolve, reject) {
+		pool.connect(function (err, dbClient, done) {
+			if (err) {
+				clog.logError("DATABASE", err);
+				done();
+				return;
+			}
+			dbClient.query('INSERT INTO channels (channel_id, server_id, enabled) VALUES ($1, $2, $3)',
+                    [channel.id, channel.guild.id, status], function (err) {
+				if (err) {
+					done();
+					dbClient.query('UPDATE channels SET enabled = $1 WHERE channel_id = $2', [status, channel.id], function(er){
+						if(er){
+							done();
+							return reject(er);
+						} else {
+							done();
+							return resolve();
+						}
+					});
+				} else {
+					done();
+					return resolve();
+				}
 			});
 		});
 	});

@@ -24,7 +24,7 @@ CommandArray.setlevel = {
 
 			if (!roleObject) { msg.channel.sendMessage(':warning: Role name is invalid!'); return; }
 
-			db.adjustRoleLevel(msg, roleObject.id, suffixArray[0]).then(function () {
+			db.perms.adjustRoleLevel(msg, roleObject.id, suffixArray[0]).then(function () {
 				msg.channel.sendMessage(':white_check_mark: Role `' + roleObject.name + '` was successfully set to level **' + suffixArray[0] + '**');
 			}).catch(function (err) {
 				msg.channel.sendMessage(':warning: Something went wrong! (check console)');

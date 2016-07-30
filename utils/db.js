@@ -29,6 +29,8 @@ try {
     module.exports['custom'] = new Custom(pool);
     var Logging			= require('./dbstuff/logging.js');
     module.exports['logging'] = new Logging(pool);
+	var Fetch			= require('./dbstuff/fetch.js');
+	module.exports['fetch'] = new Fetch(pool);
 } catch (e) {
   if (e instanceof Error && e.code === "MODULE_NOT_FOUND")
     console.log("Can't load foo!");

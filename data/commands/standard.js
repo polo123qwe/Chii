@@ -51,7 +51,7 @@ function add(member, members){
     return;
   }
   console.log(members.length + " left. Adding: " + member.name);
-  db.storeUserDB(member).then(function(){
+  db.logging.storeUserDB(member).then(function(){
     add(members.pop(), members);
   });
 }
