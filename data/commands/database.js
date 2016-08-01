@@ -8,7 +8,6 @@ var types = ['country', 'bday', 'name'];
 CommandArray.add = {
   name		: 'add',
   help		: "Adds to db member",
-  module	: 'database',
   cooldown	: 0,
   levelReq	: 0,
   clean		: 0,
@@ -16,7 +15,8 @@ CommandArray.add = {
     if(suffix == null) return;
     var target;
 
-    if(!suffix || isNaN(suffix)){
+	//If there is a suffix
+	if(!suffix){
       target = msg.author.id;
     } else {
       target = suffix;
@@ -35,7 +35,6 @@ CommandArray.add = {
 CommandArray.set = {
   name		: 'set',
   help		: "Adds the setting to member of the db",
-  module	: 'database',
   cooldown	: 0,
   levelReq	: 0,
   clean		: 0,

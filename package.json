@@ -5,9 +5,10 @@
   "main": "ChiiBot.js",
   "author": "polo123qwe",
   "maintainers": [
-	  {
-		  "name": "AmeryKr"
-	  }
+    {
+      "name": "AmeryKr"
+	  "name": "polo123qwe"
+    }
   ],
   "repository": {
     "type": "git",
@@ -18,13 +19,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "discordie": "^0.7.4",
-    "request": "*",
-    "xml2js": "*",
     "chalk": "*",
+    "discordie": "^0.7.4",
     "entities": "*",
-    "pg": "^6.0.3",
     "nodemon": "^1.9.2",
-    "require-directory": "*"
+    "pg": "^6.0.3",
+    "request": "*",
+    "require-directory": "*",
+    "xml2js": "*"
   }
 }

@@ -80,3 +80,7 @@ logging.prototype.storeChannelDB = function (channel, status) {
 		});
 	});
 }
+//Update the current data of a user
+logging.prototype.updateUser = function(user, column, value){
+	//If the value is null it means we will increase the current one
+}

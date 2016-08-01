@@ -16,8 +16,31 @@ fetch.prototype.getChannelConfig = function (channel) {
 				return;
 			}
 
-			dbClient.query('SELECT enabled FROM channels WHERE channel_id = $1',
+			dbClient.query('SELECT * FROM channels WHERE channel_id = $1',
                     [channel], function (err, result) {
+				if (err) {
+					done();
+					return reject(err);
+				}
+				done();
+				return resolve(result);
+			});
+
+		});
+	});
+}
+
+fetch.prototype.getServerConfig = function (server) {
+	return new Promise (function (resolve, reject) {
+		pool.connect(function (err, dbClient, done) {
+			if (err) {
+				clog.logError("DATABASE", err);
+				done();
+				return;
+			}
+
+			dbClient.query('SELECT * FROM servers WHERE server_id = $1',
+                    [server], function (err, result) {
 				if (err) {
 					done();
 					return reject(err);

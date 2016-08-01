@@ -5,7 +5,6 @@ var db = require('../../utils/db.js');
 CommandArray.ping = {
   name		: 'ping',
   help		: "Replies with pong!",
-  module	: 'standard',
   cooldown	: 5,
   levelReq	: 0,
   clean		: 0,
@@ -21,7 +20,6 @@ CommandArray.ping = {
 CommandArray.eval = {
   name		: 'eval',
   help		: "Runs arbitrary JS code and gives back the results.",
-  module	: 'standard',
   cooldown	: 0,
   levelReq	: 'owner',
   clean		: 0,
