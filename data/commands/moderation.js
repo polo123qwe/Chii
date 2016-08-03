@@ -59,86 +59,48 @@ CommandArray.warn = {
     clean		: 0,
 	exec: function (client, msg, suffix) {
 		console.log(suffix); //TODO FIX
-		//console.log(suffix.replace("\\<.*?\\>/g", ""));
-		var output = addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "warn");
-		if(output)
+		console.log(suffix.replace(/<@?\!?\d{17,}>/, ""));
+		utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "warn").then(function(){
+
+		}).catch(function(err){
 			msg.channel.sendMessage(output);
+		});
+	}
+}
+
+CommandArray.mute = {
+	name		: 'mute',
+    help		: "Mutes a user",
+    cooldown	: 5,
+    levelReq	: 2,
+    clean		: 0,
+	exec: function (client, msg, suffix) {
+		console.log(suffix); //TODO FIX
+		console.log(suffix.replace(/<@?\!?\d{17,}>/, ""));
+		utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "mute").then(function(){
+
+		}).catch(function(err){
+			msg.channel.sendMessage(output);
+		});
+	}
+}
+
+CommandArray.chill = {
+	name		: 'chill',
+    help		: "Chills a user",
+    cooldown	: 5,
+    levelReq	: 2,
+    clean		: 0,
+	exec: function (client, msg, suffix) {
+		console.log(suffix); //TODO FIX
+		console.log(suffix.replace(/<@?\!?\d{17,}>/, ""));
+		utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "chill").then(function(){
+
+		}).catch(function(err){
+			msg.channel.sendMessage(output);
+		});
+
 	}
 }
 
 exports.CommandArray = CommandArray;
-
-function addUserToRole(client, author, originalChannel, user, guild, suffix, type){
-
-	var guildUser;
-	var moderationCommand = false;
-
-	//We check if its a moderation command
-	if(type == "chill" || type == "mute" || type == "warn"){
-		switch (type) {
-			case "chill":
-				type = "chilling"; break;
-			case "mute":
-				type = "muted"; break;
-			case "warn":
-				type = "warned"; break;
-		}
-		moderationCommand = true;
-		guildUser = client.Users.getMember(guild, user);
-	} else {
-		guildUser = client.Users.getMember(guild, author);
-	}
-
-	if(!guildUser){
-		return "Error, user not found.";
-	}
-
-	var targetChannel, targetRole;
-
-	//If its a moderation command
-	if(moderationCommand){
-		var channels = client.Channels.textForGuild(guild);
-		//Search for the channel to log
-		for(var channel of channels){
-			if(channel.name == "log" || channel.name == "logs"){
-				targetChannel = channel;
-				break;
-			}
-		}
-	}
-	//Search for the role
-	for(var role of guild.roles){
-		if(role.name.toLowerCase() == type){
-			targetRole = role;
-			break;
-		}
-	}
-
-	//If failed to find the role
-	if(!targetRole)	return "Error, role not found";
-
-	guildUser.assignRole(targetRole).then(function(){
-		//If its a moderation command
-		if(moderationCommand){
-			if(targetChannel){
-
-				if(suffix){
-					var suffix = suffix.replace("\\<@.*?\\>", "");
-					targetChannel.sendMessage(user.username + " " + type + " by: " + author.username + ", reason: " + suffix);
-				} else {
-					targetChannel.sendMessage(user.username + " " + type + " by: " + author.username);
-				}
-			}
-			//Store the change in the db
-			if(type == "chill" || type == "warn"){
-				db.logging.updateUser(user, dbcolumn + "ed");
-			} else {
-				db.logging.updateUser(user, dbcolumn + "d");
-			}
-		} else {
-			originalChannel.sendMessage(author.username)
-		}
-		return;
-	});
-
-}

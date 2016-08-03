@@ -14,11 +14,13 @@ var commands		= commandLoader.commandController.Commands;
 
 var Events = Discordie.Events;
 
-var client = new Discordie();
+var client = new Discordie({
+	autoReconnect: true,
+});
 
 /* Event: Ready */
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
-	console.log(clog.c.colorGBG(" CHIIBOT is ready to operate ")); /* NOTE - Green is not a creative color */
+	console.log(clog.c.colorYellow(" Ready to operate "));
 	var game = {name: "with your feelings"}
 	client.User.setStatus("online", game);
 });
@@ -111,9 +113,32 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 	}
 });
 
+//Joined and left events
 client.Dispatcher.on(Events.GUILD_MEMBER_ADD, e => {
 	db.logging.storeUserDB(e.member);
+
+	var rules;
+	for(var channel of e.guild.channels){
+		if(channel.name.toLowerCase() == "rules" || channel.name.toLowerCase() == "readme"){
+			rules = channel;
+			break;
+		}
+	}
+	if(!rules) {
+		e.guild.generalChannel.sendMessage("Welcome to "+e.guild.name+", "+e.member.mention+"! Don't forget to read the rules.");
+	} else {
+		e.guild.generalChannel.sendMessage("Welcome to "+e.guild.name+", "+e.member.mention
+											+"! Don't forget to read the rules." + " <#" + rules.id + ">");
+	}
 });
+
+client.Dispatcher.on(Events.GUILD_MEMBER_REMOVE, e => {
+	e.guild.generalChannel.sendMessage("**" + e.user.username + "#" + e.user.discriminator +"** is now gone.")
+});
+
+client.Dispatcher.on(Events.GUILD_BAN_ADD, e => {
+});
+/////////////////////////////
 
 /* Client Login */
 if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {

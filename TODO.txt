@@ -1,3 +1,5 @@
-Months (time parsing)
-Exporting current commands
+Export current commands
+Timestamp of acc creation and joined
+Add two more tables: Nickname change, Name change
+Add more fields to users: timestamps
 Add new ones
