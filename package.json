@@ -6,8 +6,7 @@
   "author": "polo123qwe",
   "maintainers": [
     {
-      "name": "AmeryKr",
-	  "name": "polo123qwe"
+      "name": "polo123qwe"
     }
   ],
   "repository": {
@@ -26,6 +25,7 @@
     "pg": "^6.0.3",
     "request": "*",
     "require-directory": "*",
+    "unirest": "^0.5.0",
     "xml2js": "*"
   }
 }

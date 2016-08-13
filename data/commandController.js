@@ -5,17 +5,18 @@
  * access. The process is automated, so adding new command modules is as
  * simple as following the structure of the files.
  */
-var clog		= require('../utils/clog.js');
+var clog = require('../utils/clog.js');
 var directory = require('require-directory');
-var cmds      = directory(module, './commands/');
-var commands  = [];
-var counter   = 0;
+var cmds = directory(module, './commands/');
+var commands = [];
+var counter = 0;
 
 for (var f in cmds) {
-  for (var o in cmds[f].CommandArray) {
-    commands[o] = cmds[f].CommandArray[o];
-    counter++
-  }
+    for (var o in cmds[f].CommandArray) {
+        commands[o] = cmds[f].CommandArray[o];
+        commands[o].category = f;
+        counter++;
+    }
 }
 
 console.log(clog.c.colorGreen("Successfully constructed ") + counter + clog.c.colorGreen(" commands."));

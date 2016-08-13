@@ -1,5 +1,8 @@
 Export current commands
 Timestamp of acc creation and joined
-Add two more tables: Nickname change, Name change
+Add two more tables: Nickname change, Name change, table
 Add more fields to users: timestamps
+claim! (or similar) to claim a ban/kick
+Delete invites from non members
+Remove cd from joinrole (join) and altloodtopia opt
 Add new ones
