@@ -4,8 +4,9 @@ var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
+var path = '../../colorSetup/hex.txt';
 
-var colors = require('fs').readFileSync('./colorSetup/hex.txt').toString().split('\r\n');
+var colors = require('../../colors.json').colors;
 
 CommandArray.join = {
     name: 'join',

@@ -54,7 +54,7 @@ CommandArray.ava = {
             members = utils.getUsersFromMessage(client, msg, msg.channel.guild, suffix);
         }
         for (var member of members) {
-            msg.channel.sendMessage("[" + member.username + "] https://cdn.discordapp.com/avatars/" + member.id + "/" + member.avatar + ".jpg \n");
+            msg.channel.sendMessage("[" + member.username + "] https://discordapp.com/api/users/" + member.id + "/avatars/" + member.avatar + ".jpg \n");
         }
         //msg.channel.sendMessage(output);
     }

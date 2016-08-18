@@ -1,6 +1,6 @@
 var Discordie = require('discordie');
 var config = require('../config.json');
-var colors = require('fs').readFileSync('hex.txt').toString().split('\r\n');
+var colors = require('../colors.json').colors;
 colors = colors.splice(0, colors.length - 1);
 
 var Events = Discordie.Events;
