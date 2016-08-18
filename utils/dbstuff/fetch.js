@@ -9,52 +9,28 @@ function fetch(p) {
 
 module.exports = fetch;
 
-fetch.prototype.getChannelConfig = function(channel) {
-    return new Promise(function(resolve, reject) {
-        pool.connect(function(err, dbClient, done) {
-            if (err) {
-                clog.logError("DATABASE", err);
-                done();
-                return;
-            }
+fetch.prototype.getData = function(type, args) {
+    var query = "";
 
-            dbClient.query('SELECT * FROM channels WHERE channel_id = $1', [channel], function(err, result) {
-                if (err) {
-                    done();
-                    return reject(err);
-                }
-                done();
-                return resolve(result);
-            });
-
-        });
-    });
-}
-
-fetch.prototype.getServerConfig = function(server_id) {
-        return new Promise(function(resolve, reject) {
-            pool.connect(function(err, dbClient, done) {
-                if (err) {
-                    clog.logError("DATABASE", err);
-                    done();
-                    return;
-                }
-
-                dbClient.query('SELECT * FROM servers WHERE server_id = $1', [server_id], function(err, result) {
-                    if (err) {
-                        done();
-                        return reject(err);
-                    }
-                    done();
-                    return resolve(result);
-                });
-
-            });
-        });
+    switch (type) {
+        case "channelConfig":
+            query = 'SELECT * FROM channels WHERE channel_id = $1';
+            break;
+        case "serverConfig":
+            query = 'SELECT * FROM servers WHERE server_id = $1';
+            break;
+        case "logs":
+            query = 'SELECT * FROM logs WHERE server_id = $1 and channel_id = $2 and timestamp > to_timestamp($3)';
+            break;
+        case "whitelist":
+            query = 'SELECT * FROM whitelist WHERE server_id = $1 AND user_id = $2';
+            break;
     }
-    //message_id, server_id, channel_id, user_id, content, timestamp
-fetch.prototype.getLogs = function(server_id, channel_id, time) {
-    var offset = Date.now() - time * 1000;
+    return dbrequest(query, args);
+
+};
+
+function dbrequest(query, args){
     return new Promise(function(resolve, reject) {
         pool.connect(function(err, dbClient, done) {
             if (err) {
@@ -62,8 +38,7 @@ fetch.prototype.getLogs = function(server_id, channel_id, time) {
                 done();
                 return;
             }
-
-            dbClient.query('SELECT * FROM logs WHERE server_id = $1 and channel_id = $2 and timestamp > to_timestamp($3)', [server_id, channel_id, offset / 1000], function(err, result) {
+            dbClient.query(query, args, function(err, result) {
                 if (err) {
                     done();
                     return reject(err);
@@ -71,7 +46,6 @@ fetch.prototype.getLogs = function(server_id, channel_id, time) {
                 done();
                 return resolve(result);
             });
-
         });
     });
 }

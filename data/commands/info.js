@@ -60,26 +60,22 @@ CommandArray.ava = {
     }
 }
 
-//TODO
-/*CommandArray.mycolor = {
-  name		: 'mycolor',
-  help		: "Returns the current color of the user",
-  cooldown	: 5,
-  levelReq	: 0,
-  clean		: 1,
-  exec: function (client, msg, suffix) {
-    var guild = msg.channel.guild;
+CommandArray.mycolor = {
+    name: 'mycolor',
+    help: "Returns the current color of the user",
+    cooldown: 5,
+    levelReq: 0,
+    clean: 1,
+    exec: function(client, msg, suffix) {
 
-    var userRoles = server.rolesOfUser(message.author);
+        var role = msg.guild.roles.find(k => k.name.startsWith("#"));
+        if (role) {
+            msg.channel.sendMessage("Your current color is " + role.name);
+        } else {
+            msg.channel.sendMessage("You have no color.");
+        }
+    }
 
-           for(var role of userRoles){
-               if(role.name == message.author.id){
-                   bot.sendMessage(message, "Your color is " + role.colorAsHex());
-                   return;
-               }
-           }
-    bot.sendMessage(message, "You have no color.");
-
-}*/
+}
 
 exports.CommandArray = CommandArray;

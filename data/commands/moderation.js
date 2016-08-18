@@ -33,7 +33,7 @@ CommandArray.member = {
         var roleName = "member";
         var roleID;
 
-        db.fetch.getServerConfig(msg.channel.guild.id).then(function(query) {
+        db.fetch.getData("serverConfig", [msg.channel.guild.id]).then(function(query) {
             if (query.rowCount > 0) {
                 if (query.rows[0].memberrole) {
                     roleID = query.rows[0].memberrole;
@@ -49,6 +49,66 @@ CommandArray.member = {
                 }
             }
         });
+    }
+}
+
+CommandArray.blacklist = {
+    name: 'blacklist',
+    usage: '[@user/id] role',
+    help: 'removes user access to a specific channel',
+    cooldown: 5,
+    levelReq: 2,
+    clean: 1,
+    exec: function(client, msg, suffix) {
+        var split = suffix.split(" ");
+
+        //Check the amount of parameters supplied
+        if (suffix.length < 2) {
+            msg.channel.sendMessage("Not enough arguments").then(function(newMsg) {
+                setTimeout(function() {
+                    newMsg.delete();
+                }, 2000);
+            });
+            return;
+        }
+        var roleName = split[1];
+        if (config.userroles.blacklisted.includes(roleName)) {
+            var guildUser;
+            var user = msg.mentions[0];
+            if (!user) {
+                //Find the guildMember of the user
+                var users = client.Users.membersForGuild(msg.guild)
+                guildUser = users.find((u) => u.id == split[0]);
+            }
+            if (!guildUser) {
+                guildUser = client.Users.getMember(msg.guild, user);
+            }
+
+            if (guildUser) {
+                var role = msg.guild.roles.find((r) => r.name == roleName);
+                if (role) {
+                    guildUser.assignRole(role).then(function() {
+                        var channel = client.Channels.textForGuild(msg.guild).find((c) => c.name == "log" || c.name == "logs");
+                        if (channel) {
+                            channel.sendMessage(guildUser.username + "#" + guildUser.discriminator + " blacklisted from " + roleName);
+                        }
+                    });
+                }
+            } else {
+                msg.channel.sendMessage("No user found!").then(function(newMsg) {
+                    setTimeout(function() {
+                        newMsg.delete();
+                    }, 2000);
+                });
+            }
+
+        } else {
+            msg.channel.sendMessage("Role invalid!").then(function(newMsg) {
+                setTimeout(function() {
+                    newMsg.delete();
+                }, 2000);
+            });
+        }
     }
 }
 

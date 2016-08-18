@@ -1,8 +1,10 @@
 Export current commands
-Timestamp of acc creation and joined
-Add two more tables: Nickname change, Name change, table
+block from channel
 Add more fields to users: timestamps
 claim! (or similar) to claim a ban/kick
-Delete invites from non members
-Remove cd from joinrole (join) and altloodtopia opt
+Delete invites that are not in the whitelist
+
+join event
 Add new ones
+
+<Add a check as to how many parameters are sent to a command?>

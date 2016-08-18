@@ -26,8 +26,7 @@ module.exports = function(msg, commands, suffix) {
             }
         }
         msg.author.openDM().then(function(dmchannel) {
-            dmchannel.sendMessage("Here is a list of all the commands that are currently available:");
-            dmchannel.sendMessage(output);
+            dmchannel.sendMessage("Here is a list of all the commands that are currently available:\n" + output);
         });
     } else {
         if (commands[suffix]) {
@@ -41,7 +40,9 @@ module.exports = function(msg, commands, suffix) {
             msg.channel.sendMessage(line);
             if(suffix == "color"){
                 try{
-                    msg.channel.uploadFile(fs.readFileSync("./colorSetup/colors.png"), "colors.png");
+                    msg.author.openDM().then(function(dmchannel){
+                        dmchannel.uploadFile(fs.readFileSync("./colorSetup/colors.png"), "colors.png", "Colors available are:");
+                    });
                 } catch(e){
                     clog.logError("ERROR", e);
                 }

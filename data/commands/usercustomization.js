@@ -5,6 +5,8 @@ var utils = utilsLoader.generalUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 
+var colors = require('fs').readFileSync('./colorSetup/hex.txt').toString().split('\r\n');
+
 CommandArray.join = {
     name: 'join',
     usage: "role [role2] [role3]",
@@ -22,7 +24,7 @@ CommandArray.join = {
         //Check every role the user typed
         for (var role of input) {
             //If its one of the optional roles
-            for (var r of config.userroles.roles) {
+            for (var r of config.userroles.optroles) {
                 if (role.toLowerCase() == r) {
                     //If its not already added
                     if (rolesToAdd.indexOf(r) == -1) {
@@ -38,23 +40,25 @@ CommandArray.join = {
         if (!guildUser) {
             msg.channel.sendMessage("Error, cannot find user.");
         } else {
-            add(0);
+            addRole(0);
         }
 
-        function add(index) {
+        function addRole(index) {
             if (index > allRoles.length - 1) return;
 
             var role = allRoles[index];
             if (rolesToAdd.indexOf(role.name.toLowerCase()) != -1) {
                 guildUser.assignRole(role).then(function() {
                     msg.channel.sendMessage(msg.author.username + " added to " + role.name).then(function(msg) {
-                        return add(index + 1);
+                        setTimeout(function(){
+                            addRole(index + 1);
+                        }, 1000);
                     });
                 }).catch(function(err) {
                     clog.logError("ERROR", err);
                 });
             } else {
-                return add(index + 1);
+                return addRole(index + 1);
             }
         }
     }
@@ -76,7 +80,7 @@ CommandArray.leave = {
         //Check every role the user typed
         var guildUser = client.Users.getMember(msg.channel.guild, msg.author);
         //If its one of the optional roles
-        for (var r of config.userroles.roles) {
+        for (var r of config.userroles.optroles) {
             if (roleToRemove.toLowerCase() == r[0]) {
                 roleToRemove = r[1];
                 found = true;
@@ -109,21 +113,6 @@ CommandArray.leave = {
     }
 }
 
-/*CommandArray.member = {
-	name		: 'member',
-	usage		: "[@user/user/id]",
-	help		: "Gives membership to a user",
-	cooldown	: 5,
-	levelReq	: 2,
-	clean		: 1,
-	exec: function (client, msg, suffix) {
-		utils.addUserToRole(client, msg.author, msg.originalChannel, msg.mentions[0], msg.channel.guild, suffix, "member").then(function(){
-			msg.channel.sendMessage(msg.mentions[0].username + " added to member successfully")
-		});
-	}
-}*/
-
-
 CommandArray.suicide = {
     name: 'suicide',
     help: "Mutes user from 1 to 10 mins",
@@ -149,10 +138,23 @@ CommandArray.color = {
     exec: function(client, msg, suffix) {
 
         var color;
-        if(suffix.length == 6){
+
+        //Check if its a valid hex value
+        if(!suffix){
+            msg.channel.sendMessage("A parameter is required to run this command");
+            return;
+        } else if(suffix.length == 6){
             color = "#" + suffix;
         } else if(suffix.length == 7 && suffix.startsWith("#")){
             color = suffix;
+        } else if(!isNaN(suffix)){
+            var number = parseInt(suffix, 10);
+            if(colors[number-1]){
+                color = colors[number-1];
+            } else {
+                msg.channel.sendMessage("Parameter incorrect use help! color for more information");
+                return;
+            }
         } else {
             msg.channel.sendMessage("Parameter incorrect use help! color for more information");
             return;
@@ -164,21 +166,41 @@ CommandArray.color = {
         var role = msg.guild.roles.find(k => k.name.toLowerCase() == color);
 
         if(!role){
-            msg.channel.sendMessage("Color not found!");
+            msg.channel.sendMessage("Color " + suffix + " not found!");
+            return;
         }
 
+        var toRemove = []
         //Find the color roles the user has
         for(var r of guildUser.roles){
             if(r.name.startsWith("#")){
-                guildUser.unassignRole(r);
+                toRemove.push(r);
             }
         }
+        removeRole(0);
 
-        guildUser.assignRole(role).then(function(){
-            msg.channel.sendMessage(msg.author.username + " added to " + role.name);
-        }).catch(function(err){
-            clog.logError("ERROR", err);
-        })
+        function removeRole(i){
+            if(i >= toRemove.length){
+                addRole(role);
+                return;
+            }
+            guildUser.unassignRole(toRemove[i]).then(function(){
+                setTimeout(function(){
+                    removeRole(i+1);
+                }, 1000);
+            }).catch(function(err){
+                clog.logError("ERROR", err);
+                removeRole(i+1);
+            });
+        }
+
+        function addRole(role){
+            guildUser.assignRole(role).then(function(){
+                msg.channel.sendMessage(msg.author.username + " added to " + role.name);
+            }).catch(function(err){
+                clog.logError("ERROR", err);
+            })
+        }
 
     }
 }

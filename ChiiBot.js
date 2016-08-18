@@ -10,6 +10,7 @@ var utilsLoader = require('./utils/utilsLoader.js');
 var commandLoader = require('./data/commandLoader.js');
 var help = utilsLoader.help;
 var db = utilsLoader.db;
+var utils = utilsLoader.generalUtils;
 var clog = utilsLoader.clog;
 var commands = commandLoader.commandController.Commands;
 
@@ -43,25 +44,55 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     /* Suf = message trigger suffix */
     var suf = config.bot.suffix;
 
-    db.logging.storeMessageDB(e.message).catch(function(err) {
-        console.log(err);
-    });
+    var m = e.message;
+
+    if (m.isPrivate) {
+        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            console.log(err);
+        });
+    } else {
+        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            console.log(err);
+        });
+    }
+
+    /* Delete invite links*/
+    if (!m.isPrivate) {
+        if (m.content.includes("discord.gg/")) {
+            //Check if the server blocks links
+            db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
+                if(query.rowCount != 0){
+                    if(!query.rows[0].links){
+                        //Try to find if the user can post links
+                        db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
+                            if (query2.rowCount == 0) {
+                                console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
+                                m.delete();
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
+    }
+
     /* Ignore messages without the suffix */
-    if (!(e.message.content.split(" ")[0].slice(-1) == suf)) {
+    if (!(m.content.split(" ")[0].slice(-1) == suf)) {
         return;
     }
 
-    var cmd = e.message.content.split(" ")[0].substring(0, e.message.content.split(" ")[0].length - suf.length);
-    var suffix = e.message.content.substr(cmd.length + suf.length + 1);
+    var cmd = m.content.split(" ")[0].substring(0, m.content.split(" ")[0].length - suf.length);
+    var suffix = m.content.substr(cmd.length + suf.length + 1);
 
     /* Prevent the bot from responding to itself (infite loops suck) */
-    if (e.message.author.client || e.message.author.id === client.User.id) {
+    if (m.author.client || m.author.id === client.User.id) {
         return;
     }
 
     /* Help is handled in a different file */
     if (cmd == "help") {
-        help(e.message, commands, suffix);
+        help(m, commands, suffix);
     }
 
     /* Check if the command is valid */
@@ -70,25 +101,25 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     }
 
 
-    if (!e.message.isPrivate) { /* This is only for non-DMs */
+    if (!m.isPrivate) { /* This is only for non-DMs */
 
-        if (!utilsLoader.cooldowns.checkCD(client, cmd, e.message.guild.id, e.message)) {
+        if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
             return
         }
 
-        db.fetch.getChannelConfig(e.message.channel.id).then(function(query) {
+        db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
             if (query.rowCount > 0 && !query.rows[0].enabled) return;
-            db.perms.checkPerms(e.message, e.message.author.id, e.message.member.roles).then(function(lvl) {
+            db.perms.checkPerms(m, m.author.id, m.member.roles).then(function(lvl) {
 
                 //Owner skips
-                if (commands[cmd].levelReq === 'owner' && config.permissions.owner.indexOf(e.message.author.id) == -1) {
-                    e.message.reply(':no_entry_sign: This command is for the bot owner only.').then(function(botMsg, error) {
+                if (commands[cmd].levelReq === 'owner' && config.permissions.owner.indexOf(m.author.id) == -1) {
+                    m.reply(':no_entry_sign: This command is for the bot owner only.').then(function(botMsg, error) {
                         setTimeout(() => {
                             botMsg.delete()
                         }, DELAY);
                     });
                 } else if (commands[cmd].levelReq !== 'owner' && lvl < commands[cmd].levelReq) {
-                    e.message.channel.sendMessage(':disappointed: You do not have enough permission to run this command.').then(function(botMsg, error) {
+                    m.channel.sendMessage(':disappointed: You do not have enough permission to run this command.').then(function(botMsg, error) {
                         setTimeout(() => {
                             botMsg.delete()
                         }, DELAY);
@@ -96,20 +127,20 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
                 } else {
                     try {
                         /* Log command execution to the console */
-                	    clog.logCommand(e.message.guild.name, e.message.author, cmd, suffix);
+                        clog.logCommand(m.guild.name, m.author, cmd, suffix);
 
-                        commands[cmd].exec(client, e.message, suffix);
+                        commands[cmd].exec(client, m, suffix);
 
                         /* Check for clean property on commands */
                         if (commands[cmd].hasOwnProperty("clean")) {
                             if (commands[cmd].clean > 0) {
                                 setTimeout(() => {
-                                    e.message.delete()
+                                    m.delete()
                                 }, (commands[cmd].clean * 1000));
                             }
                         }
                     } catch (cmder) {
-                        e.message.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
+                        m.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
                         clog.logError("COMMAND", cmder);
                     }
 
@@ -120,14 +151,14 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         });
     } else { /* This is for commands that are allowed in DMs */
         if (!commands[cmd].hasOwnProperty("DM") || !commands[cmd].DM) {
-            e.message.channel.sendMessage(':warning: This command cannot be used in DMs.');
+            m.channel.sendMessage(':warning: This command cannot be used in DMs.');
         }
         try {
-			clog.logCommand("DM " + e.message.author.username, e.message.author, cmd, suffix);
-            
-            commands[cmd].exec(client, e.message, suffix);
+            clog.logCommand("DM " + m.author.username, m.author, cmd, suffix);
+
+            commands[cmd].exec(client, m, suffix);
         } catch (cmderr) {
-            e.message.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
+            m.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
             clog.logError("COMMAND", cmder);
         }
     }
@@ -135,7 +166,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 //Joined and left events
 client.Dispatcher.on(Events.GUILD_MEMBER_ADD, e => {
-    db.logging.storeUserDB(e.member);
+    db.logging.log("user", [e.member]);
 
     var rules;
     for (var channel of e.guild.channels) {
@@ -158,6 +189,30 @@ client.Dispatcher.on(Events.GUILD_MEMBER_REMOVE, e => {
 
 client.Dispatcher.on(Events.GUILD_BAN_ADD, e => {});
 /////////////////////////////
+//Register name changes
+client.Dispatcher.on(Events.PRESENCE_MEMBER_INFO_UPDATE, e => {
+    if (e.old.username != e.new.username) {
+        for (var guild of client.Guilds.toArray()) {
+            var channel = client.Channels.find((c) => c.guild == guild && c.name == "log-names");
+            if (channel) {
+                var user = guild.members.find((m) => m.id == e.old.id);
+                if (user) {
+                    channel.sendMessage("[" + utils.unixToTime(new Date().getTime()) + "] [Username] " + e.old.username + " -> " + e.new.username);
+                }
+            }
+        }
+    }
+});
+
+client.Dispatcher.on(Events.GUILD_MEMBER_UPDATE, e => {
+    var channel = client.Channels.find((c) => c.guild == e.guild && c.name == "log-names");
+    if (channel) {
+        if (e.previousNick != e.member.nick) {
+            channel.sendMessage("[" + utils.unixToTime(new Date().getTime()) + "] [Nick] " + e.previousNick + " -> " + e.member.nick);
+        }
+    }
+});
+
 
 /* Client Login */
 if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {

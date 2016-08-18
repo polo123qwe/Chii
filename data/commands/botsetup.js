@@ -58,7 +58,7 @@ CommandArray.disable = {
                 }
             }
         }
-        db.fetch.getChannelConfig(channel.id).then(function(query) {
+        db.fetch.getData("channelConfig", [channel.id]).then(function(query) {
             var disabled = false;
             if (query.rowCount > 0) {
                 disabled = !query.rows[0].enabled;

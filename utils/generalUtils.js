@@ -1,4 +1,5 @@
 var unirest = require('unirest');
+var db = require('./db.js');
 
 exports.getMemberFromGuild = function(client, guild, suffix) {
     var members = client.Users.membersForGuild(guild);
@@ -162,17 +163,16 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
                 if (targetChannel) {
                     if (suffix) {
                         suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
-                        targetChannel.sendMessage(user.username + " " + type + " by " + author.username + ". Reason: " + suffix);
+                        targetChannel.sendMessage(user.username + "#" + user.discriminator + " " + type + " by " + author.username + ". Reason: " + suffix);
                     } else {
-                        targetChannel.sendMessage(user.username + " " + type + " by " + author.username);
+                        targetChannel.sendMessage(user.username + "#" + user.discriminator  + " " + type + " by " + author.username);
                     }
                 }
                 //Store the change in the db
-                if (type == "chill" || type == "warn") {
-                    db.logging.updateUser(user, dbcolumn + "ed");
-                } else {
-                    db.logging.updateUser(user, dbcolumn + "d");
-                }
+                db.logging.log("warning", [user.id, guild.id, new Date(), type, suffix]).catch(function(err){
+                    console.log(err);
+                });
+
                 if (type == "chill") {
                     setTimeout(function() {
                         guildUser.unassignRole(targetRole);

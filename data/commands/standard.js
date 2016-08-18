@@ -45,19 +45,27 @@ CommandArray.eval = {
     }
 }
 
-function addEveryone(guild) {
-    var membs = guild.members;
-    console.log(membs.length)
-    add(membs.pop(), membs);
+function addServers(guilds) {
+    console.log(guilds.length)
+    add(guilds.pop(), guilds, "server");
 }
 
-function add(member, members) {
-    if (members.length == 0) {
+/*function addEveryone(guild) {
+    var membs = guild.members;
+    console.log(membs.length)
+    add(membs.pop(), membs, "user");
+}*/
+
+function add(guild, guilds, type) {
+    if (guilds.length == 0) {
         return;
     }
-    console.log(members.length + " left. Adding: " + member.name);
-    db.logging.storeUserDB(member).then(function() {
-        add(members.pop(), members);
+    console.log(guilds.length + " left. Adding: " + guilds.name);
+    db.logging.log(type, [guild.id]).then(function() {
+        add(guilds.pop(), guilds, type);
+    }).catch(function (err) {
+        console.log(err.detail);
+        add(guilds.pop(), guilds, type);
     });
 }
 
