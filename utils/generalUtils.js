@@ -157,7 +157,7 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
         //If failed to find the role
         if (!targetRole) return reject("Error, role not found");
 
-        guildUser.assignRole(targetRole).then(function() {
+        guildUser.assignRole(targetRole).then(function(role) {
             //If its a moderation command
             if (moderationCommand) {
                 if (targetChannel) {
@@ -173,9 +173,12 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
                     console.log(err);
                 });
 
-                if (type == "chill") {
+                if (type == "chilling") {
                     setTimeout(function() {
-                        guildUser.unassignRole(targetRole);
+                        console.log("Its time");
+                        guildUser.unassignRole(targetRole).then(function(){
+                            console.log(guild.name + " > " + user.username + " unchilled");
+                        });
                     }, 60000);
                 }
             } else {

@@ -48,11 +48,11 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
     if (m.isPrivate) {
         db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            console.log(err);
+            //console.log(err);
         });
     } else {
         db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            console.log(err);
+            //console.log(err);
         });
     }
 

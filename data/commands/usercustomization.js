@@ -76,19 +76,14 @@ CommandArray.leave = {
 
         //Array where the roles will be saved
         var found = false;
-        var roleToRemove = suffix.split(" ")[0];
+        var roleToRemove = suffix.toLowerCase();
 
         //Check every role the user typed
         var guildUser = client.Users.getMember(msg.channel.guild, msg.author);
         //If its one of the optional roles
-        for (var r of config.userroles.optroles) {
-            if (roleToRemove.toLowerCase() == r[0]) {
-                roleToRemove = r[1];
-                found = true;
-                break;
-            }
+        if (config.userroles.optroles.indexOf(roleToRemove.toLowerCase()) != -1) {
+            found = true;
         }
-
         if (!found) {
             msg.channel.sendMessage(msg, ':warning: Not allowed to modify that role.').then(function(botMsg, error) {
                 setTimeout(() => {
@@ -104,7 +99,7 @@ CommandArray.leave = {
         var allRoles = guildUser.roles;
         //We add the roles we found
         for (var role of allRoles) {
-            if (role.name == roleToRemove) {
+            if (role.name.toLowerCase() == roleToRemove) {
                 guildUser.unassignRole(role).then(reply(msg.channel, msg.author.username + " removed from " + role.name)).catch(function(err) {
                     clog.logError("ERROR", err);
                 });
