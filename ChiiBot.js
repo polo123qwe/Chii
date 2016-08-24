@@ -43,40 +43,7 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     /* Suf = message trigger suffix */
     var suf = config.bot.suffix;
-
     var m = e.message;
-
-    if (m.isPrivate) {
-        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            //console.log(err);
-        });
-    } else {
-        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            //console.log(err);
-        });
-    }
-
-    /* Delete invite links*/
-    if (!m.isPrivate) {
-        if (m.content.toLowerCase().includes("discord.gg/")) {
-            //Check if the server blocks links
-            db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
-                if(query.rowCount != 0){
-                    if(!query.rows[0].links){
-                        //Try to find if the user can post links
-                        db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
-                            if (query2.rowCount == 0) {
-                                m.delete().then(function(){
-                                    console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-
-        }
-    }
 
     /* Ignore messages without the suffix */
     if (!(m.content.split(" ")[0].slice(-1) == suf)) {
@@ -103,6 +70,11 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 
     if (!m.isPrivate) { /* This is only for non-DMs */
+		deleteInviteLinks(e);
+
+		db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            //console.log(err);
+        });
 
         if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
             return
@@ -151,6 +123,10 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
             });
         });
     } else { /* This is for commands that are allowed in DMs */
+		db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            //console.log(err);
+        });
+
         if (!commands[cmd].hasOwnProperty("DM") || !commands[cmd].DM) {
             m.channel.sendMessage(':warning: This command cannot be used in DMs.');
         }
@@ -225,4 +201,24 @@ if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {
     client.connect({
         token: config.bot.token
     });
+}
+
+function deleteInviteLinks (e) {
+	if (m.content.toLowerCase().includes("discord.gg/")) {
+		//Check if the server blocks links
+		db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
+			if(query.rowCount != 0){
+				if(!query.rows[0].links){
+					//Try to find if the user can post links
+					db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
+						if (query2.rowCount == 0) {
+							m.delete().then(function(){
+								console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
+							});
+						}
+					});
+				}
+			}
+		});
+	}
 }
