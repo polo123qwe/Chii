@@ -68,12 +68,18 @@ CommandArray.mycolor = {
     clean: 1,
     exec: function(client, msg, suffix) {
 
-        var role = msg.guild.roles.find(k => k.name.startsWith("#"));
-        if (role) {
-            msg.channel.sendMessage("Your current color is " + role.name);
+        var guildUser = client.Users.getMemberFromGuild(msg.guild, msg.author);
+        if(guildUser){
+            var role = guildUser.roles.find(k => k.name.startsWith("#"));
+            if (role) {
+                msg.channel.sendMessage("Your current color is " + role.name);
+            } else {
+                msg.channel.sendMessage("You have no color.");
+            }
         } else {
-            msg.channel.sendMessage("You have no color.");
+            msg.channel.sendMessage("User not found");
         }
+
     }
 
 }

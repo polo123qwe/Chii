@@ -58,7 +58,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
     /* Delete invite links*/
     if (!m.isPrivate) {
-        if (m.content.includes("discord.gg/")) {
+        if (m.content.toLowerCase().includes("discord.gg/")) {
             //Check if the server blocks links
             db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
                 if(query.rowCount != 0){
@@ -66,8 +66,9 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
                         //Try to find if the user can post links
                         db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
                             if (query2.rowCount == 0) {
-                                console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
-                                m.delete();
+                                m.delete().then(function(){
+                                    console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
+                                });
                             }
                         });
                     }

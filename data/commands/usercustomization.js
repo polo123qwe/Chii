@@ -126,7 +126,7 @@ CommandArray.suicide = {
 
 CommandArray.color = {
     name: 'suicide',
-    usage: "<colorValue / Number in the list>",
+    usage: "<colorValue / Number in the picture>",
     help: "Allow user to set a color",
     cooldown: 30,
     levelReq: 1,
@@ -137,8 +137,14 @@ CommandArray.color = {
 
         //Check if its a valid hex value
         if(!suffix){
-            msg.channel.sendMessage("A parameter is required to run this command");
-            return;
+            try{
+                msg.author.openDM().then(function(dmchannel){
+                    dmchannel.uploadFile(fs.readFileSync("../../colorSetup/colors.png"), "colors.png", "Colors available are:");
+                });
+                return;
+            } catch(e){
+                clog.logError("ERROR", e);
+            }
         } else if(suffix.length == 6){
             color = "#" + suffix;
         } else if(suffix.length == 7 && suffix.startsWith("#")){

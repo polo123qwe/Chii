@@ -106,7 +106,9 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
         var guildUser;
         var moderationCommand = false;
 
-        suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
+        if(suffix){
+            suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
+        }
         //We check if its a moderation command
         if (type == "chill" || type == "mute" || type == "warn") {
             switch (type) {
@@ -162,7 +164,6 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
             if (moderationCommand) {
                 if (targetChannel) {
                     if (suffix) {
-                        suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
                         targetChannel.sendMessage(user.username + "#" + user.discriminator + " " + type + " by " + author.username + ". Reason: " + suffix);
                     } else {
                         targetChannel.sendMessage(user.username + "#" + user.discriminator  + " " + type + " by " + author.username);
@@ -175,7 +176,6 @@ exports.addUserToRole = function(client, author, originalChannel, user, guild, s
 
                 if (type == "chilling") {
                     setTimeout(function() {
-                        console.log("Its time");
                         guildUser.unassignRole(targetRole).then(function(){
                             console.log(guild.name + " > " + user.username + " unchilled");
                         });
