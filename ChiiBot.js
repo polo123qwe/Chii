@@ -71,7 +71,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 
     if (!m.isPrivate) { /* This is only for non-DMs */
-		deleteInviteLinks(e);
+		deleteInviteLinks(m, e);
 
 		db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
             //console.log(err);
@@ -204,7 +204,7 @@ if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {
     });
 }
 
-function deleteInviteLinks (e) {
+function deleteInviteLinks (m, e) {
 	if (m.content.toLowerCase().includes("discord.gg/")) {
 		//Check if the server blocks links
 		db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
