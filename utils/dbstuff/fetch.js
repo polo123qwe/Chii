@@ -25,6 +25,14 @@ fetch.prototype.getData = function(type, args) {
         case "whitelist":
             query = 'SELECT * FROM whitelist WHERE server_id = $1 AND user_id = $2';
             break;
+        case "events":
+            query = 'SELECT * FROM events WHERE server_id = $1 AND user_id = $2';
+            break;
+        case "eventuser":
+            if(args.length == 2)
+                query = 'SELECT * FROM eventusers WHERE server_id = $1 AND user_id = $2';
+            else query = 'SELECT * FROM eventusers WHERE server_id = $1 AND user_id = $2 AND event = $3';
+            break;
     }
     return dbrequest(query, args);
 

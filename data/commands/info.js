@@ -16,18 +16,18 @@ CommandArray.joined = {
         var user, guildUser;
         var guild = msg.channel.guild;
         if (!suffix) {
-            member = msg.author;
+            user = msg.author;
         } else {
-            member = msg.mentions[0];
+            user = msg.mentions[0];
         }
-        if (member) {
-            guildUser = client.Users.getMember(guild, member);
-        }
-        if (!member) {
+        if (user) {
+            guildUser = client.Users.getMember(guild, user);
+        } else {
             guildUser = utils.getMemberFromGuild(client, guild, suffix);
         }
         if (!guildUser) {
-            guildUser = client.Users.getMember(guild, message.author);
+            msg.channel.sendMessage("No user found!");
+            return;
         }
         var joined = new Date(guildUser.joined_at).getTime()
         var time = utils.convertUnixToDate(Date.now() - joined);

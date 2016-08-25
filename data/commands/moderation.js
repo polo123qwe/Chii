@@ -14,19 +14,19 @@ CommandArray.member = {
     levelReq: 2,
     clean: 1,
     exec: function(client, msg, suffix) {
-        var member;
+        var user, guildUser;
         var guild = msg.channel.guild;
         if (!suffix) {
             msg.channel.sendMessage("No suffix supplied!");
+            return;
         }
-        member = msg.mentions[0];
-        if (member) {
-            member = client.Users.getMember(guild, member);
+        user = msg.mentions[0];
+        if (user) {
+            guildUser = client.Users.getMember(guild, member);
+        } else {
+            guildUser = utils.getMemberFromGuild(client, guild, suffix);
         }
-        if (!member) {
-            member = utils.getMemberFromGuild(client, guild, suffix);
-        }
-        if (!member) {
+        if (!guildUser) {
             msg.channel.sendMessage("No user found");
             return;
         }
@@ -41,8 +41,8 @@ CommandArray.member = {
             }
             for (var role of guild.roles) {
                 if (role.name.toLowerCase() == roleName || (roleID && role.id == roleID)) {
-                    member.assignRole(role).then(function() {
-                        msg.channel.sendMessage(member.name + " added successfully to " + roleName);
+                    guildUser.assignRole(role).then(function() {
+                        msg.channel.sendMessage(guildUser.name + " added successfully to " + roleName);
                     }).catch(function(err) {
                         clog.logError("COMMAND ERROR", err);
                     });
@@ -77,8 +77,10 @@ CommandArray.blacklist = {
             var user = msg.mentions[0];
             if (!user) {
                 //Find the guildMember of the user
-                var users = client.Users.membersForGuild(msg.guild)
-                guildUser = users.find((u) => u.id == split[0]);
+                var users = client.Users.membersForGuild(msg.guild);
+                if (users) {
+                    guildUser = users.find((u) => u.id == split[0]);
+                }
             }
             if (!guildUser) {
                 guildUser = client.Users.getMember(msg.guild, user);

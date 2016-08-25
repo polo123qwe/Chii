@@ -4,8 +4,6 @@ var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
-var path = '../../colorSetup/hex.txt';
-
 var colors = require('../../colors.json').colors;
 
 CommandArray.join = {
@@ -139,7 +137,7 @@ CommandArray.color = {
         if(!suffix){
             try{
                 msg.author.openDM().then(function(dmchannel){
-                    dmchannel.uploadFile(fs.readFileSync("../../colorSetup/colors.png"), "colors.png", "Colors available are:");
+                    dmchannel.uploadFile(fs.readFileSync("../../colors.png"), "colors.png", "Colors available are:");
                 });
                 return;
             } catch(e){
@@ -172,7 +170,7 @@ CommandArray.color = {
             return;
         }
 
-        var toRemove = []
+        var toRemove = [];
         //Find the color roles the user has
         for(var r of guildUser.roles){
             if(r.name.startsWith("#")){

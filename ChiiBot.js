@@ -13,6 +13,7 @@ var db = utilsLoader.db;
 var utils = utilsLoader.generalUtils;
 var clog = utilsLoader.clog;
 var commands = commandLoader.commandController.Commands;
+require('console-stamp')(console, '[dd/mm/yyyy HH:MM:ss]');
 
 var Events = Discordie.Events;
 
