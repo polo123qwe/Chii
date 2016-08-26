@@ -172,6 +172,7 @@ CommandArray.roleSetup = {
             } else {
                 setTimeout(() => {
                     arr[i].delete().then(() => {
+                        counterB++;
                         updmsg.edit(counterB + " roles deleted.");
                         deleteColors(i + 1, arr, updmsg);
                     }).catch(err => console.log("Failed to remove role: ", err));

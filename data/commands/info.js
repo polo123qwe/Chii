@@ -68,7 +68,7 @@ CommandArray.mycolor = {
     clean: 1,
     exec: function(client, msg, suffix) {
 
-        var guildUser = client.Users.getMemberFromGuild(msg.guild, msg.author);
+        var guildUser = client.Users.getMember(msg.guild, msg.author);
         if(guildUser){
             var role = guildUser.roles.find(k => k.name.startsWith("#"));
             if (role) {

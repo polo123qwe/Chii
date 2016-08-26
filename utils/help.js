@@ -41,7 +41,7 @@ module.exports = function(msg, commands, suffix) {
             if(suffix == "color"){
                 try{
                     msg.author.openDM().then(function(dmchannel){
-                        dmchannel.uploadFile(fs.readFileSync("../colors.png"), "colors.png", "Colors available are:");
+                        dmchannel.uploadFile(fs.readFileSync("./colors.png"), "colors.png", "Colors available are:");
                     });
                 } catch(e){
                     clog.logError("ERROR", e);
