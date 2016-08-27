@@ -13,29 +13,32 @@ CommandArray.joined = {
     levelReq: 0,
     clean: 0,
     exec: function(client, msg, suffix) {
-        var user, guildUser;
-        var guild = msg.guild;
-        if (!suffix) {
-            user = msg.author;
-        } else {
-            user = msg.mentions[0];
-        }
-        if (user) {
-            guildUser = client.Users.getMember(guild, user);
-        } else {
-            guildUser = utils.getMemberFromGuild(client, guild, suffix);
-        }
-        if (!guildUser) {
-            msg.channel.sendMessage("No user found!");
-            return;
-        }
-        var joined = new Date(guildUser.joined_at).getTime()
-        var time = utils.convertUnixToDate(Date.now() - joined);
-        //Create the output string
-        var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
+        client.Users.fetchMembers(msg.guild).then(() => {
+                var user, guildUser;
+                var guild = msg.guild;
+                if (!suffix) {
+                    user = msg.author;
+                } else {
+                    user = msg.mentions[0];
+                }
+                if (user) {
+                    guildUser = client.Users.getMember(guild, user);
+                } else {
+                    guildUser = utils.getMemberFromGuild(client, guild, suffix);
+                }
+                if (!guildUser) {
+                    msg.channel.sendMessage("No user found!");
+                    return;
+                }
+                var joined = new Date(guildUser.joined_at).getTime()
+                var time = utils.convertUnixToDate(Date.now() - joined);
+                //Create the output string
+                var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
                     ": " + utils.unixToTime(guildUser.joined_at);
-        output += "\n" + time + "\n```";
-        msg.channel.sendMessage(output);
+                output += "\n" + time + "\n```";
+                msg.channel.sendMessage(output);
+            }
+        }
     }
 }
 
@@ -70,7 +73,7 @@ CommandArray.mycolor = {
     exec: function(client, msg, suffix) {
 
         var guildUser = client.Users.getMember(msg.guild, msg.author);
-        if(guildUser){
+        if (guildUser) {
             var role = guildUser.roles.find(k => k.name.startsWith("#"));
             if (role) {
                 msg.channel.sendMessage("Your current color is " + role.name);
