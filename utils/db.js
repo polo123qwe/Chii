@@ -25,8 +25,6 @@ var pool = new pg.Pool(poolConfig);
 try {
     var Perms = require('./dbstuff/perms.js');
     module.exports['perms'] = new Perms(pool);
-    var Custom = require('./dbstuff/custom.js');
-    module.exports['custom'] = new Custom(pool);
     var Logging = require('./dbstuff/logging.js');
     module.exports['logging'] = new Logging(pool);
     var Fetch = require('./dbstuff/fetch.js');
