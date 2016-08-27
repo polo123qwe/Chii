@@ -38,16 +38,19 @@ perms.prototype.checkPerms = function(msgObject, authorID, roles) {
                     return reject('No database entry was found. Initializing server data...');
                 } else {
                     if (roles) {
+                        var maxUserPerm = 0;
                         for (var role of roles) {
                             for (var i = 0; i < result.rows.length; i++) {
                                 if (result.rows[i].role_id.indexOf(role.id) > -1) {
-                                    return resolve(result.rows[i].perm_level);
+                                    if(maxUserPerm < result.rows[i].perm_level){
+                                        maxUserPerm = result.rows[i].perm_level;
+                                    }
                                 }
                             }
                         }
                         /* If there isn't a role indexed, we simply assume that the permission level is 0 */
                         done();
-                        return resolve(0);
+                        return resolve(maxUserPerm);
                     } else {
                         /* If the user has no roles, then they're part of @everyone, hence their permission level is 0 */
                         done();

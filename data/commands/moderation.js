@@ -24,7 +24,7 @@ CommandArray.member = {
         if (user) {
             guildUser = client.Users.getMember(guild, user);
         } else {
-            guildUser = utils.getMemberFromGuild(client, guild, suffix);
+            guildUser = client.Users.getMember(guild, suffix);
         }
         if (!guildUser) {
             msg.channel.sendMessage("No user found");

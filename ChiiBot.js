@@ -78,7 +78,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         });
 
         if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
-            return
+            return;
         }
 
         db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
