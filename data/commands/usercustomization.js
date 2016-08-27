@@ -124,7 +124,7 @@ CommandArray.suicide = {
 
 CommandArray.color = {
     name: 'suicide',
-    usage: "<colorValue / Number in the picture>",
+    usage: "<HEX / Number in the picture>",
     help: "Allow user to set a color",
     cooldown: 30,
     levelReq: 1,

@@ -22,7 +22,7 @@ CommandArray.member = {
         }
         user = msg.mentions[0];
         if (user) {
-            guildUser = client.Users.getMember(guild, member);
+            guildUser = client.Users.getMember(guild, user);
         } else {
             guildUser = utils.getMemberFromGuild(client, guild, suffix);
         }
