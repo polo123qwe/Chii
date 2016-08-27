@@ -12,7 +12,7 @@ CommandArray.member = {
     help: "Gives membership to a user",
     cooldown: 5,
     levelReq: 2,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         var user, guildUser;
         var guild = msg.channel.guild;
@@ -58,7 +58,7 @@ CommandArray.blacklist = {
     help: 'removes user access to a specific channel',
     cooldown: 5,
     levelReq: 2,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         var split = suffix.split(" ");
 

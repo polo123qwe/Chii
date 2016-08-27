@@ -10,7 +10,7 @@ CommandArray.randu = {
     help: "Returns a random user",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         if (msg.isPrivate) return;
         var guild = msg.guild;

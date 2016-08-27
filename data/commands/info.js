@@ -11,10 +11,10 @@ CommandArray.joined = {
     help: "Prints the date the user joined",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         var user, guildUser;
-        var guild = msg.channel.guild;
+        var guild = msg.guild;
         if (!suffix) {
             user = msg.author;
         } else {
@@ -32,7 +32,8 @@ CommandArray.joined = {
         var joined = new Date(guildUser.joined_at).getTime()
         var time = utils.convertUnixToDate(Date.now() - joined);
         //Create the output string
-        var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator + ": " + utils.unixToTime(guildUser.joined_at);
+        var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
+                    ": " + utils.unixToTime(guildUser.joined_at);
         output += "\n" + time + "\n```";
         msg.channel.sendMessage(output);
     }
@@ -44,7 +45,7 @@ CommandArray.ava = {
     help: "Returns avatar of the person",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         var members = [];
         //var output = "";
@@ -65,7 +66,7 @@ CommandArray.mycolor = {
     help: "Returns the current color of the user",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
 
         var guildUser = client.Users.getMember(msg.guild, msg.author);

@@ -37,11 +37,12 @@ CommandArray.eval = {
             msg.channel.sendMessage("```" + err + "```");
         }
 
-        if (result && typeof result !== 'object') {
+        /*if (result && typeof result !== 'object') {
             msg.channel.sendMessage("```" + result + "```")
         } else if (result && typeof result === 'object') {
             msg.channel.sendMessage("```xl\n" + result + "```")
-        }
+        }*/
+        msg.channel.sendMessage(result);
     }
 }
 

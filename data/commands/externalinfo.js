@@ -14,7 +14,7 @@ CommandArray.osu = {
     help: "Returns data for that player in osu",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
 
         var splitted = suffix.split(" ");
@@ -28,7 +28,7 @@ CommandArray.osu = {
         if (splitted[1] == null) {
             username = splitted.splice(0, splitted.length).join(" ");
         } else username = splitted.splice(0, splitted.length - 1).join(" ");
-        
+
         switch (mode) {
             case "std":
                 mode = osuapi.Modes.osu;
@@ -80,7 +80,7 @@ CommandArray.urban = {
     help: "Searches in Urban Dictionary for a definition",
     cooldown: 5,
     levelReq: 0,
-    clean: 1,
+    clean: 0,
     exec: function(client, msg, suffix) {
         var splitted = suffix.split(" ");
 
