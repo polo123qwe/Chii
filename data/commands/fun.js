@@ -8,7 +8,7 @@ var config = require('../../config.json');
 CommandArray.randu = {
     name: 'randu',
     help: "Returns a random user",
-    cooldown: 5,
+    cooldown: 20,
     levelReq: 0,
     clean: 0,
     exec: function(client, msg, suffix) {

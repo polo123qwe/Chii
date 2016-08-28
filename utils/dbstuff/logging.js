@@ -29,7 +29,7 @@ logging.prototype.log = function(type, args) {
                 query = 'INSERT INTO warnings (user_id, server_id, timestamp, type) VALUES ($1, $2, $3, $4)';
             else query = 'INSERT INTO warnings (user_id, server_id, timestamp, type, reason) VALUES ($1, $2, $3, $4, $5)';
             break;
-        case "events":
+        case "event":
             if(args.length == 3)
                 query = 'INSERT INTO events (name, server_id, timestamp) VALUES ($1,$2,$3)';
             else query = 'INSERT INTO events (name, server_id, timestamp, desc) VALUES ($1,$2,$3,$4)';

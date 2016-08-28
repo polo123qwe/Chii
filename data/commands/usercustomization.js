@@ -87,8 +87,8 @@ CommandArray.leave = {
                 setTimeout(() => {
                     botMsg.delete()
                 }, 5000);
-                return;
             });
+            return;
         }
         if (!guildUser) {
             msg.channel.sendMessage("Error, cannot find user.");

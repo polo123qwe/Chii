@@ -52,6 +52,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     }
 
     var cmd = m.content.split(" ")[0].substring(0, m.content.split(" ")[0].length - suf.length);
+    cmd = cmd.toLowerCase();
     var suffix = m.content.substr(cmd.length + suf.length + 1);
 
     /* Prevent the bot from responding to itself (infite loops suck) */

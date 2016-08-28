@@ -25,7 +25,7 @@ fetch.prototype.getData = function(type, args) {
         case "whitelist":
             query = 'SELECT * FROM whitelist WHERE server_id = $1 AND user_id = $2';
             break;
-        case "events":
+        case "event":
             query = 'SELECT * FROM events WHERE server_id = $1 AND user_id = $2';
             break;
         case "eventuser":

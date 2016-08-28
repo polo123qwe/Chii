@@ -13,7 +13,7 @@ del.prototype.rows = function(type, args) {
     var query = "";
 
     switch (type) {
-        case "events":
+        case "event":
             query = 'DELETE FROM events WHERE name = $1 AND server_id = $2';
             break;
         case "eventuser":
