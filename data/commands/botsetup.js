@@ -47,7 +47,7 @@ CommandArray.disable = {
     usage: "[channel]",
     help: "Disables the bot in channel",
     cooldown: 0,
-    levelReq: 0,
+    levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
 

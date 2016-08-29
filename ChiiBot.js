@@ -20,6 +20,7 @@ var Events = Discordie.Events;
 //Constants
 const DELAY = 5000;
 
+var loadCache;
 var setupTime = Date.now();
 
 var client = new Discordie({
@@ -38,6 +39,12 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
     };
     client.User.setStatus("online", game);
     client.uptime = Date.now();
+
+    if (loadCache) {
+        clearInterval(loadUsers);
+    } else {
+        loadCache = setInterval(loadUsers, 180000);
+    }
 });
 
 /* Event: Message */
@@ -72,9 +79,9 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 
     if (!m.isPrivate) { /* This is only for non-DMs */
-		deleteInviteLinks(m, e);
+        deleteInviteLinks(m, e);
 
-		db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
             //console.log(err);
         });
 
@@ -125,7 +132,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
             });
         });
     } else { /* This is for commands that are allowed in DMs */
-		db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
             //console.log(err);
         });
 
@@ -205,22 +212,29 @@ if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {
     });
 }
 
-function deleteInviteLinks (m, e) {
-	if (m.content.toLowerCase().includes("discord.gg/")) {
-		//Check if the server blocks links
-		db.fetch.getData("serverConfig", [m.guild.id]).then(function(query){
-			if(query.rowCount != 0){
-				if(!query.rows[0].links){
-					//Try to find if the user can post links
-					db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
-						if (query2.rowCount == 0) {
-							m.delete().then(function(){
-								console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
-							});
-						}
-					});
-				}
-			}
-		});
-	}
+//Other functions
+function deleteInviteLinks(m, e) {
+    if (m.content.toLowerCase().includes("discord.gg/")) {
+        //Check if the server blocks links
+        db.fetch.getData("serverConfig", [m.guild.id]).then(function(query) {
+            if (query.rowCount != 0) {
+                if (!query.rows[0].links) {
+                    //Try to find if the user can post links
+                    db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
+                        if (query2.rowCount == 0) {
+                            m.delete().then(function() {
+                                console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+}
+//Update Users
+function loadUsers() {
+    client.Users.fetchMembers().catch(e => {
+        console.err(e);
+    });
 }
