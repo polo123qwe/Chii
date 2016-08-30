@@ -13,7 +13,9 @@ logging.prototype.log = function(type, args) {
     var query = "";
     switch (type) {
         case "user":
-            query = 'INSERT INTO users (user_id, username, discriminator, joined) VALUES ($1, $2, $3, $4)';
+            if(args.length == 5)
+                query = 'INSERT INTO users (user_id, username, discriminator, joined, server_id) VALUES ($1, $2, $3, $4, $5)';
+            else query = 'INSERT INTO users (user_id, username, discriminator, joined) VALUES ($1, $2, $3, $4)';
             break;
         case "message":
             query = 'INSERT INTO logs (message_id, server_id, channel_id, user_id, content, timestamp) VALUES ($1, $2, $3, $4, $5, $6)';

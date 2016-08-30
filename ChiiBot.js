@@ -20,7 +20,6 @@ var Events = Discordie.Events;
 //Constants
 const DELAY = 5000;
 
-var loadCache;
 var setupTime = Date.now();
 
 var client = new Discordie({
@@ -40,11 +39,6 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
     client.User.setStatus("online", game);
     client.uptime = Date.now();
 
-    if (loadCache) {
-        clearInterval(loadUsers);
-    } else {
-        loadCache = setInterval(loadUsers, 180000);
-    }
 });
 
 /* Event: Message */
@@ -152,7 +146,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 //Joined and left events
 client.Dispatcher.on(Events.GUILD_MEMBER_ADD, e => {
-    db.logging.log("user", [e.member]);
+    db.logging.log("user", [e.member.id, e.member.username, e.member.discriminator, e.member.joined_at, e.guild.id]);
 
     var rules;
     for (var channel of e.guild.channels) {
@@ -231,10 +225,4 @@ function deleteInviteLinks(m, e) {
             }
         });
     }
-}
-//Update Users
-function loadUsers() {
-    client.Users.fetchMembers().catch(e => {
-        console.err(e);
-    });
 }

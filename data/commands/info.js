@@ -15,6 +15,7 @@ CommandArray.joined = {
     exec: function(client, msg, suffix) {
         var user, guildUser;
         var guild = msg.guild;
+
         if (!suffix) {
             user = msg.author;
         } else {
@@ -29,13 +30,32 @@ CommandArray.joined = {
             msg.channel.sendMessage("No user found!");
             return;
         }
-        var joined = new Date(guildUser.joined_at).getTime()
-        var time = utils.convertUnixToDate(Date.now() - joined);
-        //Create the output string
-        var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
-            ": " + utils.unixToTime(guildUser.joined_at);
-        output += "\n" + time + "\n```";
-        msg.channel.sendMessage(output);
+        db.fetch.getData("user", [guildUser.id, msg.guild.id]).then((query) => {
+            if (query.rowCount < 1){
+                returnData();
+            } else {
+                var time = utils.convertUnixToDate(Date.now() - query.rows[0].joined);
+                //Create the output string
+                var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
+                    ": " + utils.unixToTime(query.rows[0].joined);
+                output += "\n" + time + "\n```";
+                msg.channel.sendMessage(output);
+            }
+        }).catch(e => {
+            console.err(e);
+            returnData();
+        });
+
+        function returnData(){
+            var joined = new Date(guildUser.joined_at).getTime();
+            var time = utils.convertUnixToDate(Date.now() - joined);
+            //Create the output string
+            var output = "```xl\n" + guildUser.username + "#" + guildUser.discriminator +
+                ": " + utils.unixToTime(guildUser.joined_at);
+            output += "\n" + time + "\n```";
+            msg.channel.sendMessage(output);
+        }
+
 
     }
 }
