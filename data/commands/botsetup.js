@@ -94,7 +94,7 @@ CommandArray.refresh = {
     }
 }
 
-CommandArray.roleSetup = {
+CommandArray.rolesetup = {
     name: 'roleSetup',
     help: "Set the roles",
     cooldown: 5,

@@ -34,7 +34,8 @@ perms.prototype.checkPerms = function(msgObject, authorID, roles) {
                 if (er) return reject(er);
 
                 if (result.rowCount <= 0) {
-                    initializePermissions(msgObject.guild);
+                    //Got to check this later
+                    //initializePermissions(msgObject.guild);
                     return reject('No database entry was found. Initializing server data...');
                 } else {
                     if (roles) {
