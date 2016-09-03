@@ -84,7 +84,8 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         }*/
 
         db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
-            if (query.rowCount > 0 && !query.rows[0].enabled) return;
+            if(query.rowCount > 0 && !query.rows[0].enabled && commands[cmd].category != "moderation") return;
+
 			utilsLoader.cooldowns.checkCooldown(commands[cmd], m.guild.id, m.author.id).then(r => {
 				if (r === true) {
 					db.perms.checkPerms(m, m.author.id, m.member.roles).then(function(lvl) {
