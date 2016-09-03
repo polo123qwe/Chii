@@ -119,7 +119,6 @@ CommandArray.getlogs = {
         output = "Messages in the past " + (time / 60) + " mins in [" + msg.channel.guild.name + " / " + msg.channel.name + "]\n";
 
         var offset = (Date.now() - time * 1000)/1000;
-        console.log(offset);
 
         db.fetch.getData("logs", [msg.channel.guild.id, msg.channel.id, offset]).then(function(query) {
             for (var row of query.rows) {

@@ -19,6 +19,7 @@ var Events = Discordie.Events;
 
 //Constants
 const DELAY = 5000;
+const whitelistedModules = ["moderation", "database", "botsetup"];
 
 var setupTime = Date.now();
 
@@ -47,6 +48,17 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     var suf = config.bot.suffix;
     var m = e.message;
 
+    if (m.isPrivate) {
+        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            //console.log(err);
+        });
+    } else {
+        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+            //console.log(err);
+        });
+        deleteInviteLinks(m, e);
+    }
+
     /* Ignore messages without the suffix */
     if (!(m.content.split(" ")[0].slice(-1) == suf)) {
         return;
@@ -71,20 +83,16 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         return;
     }
 
-
     if (!m.isPrivate) { /* This is only for non-DMs */
-        deleteInviteLinks(m, e);
-
-        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            //console.log(err);
-        });
 
         /*if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
             return;
         }*/
 
         db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
-            if(query.rowCount > 0 && !query.rows[0].enabled && commands[cmd].category != "moderation") return;
+
+            //If the channel is disabled and the module is not whitelisted don't execute it
+            if(query.rowCount > 0 && !query.rows[0].enabled && whitelistedModules.indexOf(commands[cmd].category) == -1)  return;
 
 			utilsLoader.cooldowns.checkCooldown(commands[cmd], m.guild.id, m.author.id).then(r => {
 				if (r === true) {

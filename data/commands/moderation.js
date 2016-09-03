@@ -163,4 +163,35 @@ CommandArray.chill = {
     }
 }
 
+
+CommandArray.revokeinvite = {
+    name: 'revokeInvite',
+    usage: "inviteCode",
+    help: "revokes an invite link",
+    cooldown: 0,
+    levelReq: 3,
+    clean: 0,
+    exec: function(client, msg, suffix) {
+        var inviteCode = suffix.split(" ")[0];
+
+        //if no suffix supplied do nothing
+        if(!inviteCode) return;
+        else {
+            client.Invites.resolve(inviteCode).then((res) => {
+                if(res.guild.id == msg.guild.id){
+                    client.Invites.revoke(inviteCode).then(() => {
+                        msg.channel.sendMessage("Successfully removed invite link " + inviteCode);
+                    });
+                }
+            }).catch(() => {
+                msg.channel.sendMessage("Invite not found").then(function(newMsg) {
+                    setTimeout(function() {
+                        newMsg.delete();
+                    }, 2000);
+                });
+            });
+        }
+    }
+}
+
 exports.CommandArray = CommandArray;
