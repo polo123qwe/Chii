@@ -129,7 +129,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 				} else {
 					m.channel.sendMessage("This command is on cooldown for **" + parseInt(r) + "** seconds.");
 				}
-			});
+			}).catch(e => console.ere(e));
         });
     } else { /* This is for commands that are allowed in DMs */
         db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {

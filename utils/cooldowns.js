@@ -9,7 +9,7 @@ exports.checkCooldown = function (cmd, serverID, userID) {
 			return reject("INVALID COMMAND");
 		}
 
-		if (config.permissions.owner.indexOf(msg.author.id) > -1) {
+		if (config.permissions.owner.indexOf(userID) > -1) {
 			return resolve(true);
 		}
 
