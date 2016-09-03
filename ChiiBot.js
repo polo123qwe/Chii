@@ -79,51 +79,57 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
             //console.log(err);
         });
 
-        if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
+        /*if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
             return;
-        }
+        }*/
 
         db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
             if (query.rowCount > 0 && !query.rows[0].enabled) return;
-            db.perms.checkPerms(m, m.author.id, m.member.roles).then(function(lvl) {
+			utilsLoader.cooldowns.checkCooldown(commands[cmd], m.guild.id, m.author.id).then(r => {
+				if (r === true) {
+					db.perms.checkPerms(m, m.author.id, m.member.roles).then(function(lvl) {
 
-                //Owner skips
-                if (commands[cmd].levelReq === 'owner' && config.permissions.owner.indexOf(m.author.id) == -1) {
-                    m.reply(':no_entry_sign: This command is for the bot owner only.').then(function(botMsg, error) {
-                        setTimeout(() => {
-                            botMsg.delete()
-                        }, DELAY);
-                    });
-                } else if (commands[cmd].levelReq !== 'owner' && lvl < commands[cmd].levelReq) {
-                    m.channel.sendMessage(':disappointed: You do not have enough permission to run this command.').then(function(botMsg, error) {
-                        setTimeout(() => {
-                            botMsg.delete()
-                        }, DELAY);
-                    });
-                } else {
-                    try {
-                        /* Log command execution to the console */
-                        clog.logCommand(m.guild.name, m.author, cmd, suffix);
+		                //Owner skips
+		                if (commands[cmd].levelReq === 'owner' && config.permissions.owner.indexOf(m.author.id) == -1) {
+		                    m.reply(':no_entry_sign: This command is for the bot owner only.').then(function(botMsg, error) {
+		                        setTimeout(() => {
+		                            botMsg.delete()
+		                        }, DELAY);
+		                    });
+		                } else if (commands[cmd].levelReq !== 'owner' && lvl < commands[cmd].levelReq) {
+		                    m.channel.sendMessage(':disappointed: You do not have enough permission to run this command.').then(function(botMsg, error) {
+		                        setTimeout(() => {
+		                            botMsg.delete()
+		                        }, DELAY);
+		                    });
+		                } else {
+		                    try {
+		                        /* Log command execution to the console */
+		                        clog.logCommand(m.guild.name, m.author, cmd, suffix);
 
-                        commands[cmd].exec(client, m, suffix);
+		                        commands[cmd].exec(client, m, suffix);
 
-                        /* Check for clean property on commands */
-                        if (commands[cmd].hasOwnProperty("clean")) {
-                            if (commands[cmd].clean > 0) {
-                                setTimeout(() => {
-                                    m.delete()
-                                }, (commands[cmd].clean * 1000));
-                            }
-                        }
-                    } catch (cmder) {
-                        m.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
-                        clog.logError("COMMAND", cmder);
-                    }
+		                        /* Check for clean property on commands */
+		                        if (commands[cmd].hasOwnProperty("clean")) {
+		                            if (commands[cmd].clean > 0) {
+		                                setTimeout(() => {
+		                                    m.delete()
+		                                }, (commands[cmd].clean * 1000));
+		                            }
+		                        }
+		                    } catch (cmder) {
+		                        m.channel.sendMessage(':warning: An error ocurred while running that command!\n```' + cmder + '```');
+		                        clog.logError("COMMAND", cmder);
+		                    }
 
-                }
-            }).catch(function(errrr) {
-                console.log("Error!\n" + errrr);
-            });
+		                }
+		            }).catch(function(errrr) {
+		                console.log("Error!\n" + errrr);
+		            });
+				} else {
+					m.channel.sendMessage("This command is on cooldown for **" + parseInt(r) + "** seconds.");
+				}
+			});
         });
     } else { /* This is for commands that are allowed in DMs */
         db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {

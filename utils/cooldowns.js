@@ -1,5 +1,45 @@
+"use strict";
 var lastTimeRan = {};
 var config = require('../config.json');
+
+exports.checkCooldown = function (cmd, serverID, userID) {
+	return new Promise ((resolve, reject) => {
+		if (cmd === null) {
+			console.log("ERROR: Invalid command passed as argument for checkCooldown.");
+			return reject("INVALID COMMAND");
+		}
+
+		if (config.permissions.owner.indexOf(msg.author.id) > -1) {
+			return resolve(true);
+		}
+
+		let result = true;
+
+		if (cmd.hasOwnProperty("cooldown") && cmd.cooldown > 0) {
+			if (lastTimeRan.hasOwnProperty(serverID) && lastTimeRan[server].hasOwnProperty(cmd.name)) {
+				if (lastTimeRan.hasOwnProperty(userID)) {
+					let timeNow = new Date();
+					let lastExec = new Date(lastTimeRan[serverID][cmd.name][userID]);
+
+					lastExec.setSeconds(lastExec.getSeconds() + cmd.cooldown);
+
+					if (timeNow < lastExec) {
+						result = (lastExec - timeNow) / 1000;
+					} else {
+						lastTimeRan[serverID][cmd.name][userID] = new Date();
+					}
+				} else {
+					lastTimeRan[serverID][cmd.name][userID] = new Date();
+				}
+			} else {
+				lastTimeRan[serverID] = {};
+				lastTimeRan[serverID][cmd.name] = {};
+			}
+		}
+
+		return resolve(result);
+	});
+}
 
 exports.checkCD = function(client, cmd, server, msg) {
     if (cmd == null) {
