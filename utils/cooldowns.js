@@ -16,8 +16,8 @@ exports.checkCooldown = function (cmd, serverID, userID) {
 		let result = true;
 
 		if (cmd.hasOwnProperty("cooldown") && cmd.cooldown > 0) {
-			if (lastTimeRan.hasOwnProperty(serverID) && lastTimeRan[server].hasOwnProperty(cmd.name)) {
-				if (lastTimeRan.hasOwnProperty(userID)) {
+			if (lastTimeRan.hasOwnProperty(serverID) && lastTimeRan[serverID].hasOwnProperty(cmd.name)) {
+				if (lastTimeRan[serverID][cmd.name].hasOwnProperty(userID)) {
 					let timeNow = new Date();
 					let lastExec = new Date(lastTimeRan[serverID][cmd.name][userID]);
 
@@ -34,9 +34,9 @@ exports.checkCooldown = function (cmd, serverID, userID) {
 			} else {
 				lastTimeRan[serverID] = {};
 				lastTimeRan[serverID][cmd.name] = {};
+				lastTimeRan[serverID][cmd.name][userID] = new Date();
 			}
 		}
-
 		return resolve(result);
 	});
 }
