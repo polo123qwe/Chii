@@ -9,7 +9,6 @@ var osuapi = require('osu-api');
 var osu_a = new osuapi.Api(api_key);
 
 CommandArray.osu = {
-    name: 'osu',
     usage: 'username [std, ctb, mania, taiko]',
     help: "Returns data for that player in osu",
     cooldown: 5,
@@ -75,7 +74,6 @@ CommandArray.osu = {
 }
 
 CommandArray.urban = {
-    name: 'urban',
     usage: 'keyword',
     help: "Searches in Urban Dictionary for a definition",
     cooldown: 5,

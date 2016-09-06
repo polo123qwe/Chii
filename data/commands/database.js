@@ -8,7 +8,6 @@ var config = require('../../config.json');
 var types = ['country', 'bday', 'name'];
 
 CommandArray.addUser = {
-    name: 'addUser',
     usage: "[userID]",
     help: "Adds to db member",
     cooldown: 0,
@@ -36,7 +35,6 @@ CommandArray.addUser = {
 }
 
 CommandArray.whitelist = {
-    name: 'whitelist',
     usage: "[@user/user/id]",
     help: "Adds user to the whitelist",
     cooldown: 5,
@@ -61,7 +59,6 @@ CommandArray.whitelist = {
 }
 
 CommandArray.togglewhitelist = {
-    name: 'togglewhitelist',
     help: "Toggles whitelist serverwide",
     cooldown: 5,
     levelReq: 2,
@@ -102,7 +99,6 @@ CommandArray.togglewhitelist = {
 }*/
 
 CommandArray.getlogs = {
-    name: 'getlogs',
     usage: "[time in minutes]",
     help: "Gets the logs of the chat of the required time (Default 3hrs)",
     cooldown: 0,

@@ -24,7 +24,7 @@ exports.getUsersFromMessage = function(client, msg, guild, suffix) {
     }
     var users = client.Users.membersForGuild(guild);
 
-    console.log(segments) //Try to find a match
+    //console.log(segments) //Try to find a match
 
     for (var segment of segments) {
         segment = segment.toLowerCase();
@@ -106,17 +106,18 @@ exports.getRandom = function(min, max) {
 
 //Adds user to a role
 /*exports.addUserToRole = function(client, channel, author, target, suffix, guild, type, moderation) {
-    return new Promise(function(resolve, reject) {
-        var guildUser;
-        var moderationCommand = false;
+    var guildUser;
+    var moderationCommand = false;
 
-        if(suffix){
-            suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
-        }
+    if(suffix){
+        suffix = suffix.replace(/<@?\!?\d{17,}>/, "");
+    }
 
-        guildUser = client.Users.getMember(guild, user)
+    //Retrieve user
+    guildUser = client.Users.getMember(guild, target);
 
-    });
+    //Determine if the user
+
 }*/
 exports.addUserToRole = function(client, author, originalChannel, user, guild, suffix, type) {
     return new Promise(function(resolve, reject) {

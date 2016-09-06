@@ -6,7 +6,6 @@ var db = utilsLoader.db;
 var config = require('../../config.json');
 
 CommandArray.randu = {
-    name: 'randu',
     help: "Returns a random user",
     cooldown: 20,
     levelReq: 0,

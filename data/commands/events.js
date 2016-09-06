@@ -6,7 +6,6 @@ var db = utilsLoader.db;
 var config = require('../../config.json');
 
 /*CommandArray.addevent = {
-    name: 'addevent',
     usage: 'name [description]',
     help: "Creates an event",
     cooldown: 5,

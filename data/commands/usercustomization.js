@@ -7,7 +7,6 @@ var config = require('../../config.json');
 var colors = require('../../colors.json').colors;
 
 CommandArray.join = {
-    name: 'join',
     usage: "role [role2] [role3]",
     help: "Allows user to join a role/multiple roles",
     cooldown: 0,
@@ -64,7 +63,6 @@ CommandArray.join = {
 }
 
 CommandArray.leave = {
-    name: 'leave',
     usage: "role [role2] [role3]",
     help: "Allows user to leave a role",
     cooldown: 5,
@@ -108,10 +106,9 @@ CommandArray.leave = {
 }
 
 CommandArray.suicide = {
-    name: 'suicide',
     help: "Mutes user from 1 to 10 mins",
     cooldown: 0,
-    levelReq: 2,
+    levelReq: 0,
     clean: 0,
     exec: function(client, msg, suffix) {
         utils.addUserToRole(client, msg.author, msg.channel, null, msg.channel.guild, suffix, "chill").then(function() {
@@ -123,7 +120,6 @@ CommandArray.suicide = {
 }
 
 CommandArray.color = {
-    name: 'suicide',
     usage: "<HEX / Number in the picture>",
     help: "Allow user to set a color",
     cooldown: 30,
@@ -137,7 +133,7 @@ CommandArray.color = {
         if(!suffix){
             try{
                 msg.author.openDM().then(function(dmchannel){
-                    dmchannel.uploadFile(fs.readFileSync("../../colors.png"), "colors.png", "Colors available are:");
+                    dmchannel.uploadFile(fs.readFileSync("./colors.png"), "colors.png", "Colors available are:");
                 });
                 return;
             } catch(e){
@@ -177,14 +173,17 @@ CommandArray.color = {
                 toRemove.push(r);
             }
         }
+        //Remove all the colors the user already has
         removeRole(0);
 
         function removeRole(i){
             if(i >= toRemove.length){
+                //When we finish removing the roles, we add the desired role
                 addRole(role);
                 return;
             }
             guildUser.unassignRole(toRemove[i]).then(function(){
+                //Wait to avoid ratelimit
                 setTimeout(function(){
                     removeRole(i+1);
                 }, 1000);

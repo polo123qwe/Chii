@@ -39,7 +39,6 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
     };
     client.User.setStatus("online", game);
     client.uptime = Date.now();
-
 });
 
 /* Event: Message */
@@ -64,6 +63,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         return;
     }
 
+    //We get the cmd from the message and we store the rest in another variable
     var cmd = m.content.split(" ")[0].substring(0, m.content.split(" ")[0].length - suf.length);
     cmd = cmd.toLowerCase();
     var suffix = m.content.substr(cmd.length + suf.length + 1);
@@ -84,10 +84,6 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     }
 
     if (!m.isPrivate) { /* This is only for non-DMs */
-
-        /*if (!utilsLoader.cooldowns.checkCD(client, cmd, m.guild.id, m)) {
-            return;
-        }*/
 
         db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
 

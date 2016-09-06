@@ -15,6 +15,9 @@ for (var f in cmds) {
     for (var o in cmds[f].CommandArray) {
         commands[o] = cmds[f].CommandArray[o];
         commands[o].category = f;
+        if(!commands[o].name){
+            commands[o].name = o;
+        }
         counter++;
     }
 }

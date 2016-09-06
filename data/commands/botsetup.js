@@ -10,7 +10,6 @@ var config = require('../../config.json');
 var types = ['country', 'bday', 'name'];
 
 CommandArray.setlevel = {
-    name: 'setlevel',
     usage: "level @role/role",
     help: "Sets the permission level of a role. Role names are case-sensitive.",
     cooldown: 1,
@@ -43,7 +42,6 @@ CommandArray.setlevel = {
 }
 
 CommandArray.disable = {
-    name: 'disable',
     usage: "[channel]",
     help: "Disables the bot in channel",
     cooldown: 0,
@@ -83,7 +81,6 @@ CommandArray.disable = {
 }
 
 CommandArray.refresh = {
-    name: 'refresh',
     help: "Resets cooldown",
     cooldown: 5,
     levelReq: 2,
@@ -95,7 +92,6 @@ CommandArray.refresh = {
 }
 
 CommandArray.rolesetup = {
-    name: 'roleSetup',
     help: "Set the roles",
     cooldown: 5,
     levelReq: 3,
@@ -194,32 +190,3 @@ function findKey(nameKey, array) {
         }
     }
 }
-
-/*SAVED FOR LATER USER(?)
-if (e.message.content == "chii.removeids") {
-    var guild = e.message.channel.guild;
-    var user = e.message.author;
-    var roles = guild.roles;
-    removeRole(0);
-
-    function removeRole(i) {
-        if (i >= roles.length) {
-            console.log("Finished!");
-        } else {
-            var role = roles[i].name;
-            if (!isNaN(role)) {
-                setTimeout(function() {
-                    roles[i].delete().then(function() {
-                        console.log(i + " " + role + " role deleted");
-                        removeRole(i + 1);
-                    }).catch(function(err) {
-                        //console.log(err);
-                        removeRole(i + 1);
-                    })
-                }, 1000);
-            } else {
-                removeRole(i + 1);
-            }
-        }
-    }
-}*/

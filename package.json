@@ -20,7 +20,7 @@
   "dependencies": {
     "chalk": "*",
     "console-stamp": "^0.2.2",
-    "discordie": "^0.7.4",
+    "discordie": "*",
     "entities": "*",
     "nodemon": "^1.9.2",
     "pg": "^6.0.3",

@@ -6,7 +6,6 @@ var db = utilsLoader.db;
 var config = require('../../config.json');
 
 CommandArray.joined = {
-    name: 'joined',
     usage: "[@user/user/id]",
     help: "Prints the date the user joined",
     cooldown: 5,
@@ -31,7 +30,7 @@ CommandArray.joined = {
             return;
         }
         db.fetch.getData("user", [guildUser.id, msg.guild.id]).then((query) => {
-            if (query.rowCount < 1){
+            if (query.rowCount < 1 || !query.rows[0].joined){
                 returnData();
             } else {
                 var time = utils.convertUnixToDate(Date.now() - query.rows[0].joined);
@@ -61,7 +60,6 @@ CommandArray.joined = {
 }
 
 CommandArray.ava = {
-    name: 'ava',
     usage: "[@user/user/id]",
     help: "Returns avatar of the person",
     cooldown: 5,
@@ -83,7 +81,6 @@ CommandArray.ava = {
 }
 
 CommandArray.mycolor = {
-    name: 'mycolor',
     help: "Returns the current color of the user",
     cooldown: 5,
     levelReq: 0,
