@@ -2,6 +2,7 @@ var CommandArray = [];
 var utilsLoader = require('../../utils/utilsLoader.js');
 var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
+var dUtils = utilsLoader.discordUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 
@@ -119,10 +120,11 @@ CommandArray.warn = {
     levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
-        utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "warn").then(function() {
+        //client, channel, author, target, suffix, guild, type, moderationCommand, delay
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "warn", true).then(() => {
 
         }).catch(function(err) {
-            msg.channel.sendMessage(output);
+            msg.channel.sendMessage(err);
         });
     }
 }
@@ -134,10 +136,10 @@ CommandArray.mute = {
     levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
-        utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "mute").then(function() {
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", true).then(() => {
 
         }).catch(function(err) {
-            msg.channel.sendMessage(output);
+            msg.channel.sendMessage(err);
         });
     }
 }
@@ -149,12 +151,11 @@ CommandArray.chill = {
     levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
-        utils.addUserToRole(client, msg.author, msg.channel, msg.mentions[0], msg.channel.guild, suffix, "chill").then(function() {
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", true, 120000).then(() => {
 
         }).catch(function(err) {
-            msg.channel.sendMessage(output);
+            msg.channel.sendMessage(err);
         });
-
     }
 }
 
@@ -212,7 +213,7 @@ CommandArray.prune = {
             fetchAndDelete();
         }
 
-        function fetchAndDelete(){
+        function fetchAndDelete() {
             //Find the message we want to delete
             msg.channel.fetchMessages(Number(amount))
                 .then((res) => {

@@ -2,6 +2,7 @@ var CommandArray = [];
 var utilsLoader = require('../../utils/utilsLoader.js');
 var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
+var dUtils = utilsLoader.discordUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 var colors = require('../../colors.json').colors;
@@ -111,11 +112,10 @@ CommandArray.suicide = {
     levelReq: 0,
     clean: 0,
     exec: function(client, msg, suffix) {
-        utils.addUserToRole(client, msg.author, msg.channel, null, msg.channel.guild, suffix, "chill").then(function() {
+        //client, channel, author, target, suffix, guild, type, moderationCommand, delay
+        dUtils.addUserToRole(client, msg.channel, msg.author, null, suffix, msg.guild, "mute", false, -1).then(function() {
 
-        }).catch(function(err) {
-            msg.channel.sendMessage(output);
-        });
+        }).catch(console.log);
     }
 }
 

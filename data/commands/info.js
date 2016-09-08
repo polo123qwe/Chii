@@ -2,6 +2,7 @@ var CommandArray = [];
 var utilsLoader = require('../../utils/utilsLoader.js');
 var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
+var dUtils = utilsLoader.discordUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 
@@ -23,7 +24,7 @@ CommandArray.joined = {
         if (user) {
             guildUser = client.Users.getMember(guild, user);
         } else {
-            guildUser = utils.getMemberFromGuild(client, guild, suffix);
+            guildUser = dUtils.getMemberFromGuild(client, guild, suffix);
         }
         if (!guildUser) {
             msg.channel.sendMessage("No user found!");
@@ -71,7 +72,7 @@ CommandArray.ava = {
         if (!suffix) {
             members.push(msg.author);
         } else {
-            members = utils.getUsersFromMessage(client, msg, msg.channel.guild, suffix);
+            members = dUtils.getUsersFromMessage(client, msg, msg.channel.guild, suffix);
         }
         for (var member of members) {
             msg.channel.sendMessage("[" + member.username + "] https://discordapp.com/api/users/" + member.id + "/avatars/" + member.avatar + ".jpg \n");

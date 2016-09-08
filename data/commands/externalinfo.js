@@ -2,6 +2,7 @@ var CommandArray = [];
 var utilsLoader = require('../../utils/utilsLoader.js');
 var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
+var dUtils = utilsLoader.discordUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 api_key = require("../../config.json").apis.osu;

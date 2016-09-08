@@ -2,6 +2,7 @@ var CommandArray = [];
 var utilsLoader = require('../../utils/utilsLoader.js');
 var clog = utilsLoader.clog;
 var utils = utilsLoader.generalUtils;
+var dUtils = utilsLoader.discordUtils;
 var db = utilsLoader.db;
 var config = require('../../config.json');
 
@@ -119,7 +120,10 @@ CommandArray.getlogs = {
         db.fetch.getData("logs", [msg.channel.guild.id, msg.channel.id, offset]).then(function(query) {
             for (var row of query.rows) {
                 var user = client.Users.get(row.user_id);
-                if (!user) user.username = "#MissingUsername#";
+                if (!user){
+                    user = {};
+                    user.username = "#MissingUsername#";
+                }
                 var date = utils.unixToTime(row.timestamp);
                 output += "[" + date + "] [" + user.username + "] " + row.content + "\n";
             }
