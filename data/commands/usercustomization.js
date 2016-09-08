@@ -49,7 +49,7 @@ CommandArray.join = {
             if (rolesToAdd.indexOf(role.name.toLowerCase()) != -1) {
                 guildUser.assignRole(role).then(function() {
                     msg.channel.sendMessage(msg.author.username + " added to " + role.name).then(function(msg) {
-                        setTimeout(function(){
+                        setTimeout(function() {
                             addRole(index + 1);
                         }, 1000);
                     });
@@ -130,23 +130,23 @@ CommandArray.color = {
         var color;
 
         //Check if its a valid hex value
-        if(!suffix){
-            try{
-                msg.author.openDM().then(function(dmchannel){
+        if (!suffix) {
+            try {
+                msg.author.openDM().then(function(dmchannel) {
                     dmchannel.uploadFile(fs.readFileSync("./colors.png"), "colors.png", "Colors available are:");
                 });
                 return;
-            } catch(e){
+            } catch (e) {
                 clog.logError("ERROR", e);
             }
-        } else if(suffix.length == 6){
+        } else if (suffix.length == 6) {
             color = "#" + suffix;
-        } else if(suffix.length == 7 && suffix.startsWith("#")){
+        } else if (suffix.length == 7 && suffix.startsWith("#")) {
             color = suffix;
-        } else if(!isNaN(suffix)){
+        } else if (!isNaN(suffix)) {
             var number = parseInt(suffix, 10);
-            if(colors[number-1]){
-                color = colors[number-1];
+            if (colors[number - 1]) {
+                color = colors[number - 1];
             } else {
                 msg.channel.sendMessage("Parameter incorrect use help! color for more information");
                 return;
@@ -161,42 +161,42 @@ CommandArray.color = {
         //Find the role for that color
         var role = msg.guild.roles.find(k => k.name.toLowerCase() == color);
 
-        if(!role){
+        if (!role) {
             msg.channel.sendMessage("Color " + suffix + " not found!");
             return;
         }
 
         var toRemove = [];
         //Find the color roles the user has
-        for(var r of guildUser.roles){
-            if(r.name.startsWith("#")){
+        for (var r of guildUser.roles) {
+            if (r.name.startsWith("#")) {
                 toRemove.push(r);
             }
         }
         //Remove all the colors the user already has
         removeRole(0);
 
-        function removeRole(i){
-            if(i >= toRemove.length){
+        function removeRole(i) {
+            if (i >= toRemove.length) {
                 //When we finish removing the roles, we add the desired role
                 addRole(role);
                 return;
             }
-            guildUser.unassignRole(toRemove[i]).then(function(){
+            guildUser.unassignRole(toRemove[i]).then(function() {
                 //Wait to avoid ratelimit
-                setTimeout(function(){
-                    removeRole(i+1);
+                setTimeout(function() {
+                    removeRole(i + 1);
                 }, 1000);
-            }).catch(function(err){
+            }).catch(function(err) {
                 clog.logError("ERROR", err);
-                removeRole(i+1);
+                removeRole(i + 1);
             });
         }
 
-        function addRole(role){
-            guildUser.assignRole(role).then(function(){
+        function addRole(role) {
+            guildUser.assignRole(role).then(function() {
                 msg.channel.sendMessage(msg.author.username + " added to " + role.name);
-            }).catch(function(err){
+            }).catch(function(err) {
                 clog.logError("ERROR", err);
             })
         }

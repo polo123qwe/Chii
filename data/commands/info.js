@@ -31,7 +31,7 @@ CommandArray.joined = {
             return;
         }
         db.fetch.getData("user", [guildUser.id, msg.guild.id]).then((query) => {
-            if (query.rowCount < 1 || !query.rows[0].joined){
+            if (query.rowCount < 1 || !query.rows[0].joined) {
                 returnData();
             } else {
                 var time = utils.convertUnixToDate(Date.now() - query.rows[0].joined);
@@ -46,7 +46,7 @@ CommandArray.joined = {
             returnData();
         });
 
-        function returnData(){
+        function returnData() {
             var joined = new Date(guildUser.joined_at).getTime();
             var time = utils.convertUnixToDate(Date.now() - joined);
             //Create the output string

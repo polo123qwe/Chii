@@ -20,7 +20,9 @@ CommandArray.randu = {
         for (var user of guildUsers) {
             var found = false;
             var roles = user.roles;
-            if(roles.find(r => {r.name == "Member"})){
+            if (roles.find(r => {
+                    r.name == "Member"
+                })) {
                 found = true;
             }
             if (!found) {
@@ -28,7 +30,7 @@ CommandArray.randu = {
                 guildUsers.splice(index, 1);
             }
         }
-        var randomUser = guildUsers[utils.getRandom(0, guildUsers.length-1)];
+        var randomUser = guildUsers[utils.getRandom(0, guildUsers.length - 1)];
 
         msg.channel.sendMessage(randomUser.name + "!");
     }

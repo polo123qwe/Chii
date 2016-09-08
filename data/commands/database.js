@@ -43,19 +43,18 @@ CommandArray.whitelist = {
     clean: 1,
     exec: function(client, msg, suffix) {
         var user;
-        if(!suffix){
+        if (!suffix) {
             user = msg.author;
         } else {
             user = client.Users.get(suffix);
-            if(!user){
+            if (!user) {
                 user = msg.author;
             }
         }
 
-        db.logging.log("whitelist", [msg.guild.id, user.id]).then(function(){
+        db.logging.log("whitelist", [msg.guild.id, user.id]).then(function() {
             msg.channel.sendMessage(user.username + " whitelisted");
-        }).catch(function(err){
-        })
+        }).catch(function(err) {})
     }
 }
 
@@ -65,16 +64,16 @@ CommandArray.togglewhitelist = {
     levelReq: 2,
     clean: 1,
     exec: function(client, msg, suffix) {
-        db.fetch.getData("serverConfig", [msg.guild.id]).then(function(query){
-            if(query.rowCount == 0) return;
+        db.fetch.getData("serverConfig", [msg.guild.id]).then(function(query) {
+            if (query.rowCount == 0) return;
             var status = query.rows[0].links;
             status = !status;
-            db.update.update("server", [status.toString(), msg.guild.id]).then(function(query){
+            db.update.update("server", [status.toString(), msg.guild.id]).then(function(query) {
                 msg.channel.sendMessage("Blocking invites status: " + status);
-            }).catch(function(err){
+            }).catch(function(err) {
                 console.log(err);
             });
-        }).catch(function(err){
+        }).catch(function(err) {
 
         });
 
@@ -115,12 +114,12 @@ CommandArray.getlogs = {
         }
         output = "Messages in the past " + (time / 60) + " mins in [" + msg.channel.guild.name + " / " + msg.channel.name + "]\n";
 
-        var offset = (Date.now() - time * 1000)/1000;
+        var offset = (Date.now() - time * 1000) / 1000;
 
         db.fetch.getData("logs", [msg.channel.guild.id, msg.channel.id, offset]).then(function(query) {
             for (var row of query.rows) {
                 var user = client.Users.get(row.user_id);
-                if (!user){
+                if (!user) {
                     user = {};
                     user.username = "#MissingUsername#";
                 }

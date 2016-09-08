@@ -65,14 +65,14 @@ exports.addUserToRole = function(client, channel, author, target, suffix, guild,
             roleName = commands[type];
         }
 
-        if(target){
+        if (target) {
             //Retrieve user
             guildUser = client.Users.getMember(guild, target);
         }
 
         //Check if the user was found
         if (!guildUser) {
-            if(moderationCommand){
+            if (moderationCommand) {
                 return Promise.reject("Error, no user specified!");
             } else {
                 //Use author instead if we find no user
@@ -127,12 +127,12 @@ exports.addUserToRole = function(client, channel, author, target, suffix, guild,
                 //If we found a channel to log it into
                 if (logChannel) {
                     var logMessage = "";
-                    logMessage += "[" + guildUser.username + "#" + guildUser.discriminator + " ] > " + roleName + " by " + author.username;
+                    logMessage += "[" + guildUser.username + "#" + guildUser.discriminator + "] > " + roleName + " by " + author.username;
                     //the user specified a suffix we log it
                     if (suffix) {
                         logMessage += ". Reason: " + suffix;
                     }
-                    if (delay){
+                    if (delay) {
                         logMessage += " [" + Math.round(delay) / 1000 + "s]";
                     }
                     logChannel.sendMessage(logMessage);
