@@ -44,7 +44,7 @@ exports.getUsersFromMessage = function(client, msg, guild, suffix) {
 }
 
 //Adds user to a role
-exports.addUserToRole = function(client, channel, author, target, suffix, guild, type, moderationCommand, delay) {
+exports.addUserToRole = function(client, channel, author, target, suffix, guild, type, timestamp, moderationCommand, delay) {
     return new Promise(function(resolve, reject) {
 
         var guildUser;
@@ -109,7 +109,7 @@ exports.addUserToRole = function(client, channel, author, target, suffix, guild,
                 if (unassignTime == -1) {
                     unassignTime = Math.round(utils.getRandom(60000, 180000));
                     channel.sendMessage("Got " + Math.round(unassignTime / 1000) + "s").then(m => {
-                        setTimeout(m.delete, 2000);
+                        setTimeout(m.delete(), 2000);
                     });
                 }
 
@@ -127,20 +127,22 @@ exports.addUserToRole = function(client, channel, author, target, suffix, guild,
                 //If we found a channel to log it into
                 if (logChannel) {
                     var logMessage = "";
-                    logMessage += "[" + guildUser.username + "#" + guildUser.discriminator + "] > " + roleName + " by " + author.username;
+                    logMessage += "" + guildUser.username + "#" + guildUser.discriminator + " was " + roleName + " by " + author.username;
                     //the user specified a suffix we log it
                     if (suffix) {
                         logMessage += ". Reason: " + suffix;
                     }
                     if (delay) {
-                        logMessage += " [" + Math.round(delay) / 1000 + "s]";
+                        logMessage += " for `" + Math.round(delay) / 1000 + "s`";
                     }
                     logChannel.sendMessage(logMessage);
                 }
                 //Store in the db the command
-                db.logging.log("warning", [guildUser.id, guild.id, new Date(), roleName, suffix]).catch(function(err) {
-                    console.log(err);
-                });
+                if(!suffix){
+                    db.run("INSERT", "warnings", [guildUser.id, guild.id, timestamp, roleName, suffix]).catch(console.log);
+                } else {
+                    db.run("INSERT", "warnings", [guildUser.id, guild.id, timestamp, roleName]).catch(console.log);
+                }
             }
             return Promise.resolve();
         }).catch(console.log);

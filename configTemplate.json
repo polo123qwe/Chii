@@ -1,0 +1,30 @@
+{
+    "bot": {
+        "self": false,
+        "token": "BOTTOKEN",
+        "email": "",
+        "password": "",
+        "suffix": "-"
+    },
+    "permissions": {
+        "owner": ["OWNERDISCORDID"]
+    },
+	"userroles": {
+		"optroles": ["OPTROLES"],
+        "blacklisted": ["ARRAYCHANNELS"]
+	},
+    "apis": {
+        "mal": {
+              "user": "MALUSERNAME",
+              "pass": "MALPASSWORD"
+        },
+        "forecastKey": "FORECASTIP",
+        "osu": "OSUAPIKEY"
+    },
+    "database": {
+        "user": "USERNAME",
+        "pass": "PASSWORD",
+        "name": "DBNAME",
+        "db": "IPHERE"
+    }
+}

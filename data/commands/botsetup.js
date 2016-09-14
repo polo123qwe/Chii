@@ -24,7 +24,7 @@ CommandArray.setlevel = {
         }
 
         if (msg.mention_roles.length === 0) {
-            var roleName = suffixArray[1];
+            var roleName = suffixArray.splice(1, suffixArray.length).join(" ");
             var roleObject = findKey(roleName, msg.guild.roles);
 
             if (!roleObject) {
@@ -59,24 +59,29 @@ CommandArray.disable = {
                 }
             }
         }
-        db.fetch.getData("channelConfig", [channel.id]).then(function(query) {
+        db.run("SELECT", "servers", [channel.id]).then(function(query) {
             var disabled = false;
             if (query.rowCount > 0) {
                 disabled = !query.rows[0].enabled;
+                db.run("UPDATE", "channels", [channel.id, server.id], ["channel_id", "server_id"], ["enabled", enabled])
+                    .then(printMessage).catch(console.log);
+                return;
             }
 
-            db.logging.storeChannelDB(channel, disabled).then(function() {
+            db.run("INSERT", "channels", [channel.id, server.id, disabled]).then(printMessage).catch(function(err) {
+                console.log(err);
+            });
+
+            function printMessage() {
                 if (disabled) {
                     msg.channel.sendMessage('Messages enabled in <#' + channel.id + '> successfully');
                 } else {
                     msg.channel.sendMessage('Messages disabled in <#' + channel.id + '> successfully');
                 }
-            }).catch(function(err) {
-                console.log(err);
-            });
+            }
         }).catch(function(err) {
             console.log(err);
-        })
+        });
 
     }
 }

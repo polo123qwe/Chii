@@ -113,7 +113,7 @@ CommandArray.suicide = {
     clean: 0,
     exec: function(client, msg, suffix) {
         //client, channel, author, target, suffix, guild, type, moderationCommand, delay
-        dUtils.addUserToRole(client, msg.channel, msg.author, null, suffix, msg.guild, "mute", false, -1).then(function() {
+        dUtils.addUserToRole(client, msg.channel, msg.author, null, suffix, msg.guild, "mute", msg.timestamp, false, -1).then(function() {
 
         }).catch(console.log);
     }

@@ -21,7 +21,7 @@ CommandArray.randu = {
             var found = false;
             var roles = user.roles;
             if (roles.find(r => {
-                    r.name == "Member"
+                    r.name == "Member";
                 })) {
                 found = true;
             }

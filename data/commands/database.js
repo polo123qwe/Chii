@@ -26,7 +26,7 @@ CommandArray.addUser = {
         }
         for (var member of msg.channel.guild.members) {
             if (member.id == target) {
-                db.logging.log("user", [member]).then(function() {
+                db.run("INSERT", "users", [member.id, member.username, member.discriminator, member.joined_at, guild.id]).then(function() {
                     msg.channel.sendMessage(member.name + "Added successfully!");
                 }) /*.catch(function(err){console.log(err);});*/
                 return;
@@ -52,7 +52,7 @@ CommandArray.whitelist = {
             }
         }
 
-        db.logging.log("whitelist", [msg.guild.id, user.id]).then(function() {
+        db.run("INSERT", "whitelist", [msg.guild.id, user.id]).then(function() {
             msg.channel.sendMessage(user.username + " whitelisted");
         }).catch(function(err) {})
     }
@@ -64,11 +64,11 @@ CommandArray.togglewhitelist = {
     levelReq: 2,
     clean: 1,
     exec: function(client, msg, suffix) {
-        db.fetch.getData("serverConfig", [msg.guild.id]).then(function(query) {
+        db.run("SELECT", "servers", [msg.guild.id]).then(function(query) {
             if (query.rowCount == 0) return;
             var status = query.rows[0].links;
             status = !status;
-            db.update.update("server", [status.toString(), msg.guild.id]).then(function(query) {
+            db.run("UPDATE", "servers", [msg.guild.id], ["server_id"], ["links", status]).then(function(query) {
                 msg.channel.sendMessage("Blocking invites status: " + status);
             }).catch(function(err) {
                 console.log(err);
@@ -116,7 +116,7 @@ CommandArray.getlogs = {
 
         var offset = (Date.now() - time * 1000) / 1000;
 
-        db.fetch.getData("logs", [msg.channel.guild.id, msg.channel.id, offset]).then(function(query) {
+        db.run("SELECT", "logs", [msg.guild.id, msg.channel.id, offset], ["server_id", "channel_id", "timestamp"]).then(function(query) {
             for (var row of query.rows) {
                 var user = client.Users.get(row.user_id);
                 if (!user) {

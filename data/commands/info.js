@@ -30,7 +30,8 @@ CommandArray.joined = {
             msg.channel.sendMessage("No user found!");
             return;
         }
-        db.fetch.getData("user", [guildUser.id, msg.guild.id]).then((query) => {
+        returnData();
+        /*db.run("SELECT", "users", [guildUser.id, msg.guild.id], ["user_id", "server_id"]).then((query) => {
             if (query.rowCount < 1 || !query.rows[0].joined) {
                 returnData();
             } else {
@@ -44,7 +45,7 @@ CommandArray.joined = {
         }).catch(e => {
             console.err(e);
             returnData();
-        });
+        });*/
 
         function returnData() {
             var joined = new Date(guildUser.joined_at).getTime();
@@ -55,8 +56,6 @@ CommandArray.joined = {
             output += "\n" + time + "\n```";
             msg.channel.sendMessage(output);
         }
-
-
     }
 }
 

@@ -1,0 +1,42 @@
+{
+    "channels": {
+        "columns": ["channel_id", "server_id", "enabled"],
+        "argsAllowed": [2, 3]
+    },
+    "events": {
+        "columns": ["name", "server_id", "timestamp", "desc"],
+        "argsAllowed": [3, 4]
+    },
+    "eventusers": {
+        "columns": ["user_id", "event", "server_id", "timestamp"],
+        "argsAllowed": [4]
+    },
+    "logs": {
+        "columns": ["message_id", "server_id", "channel_id", "user_id", "content", "timestamp"],
+        "argsAllowed": [6]
+    },
+    "usersdata": {
+        "columns": ["user_id", "country", "bday", "description", "name"],
+        "argsAllowed": [1, 2]
+    },
+    "permissions": {
+        "columns": ["server_id", "role_id", "perm_level"],
+        "argsAllowed": [2, 3]
+    },
+    "servers": {
+        "columns": ["server_id", "track", "memberrole", "links"],
+        "argsAllowed": [1, 2]
+    },
+    "users": {
+        "columns": ["user_id", "username", "discriminator", "joined", "server_id"],
+        "argsAllowed": [5]
+    },
+    "warnings": {
+        "columns": ["user_id", "server_id", "timestamp", "type", "reason"],
+        "argsAllowed": [4, 5]
+    },
+    "whitelist": {
+        "columns": ["server_id", "user_id"],
+        "argsAllowed": [2]
+    }
+}

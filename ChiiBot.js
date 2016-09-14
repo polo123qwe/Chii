@@ -48,11 +48,11 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     var m = e.message;
 
     if (m.isPrivate) {
-        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+        db.run("INSERT", "logs", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
             //console.log(err);
         });
     } else {
-        db.logging.log("message", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
+        db.run("INSERT", "logs", [m.id, m.guild.id, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
             //console.log(err);
         });
         deleteInviteLinks(m, e);
@@ -85,7 +85,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
     if (!m.isPrivate) { /* This is only for non-DMs */
 
-        db.fetch.getData("channelConfig", [m.channel.id]).then(function(query) {
+        db.run("SELECT", "channels", [m.channel.id], ["channel_id"]).then(function(query) {
 
             //If the channel is disabled and the module is not whitelisted don't execute it
             if (query.rowCount > 0 && !query.rows[0].enabled && whitelistedModules.indexOf(commands[cmd].category) == -1) return;
@@ -137,9 +137,6 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
             }).catch(e => console.ere(e));
         });
     } else { /* This is for commands that are allowed in DMs */
-        db.logging.log("message", [m.id, null, m.channel.id, m.author.id, m.content, m.timestamp]).catch(function(err) {
-            //console.log(err);
-        });
 
         if (!commands[cmd].hasOwnProperty("DM") || !commands[cmd].DM) {
             m.channel.sendMessage(':warning: This command cannot be used in DMs.');
@@ -157,7 +154,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 
 //Joined and left events
 client.Dispatcher.on(Events.GUILD_MEMBER_ADD, e => {
-    db.logging.log("user", [e.member.id, e.member.username, e.member.discriminator, e.member.joined_at, e.guild.id]);
+    db.run("INSERT", "users", [e.member.id, e.member.username, e.member.discriminator, e.member.joined_at, e.guild.id]);
 
     var rules;
     for (var channel of e.guild.channels) {
@@ -206,7 +203,7 @@ client.Dispatcher.on(Events.GUILD_MEMBER_UPDATE, e => {
 
 
 /* Client Login */
-if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {
+if (config.bot.selfbot && config.bot.email && config.bot.password) {
     client.connect({
         email: config.bot.email,
         password: config.bot.password
@@ -221,11 +218,11 @@ if (config.bot.selfbot && config.bot.email != "" && config.bot.password != "") {
 function deleteInviteLinks(m, e) {
     if (m.content.toLowerCase().includes("discord.gg/")) {
         //Check if the server blocks links
-        db.fetch.getData("serverConfig", [m.guild.id]).then(function(query) {
+        db.run("SELECT", "servers", [m.guild.id]).then(function(query) {
             if (query.rowCount != 0) {
                 if (!query.rows[0].links) {
                     //Try to find if the user can post links
-                    db.fetch.getData("whitelist", [m.guild.id, m.author.id]).then(function(query2) {
+                    db.run("SELECT", "whitelist", [m.guild.id, m.author.id]).then(function(query2) {
                         if (query2.rowCount == 0) {
                             m.delete().then(function() {
                                 console.log("Deleted [" + m.guild.name + "/" + m.channel.name + "] " + m.content);

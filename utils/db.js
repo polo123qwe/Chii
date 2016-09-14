@@ -23,17 +23,19 @@ var poolConfig = {
 var pool = new pg.Pool(poolConfig);
 
 try {
+    var dbaccess = require('./dbstuff/dbaccess.js');
+    module.exports = new dbaccess(pool);
     var Perms = require('./dbstuff/perms.js');
     module.exports['perms'] = new Perms(pool);
-    var Logging = require('./dbstuff/logging.js');
+    /*var Logging = require('./dbstuff/logging.js');
     module.exports['logging'] = new Logging(pool);
     var Fetch = require('./dbstuff/fetch.js');
     module.exports['fetch'] = new Fetch(pool);
     var Update = require('./dbstuff/update.js');
-    module.exports['update'] = new Update(pool);
+    module.exports['update'] = new Update(pool);*/
 } catch (e) {
     if (e instanceof Error && e.code === "MODULE_NOT_FOUND")
-        console.log("Can't load foo!");
+        console.log("Can't load db file!");
     else
         throw e;
 }

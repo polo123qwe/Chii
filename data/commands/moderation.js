@@ -33,7 +33,7 @@ CommandArray.member = {
         var roleName = "member";
         var roleID;
 
-        db.fetch.getData("serverConfig", [msg.channel.guild.id]).then(function(query) {
+        db.run("SELECT", "servers", [msg.channel.guild.id]).then(function(query) {
             if (query.rowCount > 0) {
                 if (query.rows[0].memberrole) {
                     roleID = query.rows[0].memberrole;
@@ -121,7 +121,7 @@ CommandArray.warn = {
     clean: 0,
     exec: function(client, msg, suffix) {
         //client, channel, author, target, suffix, guild, type, moderationCommand, delay
-        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "warn", true).then(() => {
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "warn", msg.timestamp, true).then(() => {
 
         }).catch(function(err) {
             msg.channel.sendMessage(err);
@@ -136,7 +136,7 @@ CommandArray.mute = {
     levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
-        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", true).then(() => {
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", msg.timestamp, true).then(() => {
 
         }).catch(function(err) {
             msg.channel.sendMessage(err);
@@ -151,7 +151,7 @@ CommandArray.chill = {
     levelReq: 2,
     clean: 0,
     exec: function(client, msg, suffix) {
-        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", true, 120000).then(() => {
+        dUtils.addUserToRole(client, msg.channel, msg.author, msg.mentions[0], suffix, msg.guild, "mute", msg.timestamp, true, 120000).then(() => {
 
         }).catch(function(err) {
             msg.channel.sendMessage(err);
